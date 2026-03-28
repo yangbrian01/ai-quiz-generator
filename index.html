@@ -3,169 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI 知識萃取與測驗系統 | Devil Pro</title>
+    <title>AI 知識萃取與測驗系統 | Ultimate Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* 🎨 大師級調色盤 & 變數 */
         :root { 
             --hue: 220;
-            --primary: hsl(var(--hue), 85%, 55%);
-            --primary-hover: hsl(var(--hue), 85%, 45%);
-            --primary-ring: hsla(var(--hue), 85%, 55%, 0.3);
-            
-            --bg: #f8fafc; --card-bg: #ffffff; 
-            --text-main: #0f172a; --text-muted: #64748b;
-            --border: #e2e8f0; --input-bg: #f1f5f9; 
-            
-            --option-bg: #ffffff; --option-hover: #f8fafc;
+            --primary: hsl(var(--hue), 85%, 55%); --primary-hover: hsl(var(--hue), 85%, 45%); --primary-ring: hsla(var(--hue), 85%, 55%, 0.3);
+            --bg: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b;
+            --border: #e2e8f0; --input-bg: #f1f5f9; --option-bg: #ffffff; --option-hover: #f8fafc;
             --timer-bg: #fffbeb; --timer-border: #fef3c7; --timer-text: #b45309;
             --success-bg: #f0fdf4; --success-border: #bbf7d0; --success-text: #15803d;
             --danger-bg: #fef2f2; --danger-border: #fecaca; --danger-text: #b91c1c;
-            
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
-
         [data-theme="dark"] {
-            --bg: #0f172a; --card-bg: #1e293b; 
-            --text-main: #f8fafc; --text-muted: #94a3b8;
-            --border: #334155; --input-bg: #0f172a; 
-            
-            --option-bg: #1e293b; --option-hover: #334155;
+            --bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --border: #334155; --input-bg: #0f172a; --option-bg: #1e293b; --option-hover: #334155;
             --timer-bg: #422006; --timer-border: #713f12; --timer-text: #fde68a;
             --success-bg: #14532d; --success-border: #166534; --success-text: #86efac;
             --danger-bg: #7f1d1d; --danger-border: #991b1b; --danger-text: #fca5a5;
-            
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-            --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
         }
-
         * { box-sizing: border-box; }
         body { font-family: 'Inter', 'Noto Sans TC', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px 20px 80px 20px; background-color: var(--bg); color: var(--text-main); line-height: 1.7; transition: background-color 0.4s ease, color 0.4s ease; }
         h1 { text-align: center; color: var(--text-main); font-size: 2.5rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
-        .subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; font-weight: 400; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 16px 0; color: var(--text-main); letter-spacing: -0.01em; }
-        
-        .card-panel { background: var(--card-bg); padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border-color 0.4s ease; }
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; }
+        h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 16px 0; color: var(--text-main); }
+        .card-panel { background: var(--card-bg); padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px; }
         
         button { font-family: inherit; }
-        .btn { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; padding: 14px 24px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: none; outline: none; }
+        .btn { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; padding: 14px 24px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; outline: none; }
         .btn-primary { background-color: var(--primary); color: white; box-shadow: 0 4px 14px 0 var(--primary-ring); }
-        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 20px 0 var(--primary-ring); }
+        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
         .btn-outline { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { background-color: var(--input-bg); }
         .btn-danger { background-color: transparent; color: var(--danger-text); border: 1px solid var(--danger-border); }
         .btn-danger:hover { background-color: var(--danger-bg); }
         .btn-small { width: auto; padding: 8px 16px; font-size: 0.9rem; border-radius: 8px; }
         .btn-devil { background-color: #ef4444; color: white; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.3); }
-        .btn-devil:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.4); }
 
-        input, select, textarea { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; background-color: var(--input-bg); color: var(--text-main); transition: all 0.2s ease; outline: none; }
-        textarea { height: 120px; resize: vertical; line-height: 1.6; }
-        input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); background-color: var(--card-bg); }
+        input, select, textarea { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; background-color: var(--input-bg); color: var(--text-main); }
+        textarea { height: 120px; resize: vertical; }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); background-color: var(--card-bg); outline: none;}
         
         .hidden { display: none !important; }
 
-        /* 🧑‍💻 使用者大頭貼與帳號列樣式 */
-        .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); transition: 0.3s; }
-        .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-main); }
+        .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); }
+        .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; }
         .user-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: none; }
-        .account-bar .actions { display: flex; gap: 8px; }
-
+        
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .controls-grid select { margin-bottom: 0; cursor: pointer; }
-
         #loading { text-align: center; padding: 40px 0; display: none; }
         .loader { border: 3px solid var(--border); border-top: 3px solid var(--primary); border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; margin: 0 auto 16px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
-
-        .organized-content { background-color: var(--input-bg); padding: 32px; border-radius: 12px; font-size: 1.05rem; color: var(--text-main); border: 1px solid var(--border); margin-top: 16px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .organized-content { background-color: var(--input-bg); padding: 32px; border-radius: 12px; font-size: 1.05rem; border: 1px solid var(--border); margin-top: 16px; white-space: pre-wrap; }
         .organized-content img { max-width: 100%; border-radius: 8px; }
         
         .timer-setup { background: var(--timer-bg); border-color: var(--timer-border); text-align: center; }
-        .timer-setup input[type="number"] { width: 80px; display: inline-block; margin: 0 8px; text-align: center; background: var(--card-bg); }
-        
-        #stickyTimer { position: sticky; top: 80px; z-index: 40; background: var(--timer-bg); color: var(--timer-text); padding: 12px 24px; text-align: center; font-weight: 700; font-size: 1.2rem; border-radius: 100px; border: 1px solid var(--timer-border); box-shadow: var(--shadow-md); margin-bottom: 24px; display: none; transition: all 0.3s ease; }
-        #stickyTimer.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); animation: pulse-danger 1s infinite; }
-        @keyframes pulse-danger { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        #stickyTimer { position: sticky; top: 80px; z-index: 40; background: var(--timer-bg); color: var(--timer-text); padding: 12px 24px; text-align: center; font-weight: 700; font-size: 1.2rem; border-radius: 100px; border: 1px solid var(--timer-border); box-shadow: var(--shadow-md); margin-bottom: 24px; display: none; }
+        #stickyTimer.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); }
 
         .question-card { border: 1px solid var(--border); padding: 32px; }
-        .question-text { font-weight: 600; font-size: 1.2rem; margin-bottom: 24px; line-height: 1.5; color: var(--text-main); }
-        .option { display: flex; align-items: center; padding: 16px 20px; margin-bottom: 12px; background-color: var(--option-bg); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 1.05rem; transition: all 0.2s ease; }
+        .question-text { font-weight: 600; font-size: 1.2rem; margin-bottom: 24px; line-height: 1.5; }
+        .option { padding: 16px 20px; margin-bottom: 12px; background-color: var(--option-bg); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: 0.2s; }
         .option:hover { background-color: var(--option-hover); border-color: var(--primary); }
         .option.correct { background-color: var(--success-bg); border-color: var(--success-border); color: var(--success-text); font-weight: 600; }
         .option.wrong { background-color: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
         .question-card.disabled .option { pointer-events: none; opacity: 0.8; }
         
-        .list-item { padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; }
-        .list-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+        /* 🧠 SM-2 記憶按鈕區塊 */
+        .sm2-rating-box { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border); display: flex; gap: 10px; justify-content: center; }
+        .sm2-btn { flex: 1; padding: 10px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; color: white; }
+        .sm2-again { background: #ef4444; } .sm2-hard { background: #f59e0b; } .sm2-good { background: #3b82f6; } .sm2-easy { background: #10b981; }
+        .sm2-btn:hover { filter: brightness(0.9); transform: translateY(-2px); }
+
+        .list-item { padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .item-meta { color: var(--text-muted); font-size: 0.85rem; margin-top: 6px; display: flex; gap: 12px; }
-        
-        .mistake-card .correct-ans { background: var(--success-bg); color: var(--success-text); padding: 12px 16px; border-radius: 8px; margin-top: 16px; font-weight: 500; font-size: 0.95rem; border: 1px solid var(--success-border); }
+        .mistake-card .correct-ans { background: var(--success-bg); color: var(--success-text); padding: 12px; border-radius: 8px; margin-top: 16px; font-weight: 500; border: 1px solid var(--success-border); }
 
-        .achievement-modal { position: fixed; bottom: 32px; right: -400px; background: var(--card-bg); border: 1px solid var(--border); padding: 20px 24px; border-radius: 16px; box-shadow: var(--shadow-hover); z-index: 1000; transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 16px; width: 340px; }
-        .achievement-modal.show { right: 32px; }
-        .achievement-icon { font-size: 2.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-        
-        .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
-        .theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--shadow-hover); border-color: var(--primary); }
-
+        .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; display: flex; align-items: center; justify-content: center; }
         .image-upload-zone { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .image-preview-card { position: relative; display: inline-block; border-radius: 12px; border: 2px dashed var(--border); padding: 8px; background: var(--input-bg); }
-        .image-preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
-        .image-preview-card .remove-btn { position: absolute; top: -10px; right: -10px; background: var(--danger-text); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .image-preview-card .remove-btn:hover { transform: scale(1.1); }
+        .image-preview-card img { max-height: 200px; border-radius: 8px; object-fit: contain; }
 
         @media (max-width: 600px) {
-            body { padding: 10px 10px 80px 10px; }
-            h1 { font-size: 2rem; }
-            .card-panel { padding: 20px; border-radius: 12px; }
-            .organized-content, .question-card { padding: 20px; }
-            .account-bar { flex-direction: column; gap: 12px; border-radius: 16px; padding: 16px; align-items: flex-start; }
-            .account-bar .actions { width: 100%; justify-content: space-between; }
-            .account-bar .actions button { flex: 1; padding: 10px 8px; font-size: 0.85rem; }
-            .controls-grid { grid-template-columns: 1fr; }
-            .timer-setup > div { flex-direction: column; gap: 12px; }
-            .achievement-modal { width: calc(100vw - 40px); left: 20px; right: auto; bottom: -150px; transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-            .achievement-modal.show { bottom: 20px; left: 20px; right: auto; }
-            .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
+            body { padding: 10px; } h1 { font-size: 2rem; } .card-panel { padding: 20px; }
+            .account-bar { flex-direction: column; align-items: flex-start; } .account-bar .actions { width: 100%; justify-content: space-between; }
+            .sm2-rating-box { flex-wrap: wrap; } .sm2-btn { min-width: 45%; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="window.toggleTheme()">☀️</button>
-
-    <div id="achievementPopup" class="achievement-modal">
-        <div class="achievement-icon" id="achIcon">🏆</div>
-        <div><h4 id="achTitle" style="margin:0 0 4px 0;">成就解鎖</h4><p id="achDesc" style="margin:0; font-size:0.9rem; color:var(--text-muted);">說明</p></div>
-    </div>
+    <button class="theme-toggle-btn" onclick="window.toggleTheme()" id="themeToggleBtn">☀️</button>
 
     <h1>AI Pro Quiz</h1>
-    <div class="subtitle">支援影像辨識的智能出題平台</div>
+    <div class="subtitle">支援 SRS 間隔記憶與社群分享</div>
+
+    <div id="guestSection" class="card-panel hidden" style="text-align: center; border: 2px solid var(--primary);">
+        <h2 style="font-size: 2rem; margin-bottom: 8px;">🔥 挑戰書已送達！</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">你的同學向你發起了測驗挑戰！請輸入你的名字來應戰：</p>
+        <input type="text" id="guestNameInput" placeholder="輸入你的大名..." style="max-width: 300px; text-align: center; font-size: 1.2rem;">
+        <button class="btn btn-primary" style="max-width: 300px;" onclick="window.startGuestChallenge()">接受挑戰</button>
+        <p id="guestErrorMsg" style="color: var(--danger-text); margin-top: 16px;"></p>
+    </div>
 
     <div id="authSection" class="card-panel">
-        <h2 style="text-align: center; margin-bottom: 32px;">歡迎回來</h2>
+        <h2 style="text-align: center; margin-bottom: 32px;">系統登入</h2>
         <button class="btn btn-outline" onclick="window.loginWithGoogle()" style="margin-bottom: 24px;">使用 Google 繼續</button>
-        <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或使用電子郵件</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
+        <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
         <input type="email" id="emailInput" placeholder="name@example.com">
-        <input type="password" id="passwordInput" placeholder="密碼 (至少 6 碼)">
-        <button class="btn btn-primary" onclick="window.loginWithEmail()">登入帳號</button>
-        <button class="btn btn-outline" onclick="window.registerWithEmail()" style="margin-top: 8px;">建立新帳號</button>
-        <p id="authErrorMsg" style="color: var(--danger-text); text-align: center; margin-top: 16px; font-weight: 500;"></p>
+        <input type="password" id="passwordInput" placeholder="密碼">
+        <button class="btn btn-primary" onclick="window.loginWithEmail()">登入</button>
+        <button class="btn btn-outline" onclick="window.registerWithEmail()" style="margin-top: 8px;">註冊</button>
     </div>
 
     <div id="appSection" class="hidden">
-        
         <div class="account-bar">
-            <div class="user-profile">
-                <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
-                <span id="userNameDisplay">使用者名稱</span>
-            </div>
+            <div class="user-profile"><img id="userAvatar" class="user-avatar" src=""><span id="userNameDisplay">使用者</span></div>
             <div class="actions">
-                <button class="btn btn-small btn-outline" onclick="window.fetchHistory()">歷史庫</button>
+                <button class="btn btn-small btn-outline" onclick="window.fetchHistory()">歷史</button>
                 <button class="btn btn-small btn-danger" onclick="window.fetchMistakes()">錯題本</button>
                 <button class="btn btn-small btn-outline" onclick="window.logout()" style="border: none;">登出</button>
             </div>
@@ -176,12 +136,10 @@
                 <h2 id="dashboardTitle" style="margin: 0;">檔案庫</h2>
                 <button class="btn btn-small btn-outline" onclick="window.closeDashboard()">返回</button>
             </div>
-            
             <div id="devilModeBtnContainer" class="hidden" style="margin-bottom: 24px;">
-                <button class="btn btn-devil" onclick="window.startDevilTraining()">🔥 啟動魔鬼特訓 (消滅錯題)</button>
-                <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">系統將打亂您的錯題進行重測。答對的題目將從此清單中永久移除！</p>
+                <button class="btn btn-devil" onclick="window.startDevilTraining()">🔥 啟動魔鬼特訓 (SM-2 記憶法)</button>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">系統將根據艾賓浩斯遺忘曲線，精準推播你今天該複習的錯題！</p>
             </div>
-
             <div id="dashboardList"></div>
         </div>
 
@@ -192,29 +150,25 @@
                 <select id="qCount"><option value="3">3 題</option><option value="5" selected>5 題</option><option value="10">10 題</option></select>
                 <select id="diff"><option value="簡單">簡單</option><option value="適中" selected>適中</option><option value="困難">困難</option></select>
             </div>
-            
             <div class="image-upload-zone">
                 <input type="file" id="imageInput" accept="image/*" class="hidden">
-                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()" style="border-style: dashed; border-width: 2px;">
-                    📷 拍攝課本 / 上傳筆記截圖
-                </button>
-                <div id="imagePreviewContainer" class="image-preview-card hidden">
-                    <img id="previewImg" src="">
-                    <button class="remove-btn" onclick="window.removeImage()">✕</button>
-                </div>
+                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()" style="border-style: dashed; border-width: 2px;">📷 拍攝課本 / 上傳筆記截圖</button>
+                <div id="imagePreviewContainer" class="image-preview-card hidden"><img id="previewImg" src=""><button class="remove-btn" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; border:none; width:25px; height:25px;" onclick="window.removeImage()">✕</button></div>
             </div>
-
-            <textarea id="noteInput" placeholder="也可以在這裡補充文字說明（非必填）..."></textarea>
+            <textarea id="noteInput" placeholder="也可以在這裡補充文字說明..."></textarea>
             <button class="btn btn-primary" onclick="window.generateContent()">生成專業教材</button>
         </div>
 
-        <div id="loading"><div class="loader"></div><div id="loadingText" class="loading-text">AI 神經解析中，請稍候...</div></div>
+        <div id="loading"><div class="loader"></div><div id="loadingText" class="loading-text">連線中...</div></div>
 
         <div id="prepSection" class="hidden">
             <div class="card-panel">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px;">
                     <h2 style="margin: 0;">知識點整理</h2>
-                    <button class="btn btn-small btn-outline" onclick="window.copyNote()">複製內容</button>
+                    <div>
+                        <button class="btn btn-small btn-outline" onclick="window.copyNote()">📋 複製</button>
+                        <button id="shareQuizBtn" class="btn btn-small btn-primary hidden" onclick="window.shareQuiz()" style="margin-left: 8px;">🔗 複製分享連結</button>
+                    </div>
                 </div>
                 <div id="organizedContent" class="organized-content"></div>
                 <textarea id="rawMarkdown" style="display:none;"></textarea>
@@ -222,29 +176,25 @@
 
             <div class="card-panel timer-setup">
                 <h2>測驗設定</h2>
-                <p style="color:var(--text-muted); margin-bottom:24px;">請詳閱上方教材，準備就緒後啟動測驗。</p>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500;">
-                        <input type="checkbox" id="enableTimer" checked onchange="window.toggleTimerInput()" style="width:18px; height:18px; margin:0;"> 啟用計時
-                    </label>
-                    <div id="timeInputDiv" style="display: flex; align-items: center; font-weight: 500;">時長 <input type="number" id="timeMinutes" min="1"> 分鐘</div>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500;"><input type="checkbox" id="enableTimer" checked onchange="window.toggleTimerInput()" style="width:18px; height:18px;"> 啟用計時</label>
+                    <div id="timeInputDiv">時長 <input type="number" id="timeMinutes" min="1"> 分鐘</div>
                 </div>
-                <button class="btn btn-primary" style="background-color: #10b981; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);" onclick="window.startTest()">啟動測驗</button>
+                <button class="btn btn-primary" style="background-color: #10b981;" onclick="window.startTest()">啟動測驗</button>
             </div>
         </div>
 
         <div id="testSection" class="hidden">
             <div id="devilModeBanner" class="hidden" style="background: #ef4444; color: white; padding: 12px; text-align: center; font-weight: bold; border-radius: 8px; margin-bottom: 20px;">
-                🔥 魔鬼特訓進行中：只許成功，不許失敗！
+                🔥 魔鬼特訓 (SM-2)：請誠實評估你的記憶熟悉度！
             </div>
-            
-            <div id="stickyTimer">剩餘時間 <span id="timeDisplay" style="margin-left: 8px;">00:00</span></div>
+            <div id="stickyTimer">剩餘時間 <span id="timeDisplay">00:00</span></div>
             <div id="questionsContainer"></div>
             <div id="scoreBoard" class="hidden card-panel" style="text-align: center; border: 2px solid var(--primary); background: var(--input-bg);">
                 <h2 id="scoreTitle" style="font-size: 2rem; margin-bottom: 8px;"></h2>
                 <p id="scoreText" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;"></p>
                 <p id="savingText" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px;">數據同步中...</p>
-                <button class="btn btn-primary" style="max-width: 200px; margin: 0 auto;" onclick="location.reload()">完成</button>
+                <button class="btn btn-primary" style="max-width: 200px; margin: 0 auto;" onclick="location.reload()">返回首頁</button>
             </div>
         </div>
     </div>
@@ -261,196 +211,210 @@
             messagingSenderId: "374199534382",
             appId: "1:374199534382:web:d9c070e4bc41ddc44ff0bf"
         };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        let currentUserEmail = ""; 
-
-        const initTheme = () => { const s = localStorage.getItem('theme') || 'light'; document.body.setAttribute('data-theme', s); document.getElementById('themeToggleBtn').innerText = s === 'dark' ? '☀️' : '🌙'; };
-        initTheme();
-        window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
-
-        // 🧑‍💻 登入狀態監聽：加入大頭貼與名稱擷取邏輯
-        onAuthStateChanged(auth, (user) => {
-            if (user) { 
-                currentUserEmail = user.email;
-                
-                // 優先抓取 Google 本名，如果沒有 (信箱註冊) 就拿信箱 @ 前面的字當名字
-                const displayName = user.displayName || user.email.split('@')[0];
-                document.getElementById('userNameDisplay').innerText = `👋 ${displayName}`;
-                
-                // 抓取 Google 頭像，如果沒有，就呼叫 API 動態生成一個帶有名字第一個字母的質感頭像
-                const avatarEl = document.getElementById('userAvatar');
-                const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random&color=fff&size=128`;
-                avatarEl.src = photoURL;
-                avatarEl.style.display = 'block';
-
-                document.getElementById('authSection').classList.add('hidden'); 
-                document.getElementById('appSection').classList.remove('hidden'); 
-            } else { 
-                currentUserEmail = ""; 
-                document.getElementById('userAvatar').style.display = 'none';
-                document.getElementById('authSection').classList.remove('hidden'); 
-                document.getElementById('appSection').classList.add('hidden'); 
-            }
-        });
-
-        window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => showError(err.message));
-        window.registerWithEmail = () => createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value).then(() => alert("註冊成功！系統將自動登入。")).catch(err => showError(err.message));
-        window.loginWithEmail = () => signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value).catch(err => showError("登入失敗，請檢查帳號密碼。"));
-        window.logout = () => signOut(auth).then(() => { location.reload(); });
-        function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
-
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const provider = new GoogleAuthProvider();
+        
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
+        let currentUserEmail = ""; let currentGuestName = "";
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
         
-        let isDevilMode = false;
-        let currentMistakes = [];
-        let resolvedMistakesThisRound = [];
-        let loadedMistakesList = []; 
+        let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
+        let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null;
 
+        // 🔗 路由偵測：網頁一打開先檢查有沒有 ?quiz= 參數
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedQuizId = urlParams.get('quiz');
+
+        if (sharedQuizId) {
+            // 進入訪客挑戰模式
+            isGuestMode = true; currentQuizId = sharedQuizId;
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+            document.getElementById('guestSection').classList.remove('hidden');
+        } else {
+            // 正常登入邏輯
+            onAuthStateChanged(auth, (user) => {
+                if (user) { 
+                    currentUserEmail = user.email;
+                    const dName = user.displayName || user.email.split('@')[0];
+                    document.getElementById('userNameDisplay').innerText = `👋 ${dName}`;
+                    document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dName)}&background=random&color=fff`;
+                    document.getElementById('userAvatar').style.display = 'block';
+                    document.getElementById('authSection').classList.add('hidden'); document.getElementById('appSection').classList.remove('hidden'); 
+                } else { document.getElementById('authSection').classList.remove('hidden'); document.getElementById('appSection').classList.add('hidden'); }
+            });
+        }
+
+        // 🔗 訪客開始挑戰
+        window.startGuestChallenge = async () => {
+            const name = document.getElementById('guestNameInput').value.trim();
+            if (!name) return document.getElementById('guestErrorMsg').innerText = "請先輸入名字！";
+            currentGuestName = name;
+            
+            document.getElementById('guestSection').classList.add('hidden');
+            showLoading("正在下載挑戰考卷...");
+            
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getQuiz', quizId: currentQuizId }) });
+                const result = await response.json();
+                if (result.status === 'error') throw new Error(result.message);
+                
+                document.getElementById('appSection').classList.remove('hidden');
+                document.getElementById('inputSection').classList.add('hidden'); // 訪客不能自己出題
+                document.querySelector('.account-bar').classList.add('hidden'); // 隱藏帳號列
+                
+                alert(`這份考卷由 ${result.creator} 建立！準備好就開始吧！`);
+                loadPrepSection(result);
+            } catch (error) { 
+                alert('載入失敗：' + error.message); 
+                window.location.href = window.location.pathname; // 載入失敗就拔掉網址參數重整
+            } finally { document.getElementById('loading').style.display = 'none'; }
+        };
+
+        // 🧠 SM-2 演算法核心函數
+        function calcSM2(quality, interval, reps, ease) {
+            // quality: 1(忘記), 3(困難), 4(良好), 5(簡單)
+            if (quality < 3) { reps = 0; interval = 1; } 
+            else {
+                if (reps === 0) interval = 1;
+                else if (reps === 1) interval = 6;
+                else interval = Math.round(interval * ease);
+                reps++;
+            }
+            ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+            if (ease < 1.3) ease = 1.3;
+            const nextReviewTime = new Date().getTime() + interval * 24 * 60 * 60 * 1000;
+            return { newInterval: interval, newReps: reps, newEase: ease, nextReviewTime };
+        }
+
+        /* 介面與基本功能 (主題切換、登入、圖片上傳等) */
+        const initTheme = () => { const s = localStorage.getItem('theme') || 'light'; document.body.setAttribute('data-theme', s); document.getElementById('themeToggleBtn').innerText = s === 'dark' ? '☀️' : '🌙'; };
+        initTheme(); window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
+        window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(e => showError(e.message));
+        window.registerWithEmail = () => createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value).then(() => alert("成功！")).catch(e => showError(e.message));
+        window.loginWithEmail = () => signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value).catch(e => showError("登入失敗"));
+        window.logout = () => signOut(auth).then(() => { location.reload(); });
+        function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
+        
         document.getElementById('imageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+            const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1024;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    currentImageBase64 = dataUrl.split(',')[1]; 
-                    document.getElementById('previewImg').src = dataUrl;
-                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
-                }
-                img.src = event.target.result;
-            }
-            reader.readAsDataURL(file);
+                const img = new Image(); img.onload = function() {
+                    const canvas = document.createElement('canvas'); const scaleSize = 1024 / img.width; canvas.width = 1024; canvas.height = img.height * scaleSize;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8); currentImageBase64 = dataUrl.split(',')[1]; 
+                    document.getElementById('previewImg').src = dataUrl; document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                }; img.src = event.target.result;
+            }; reader.readAsDataURL(file);
         });
-
         window.removeImage = () => { currentImageBase64 = null; document.getElementById('imageInput').value = ''; document.getElementById('imagePreviewContainer').classList.add('hidden'); };
 
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
-            if (!note.trim() && !currentImageBase64) return alert('請輸入文字筆記，或上傳一張圖片！');
-            showLoading("AI 視覺神經解析中，請稍候...");
+            if (!note.trim() && !currentImageBase64) return alert('請輸入文字或圖片！');
+            showLoading("AI 解析中...");
             try {
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', body: JSON.stringify({ action: 'generate', username: currentUserEmail, note: note, imageBase64: currentImageBase64, qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value })
-                });
-                const result = await response.json();
-                if (result.status === 'error') throw new Error(result.message);
-                isDevilMode = false; 
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'generate', username: currentUserEmail, note: note, imageBase64: currentImageBase64, qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value }) });
+                const result = await response.json(); if (result.status === 'error') throw new Error(result.message);
+                isDevilMode = false; currentQuizId = result.quizId; // 取得新考卷的 ID
                 loadPrepSection(result);
             } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
         window.fetchHistory = async () => { 
-            showLoading("正在下載歷史紀錄..."); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
-            document.getElementById('devilModeBtnContainer').classList.add('hidden'); 
+            showLoading("下載歷史紀錄..."); document.getElementById('dashboardTitle').innerText = "歷史檔案庫"; document.getElementById('devilModeBtnContainer').classList.add('hidden'); 
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }) });
-                const result = await response.json();
-                if (result.status === 'error') throw new Error(result.message);
-                const listDiv = document.getElementById('dashboardList');
-                listDiv.innerHTML = result.history.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">尚無歷史紀錄</p>' : '';
-                result.history.forEach((item, i) => {
-                    const d = new Date(item.timestamp);
-                    const div = document.createElement('div'); div.className = 'list-item';
+                const result = await response.json(); if (result.status === 'error') throw new Error(result.message);
+                const listDiv = document.getElementById('dashboardList'); listDiv.innerHTML = result.history.length === 0 ? '<p style="text-align:center;">尚無紀錄</p>' : '';
+                result.history.forEach((item) => {
+                    const d = new Date(item.timestamp); const div = document.createElement('div'); div.className = 'list-item';
                     div.innerHTML = `<div><strong style="font-size:1.1rem;">${item.noteSnippet}</strong><div class="item-meta"><span>${d.getMonth()+1}/${d.getDate()}</span><span>${item.diff} • ${item.qCount}題</span></div></div>
-                        <button class="btn btn-small btn-primary retest-btn" style="margin:0; box-shadow:none;">重新測驗</button>`;
+                        <div style="display:flex; gap:8px;"><button class="btn btn-small btn-outline share-btn" data-id="${item.quizId}">🔗 分享</button><button class="btn btn-small btn-primary retest-btn">重測</button></div>`;
                     listDiv.appendChild(div);
-                    div.querySelector('.retest-btn').onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); isDevilMode = false; loadPrepSection(item); };
+                    div.querySelector('.retest-btn').onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); currentQuizId = item.quizId; isDevilMode = false; loadPrepSection(item); };
+                    div.querySelector('.share-btn').onclick = (e) => { 
+                        const link = `${window.location.origin}${window.location.pathname}?quiz=${e.target.dataset.id}`;
+                        navigator.clipboard.writeText(link).then(() => alert("✅ 連結已複製！貼給同學挑戰吧！"));
+                    };
                 });
                 document.getElementById('dashboardSection').classList.remove('hidden');
-            } catch (error) { alert('查詢失敗：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
+            } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
         window.fetchMistakes = async () => { 
-            showLoading("正在翻找你的錯題本..."); document.getElementById('dashboardTitle').innerText = "錯題分析";
+            showLoading("整理錯題本中..."); document.getElementById('dashboardTitle').innerText = "錯題分析";
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getMistakes', username: currentUserEmail }) });
-                const result = await response.json();
-                if (result.status === 'error') throw new Error(result.message);
-                
+                const result = await response.json(); if (result.status === 'error') throw new Error(result.message);
                 loadedMistakesList = result.mistakes; 
-                
                 const listDiv = document.getElementById('dashboardList');
-                if (result.mistakes.length === 0) {
-                    listDiv.innerHTML = '<p style="text-align:center; color:var(--text-muted);">目前沒有錯題紀錄，繼續保持！</p>';
-                    document.getElementById('devilModeBtnContainer').classList.add('hidden');
-                } else {
-                    listDiv.innerHTML = '';
-                    document.getElementById('devilModeBtnContainer').classList.remove('hidden'); 
+                if (result.mistakes.length === 0) { listDiv.innerHTML = '<p style="text-align:center;">太神啦！目前沒有需要複習的錯題！</p>'; document.getElementById('devilModeBtnContainer').classList.add('hidden'); } 
+                else {
+                    listDiv.innerHTML = ''; document.getElementById('devilModeBtnContainer').classList.remove('hidden'); 
                     result.mistakes.forEach(item => {
                         const div = document.createElement('div'); div.className = 'mistake-card';
-                        div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:12px; color:var(--text-main);">Q. ${item.question}</div>
-                                         <div class="correct-ans">正確答案：${item.options[item.answer_index]}</div>`;
+                        div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:8px;">Q. ${item.question}</div><div class="correct-ans">正確答案：${item.options[item.answer_index]}</div>
+                                         <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">熟悉度: ${item.easeFactor} | 間隔: ${item.interval}天</div>`;
                         listDiv.appendChild(div);
                     });
                 }
                 document.getElementById('dashboardSection').classList.remove('hidden');
-            } catch (error) { alert('查詢失敗：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
+            } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
-        function showLoading(text = "處理中...") {
-            document.getElementById('inputSection').classList.add('hidden'); document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.add('hidden'); document.getElementById('scoreBoard').classList.add('hidden'); 
+        function showLoading(text="處理中") {
+            ['inputSection','dashboardSection','prepSection','testSection','scoreBoard'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('loadingText').innerText = text; document.getElementById('loading').style.display = 'block';
         }
 
         function loadPrepSection(data) {
             try {
-                testData = data; currentMistakes = []; resolvedMistakesThisRound = [];
-                const rawNotes = data.organized_notes ? String(data.organized_notes) : '這份考卷似乎沒有留下筆記紀錄喔！';
-                document.getElementById('rawMarkdown').value = rawNotes;
-                let htmlContent = rawNotes;
-                try {
-                    if (typeof window.marked !== 'undefined') {
-                        if (typeof window.marked.parse === 'function') htmlContent = window.marked.parse(rawNotes);
-                        else if (typeof window.marked === 'function') htmlContent = window.marked(rawNotes);
-                    }
-                } catch (parseError) { htmlContent = rawNotes.replace(/\n/g, '<br>'); }
-
-                document.getElementById('organizedContent').innerHTML = htmlContent;
+                testData = data; currentMistakes = []; srsUpdatesThisRound = []; 
+                document.getElementById('rawMarkdown').value = data.organized_notes || '';
+                try { document.getElementById('organizedContent').innerHTML = (typeof window.marked !== 'undefined') ? window.marked.parse(data.organized_notes||'') : (data.organized_notes||'').replace(/\n/g, '<br>'); } catch(e) {}
                 document.getElementById('timeMinutes').value = data.suggested_time || 5;
+                
+                // 控制分享按鈕顯示
+                if (currentQuizId && !isGuestMode && !isDevilMode) {
+                    document.getElementById('shareQuizBtn').classList.remove('hidden');
+                } else {
+                    document.getElementById('shareQuizBtn').classList.add('hidden');
+                }
+                
                 document.getElementById('prepSection').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (err) { alert("載入測驗畫面時發生錯誤：" + err.message + "\n請重新整理網頁。"); document.getElementById('dashboardSection').classList.remove('hidden'); }
+            } catch (err) { alert("發生錯誤：" + err.message); location.reload(); }
+        }
+        
+        window.shareQuiz = () => {
+            const link = `${window.location.origin}${window.location.pathname}?quiz=${currentQuizId}`;
+            navigator.clipboard.writeText(link).then(() => alert("✅ 連結已複製！貼到班群給同學挑戰吧！"));
         }
 
         window.startDevilTraining = () => {
             if (loadedMistakesList.length === 0) return alert("沒有錯題可以特訓！");
             let shuffled = [...loadedMistakesList];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            const selectedMistakes = shuffled.slice(0, 10);
-            testData = { questions: selectedMistakes };
-            isDevilMode = true; currentMistakes = []; resolvedMistakesThisRound = [];
-            document.getElementById('timeMinutes').value = selectedMistakes.length;
-            document.getElementById('dashboardSection').classList.add('hidden');
-            window.startTest(); 
+            for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+            testData = { questions: shuffled.slice(0, 10) }; // 最多考 10 題
+            isDevilMode = true; currentMistakes = []; srsUpdatesThisRound = [];
+            document.getElementById('timeMinutes').value = testData.questions.length;
+            document.getElementById('dashboardSection').classList.add('hidden'); window.startTest(); 
         };
 
         window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
         window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
 
         window.startTest = () => {
-            document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.remove('hidden'); document.getElementById('scoreBoard').classList.add('hidden'); 
-            
+            document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.remove('hidden'); 
             const devilBanner = document.getElementById('devilModeBanner');
             if (isDevilMode) devilBanner.classList.remove('hidden'); else devilBanner.classList.add('hidden');
             
@@ -459,8 +423,21 @@
 
             testData.questions.forEach((q, index) => {
                 const card = document.createElement('div'); card.className = 'question-card card-panel'; card.dataset.ans = q.answer_index; card.dataset.qIdx = index;
-                let html = `<div class="question-text">${index + 1}. ${q.question}</div>`;
+                let html = `<div class="question-text">${index + 1}. ${q.question}</div><div class="options-wrapper">`;
                 q.options.forEach((opt, optIndex) => { html += `<div class="option" data-opt="${optIndex}">${opt}</div>`; });
+                html += `</div>`;
+                
+                // 🧠 魔鬼特訓專用：隱藏的 SM-2 評分區塊
+                if (isDevilMode) {
+                    html += `
+                    <div class="sm2-rating-box hidden">
+                        <button class="sm2-btn sm2-again" onclick="window.rateSM2(this, ${index}, 1)">忘記 <br><small>(重來)</small></button>
+                        <button class="sm2-btn sm2-hard" onclick="window.rateSM2(this, ${index}, 3)">困難 <br><small>(短期)</small></button>
+                        <button class="sm2-btn sm2-good" onclick="window.rateSM2(this, ${index}, 4)">良好 <br><small>(正常)</small></button>
+                        <button class="sm2-btn sm2-easy" onclick="window.rateSM2(this, ${index}, 5)">簡單 <br><small>(長期)</small></button>
+                    </div>`;
+                }
+                
                 card.innerHTML = html; qContainer.appendChild(card);
                 card.querySelectorAll('.option').forEach(optEl => { optEl.onclick = () => window.checkAnswer(optEl, parseInt(optEl.dataset.opt), parseInt(card.dataset.ans), card); });
             });
@@ -484,70 +461,91 @@
             if (cardEl.dataset.answered === "true") return;
             cardEl.dataset.answered = "true";
             cardEl.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
-            answeredQuestions++;
-
+            
             const currentQ = testData.questions[parseInt(cardEl.dataset.qIdx)];
 
             if (selectedIdx === correctIdx) { 
                 selectedEl.classList.add('correct'); correctAnswers++; 
-                if (isDevilMode) resolvedMistakesThisRound.push(currentQ.question); 
+                if (isDevilMode) {
+                    // 魔鬼模式答對：打開 SM-2 評分板，等待使用者評分才算「完成此題」
+                    cardEl.querySelector('.sm2-rating-box').classList.remove('hidden');
+                    return; // 提早 return，等使用者按評分按鈕
+                }
             } else { 
                 selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct'); 
-                if (!isDevilMode) currentMistakes.push(currentQ); 
+                if (isDevilMode) {
+                    // 魔鬼模式答錯：強制算「忘記 (quality=1)」
+                    const res = calcSM2(1, currentQ.interval, currentQ.repetitions, currentQ.easeFactor);
+                    srsUpdatesThisRound.push({ rowIndex: currentQ.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
+                } else {
+                    if (!isGuestMode) currentMistakes.push(currentQ); // 一般模式存錯題
+                }
             }
+            
+            // 推進進度
+            answeredQuestions++;
+            if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
+        };
+
+        // 🧠 處理 SM-2 評分按鈕點擊
+        window.rateSM2 = (btnEl, qIdx, quality) => {
+            const cardEl = btnEl.closest('.question-card');
+            const ratingBox = cardEl.querySelector('.sm2-rating-box');
+            ratingBox.innerHTML = `<p style="text-align:center; color:var(--success-text); font-weight:bold; width:100%;">✅ 記憶參數已更新</p>`; // 點完鎖定
+            
+            const currentQ = testData.questions[qIdx];
+            const res = calcSM2(quality, currentQ.interval, currentQ.repetitions, currentQ.easeFactor);
+            srsUpdatesThisRound.push({ rowIndex: currentQ.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
+            
+            answeredQuestions++;
             if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
         };
 
         function forceSubmit() {
-            alert("時間結束，系統已自動交卷。未答完的題目視為錯誤。");
+            alert("時間結束，強制交卷！");
             document.querySelectorAll('.question-card').forEach(card => {
                 if (card.dataset.answered !== "true") {
                     card.dataset.answered = "true"; card.classList.add('disabled');
-                    const correctIdx = parseInt(card.dataset.ans);
-                    card.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
-                    card.querySelectorAll('.option')[correctIdx].classList.add('correct');
-                    
-                    const currentQ = testData.questions[parseInt(card.dataset.qIdx)];
-                    if (!isDevilMode) currentMistakes.push(currentQ); 
+                    card.querySelectorAll('.option')[parseInt(card.dataset.ans)].classList.add('correct');
+                    const q = testData.questions[parseInt(card.dataset.qIdx)];
+                    if (isDevilMode) {
+                        const res = calcSM2(1, q.interval, q.repetitions, q.easeFactor); // 超時算忘記
+                        srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
+                        answeredQuestions++;
+                    } else if (!isGuestMode) { currentMistakes.push(q); answeredQuestions++; }
+                } else if (isDevilMode && !card.querySelector('.sm2-rating-box').classList.contains('hidden')) {
+                    // 答對了但還沒評分就超時，強制算「困難(quality=3)」
+                    const q = testData.questions[parseInt(card.dataset.qIdx)];
+                    const res = calcSM2(3, q.interval, q.repetitions, q.easeFactor); 
+                    srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
+                    card.querySelector('.sm2-rating-box').classList.add('hidden');
+                    answeredQuestions++;
                 }
             });
-            submitScoreAndShowResult();
+            if (answeredQuestions >= totalQuestions) submitScoreAndShowResult();
         }
 
         async function submitScoreAndShowResult() {
             document.getElementById('stickyTimer').style.display = 'none'; document.getElementById('scoreBoard').classList.remove('hidden');
             let percentage = (correctAnswers / totalQuestions) * 100;
             
-            if (isDevilMode) {
-                document.getElementById('scoreTitle').innerText = `🔥 魔鬼特訓完成！`;
-                document.getElementById('scoreText').innerText = `成功消滅了 ${resolvedMistakesThisRound.length} 道錯題！`;
-            } else {
-                document.getElementById('scoreTitle').innerText = percentage === 100 ? "完美掌握！" : percentage >= 80 ? "表現優異" : percentage >= 60 ? "測驗合格" : "需要加強";
-                document.getElementById('scoreText').innerText = `得分：${correctAnswers} / ${totalQuestions}`;
-            }
-            
-            document.getElementById('savingText').innerText = "📡 正在同步資料庫...";
+            document.getElementById('scoreTitle').innerText = percentage === 100 ? "太棒了！" : "測驗結束";
+            document.getElementById('scoreText').innerText = `得分：${correctAnswers} / ${totalQuestions}`;
+            document.getElementById('savingText').innerText = "📡 同步資料庫中...";
             
             try {
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', body: JSON.stringify({ 
-                        action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, resolvedMistakes: resolvedMistakesThisRound, isPerfect: (percentage === 100), isDevilMode: isDevilMode
-                    })
-                });
-                const result = await response.json();
-                document.getElementById('savingText').innerText = "✅ 數據已安全同步至雲端";
-                
-                if (result.achievements && result.achievements.length > 0) {
-                    result.achievements.forEach((ach, i) => { setTimeout(() => showAchievement(ach.icon, ach.title, ach.desc), i * 3500); });
+                let payload = {};
+                if (isGuestMode) {
+                    payload = { action: 'submitPublicScore', quizId: currentQuizId, guestName: currentGuestName, score: correctAnswers, total: totalQuestions };
+                } else {
+                    payload = { action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, srsUpdates: srsUpdatesThisRound, isPerfect: (percentage===100), isDevilMode: isDevilMode };
                 }
+                
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await response.json();
+                document.getElementById('savingText').innerText = "✅ 數據已同步";
             } catch (error) { document.getElementById('savingText').innerText = "⚠️ 數據同步異常"; }
             setTimeout(() => document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }), 300);
-        }
-
-        function showAchievement(icon, title, desc) {
-            document.getElementById('achIcon').innerText = icon; document.getElementById('achTitle').innerText = title; document.getElementById('achDesc').innerText = desc;
-            const popup = document.getElementById('achievementPopup'); popup.classList.add('show');
-            setTimeout(() => { popup.classList.remove('show'); }, 3000);
         }
     </script>
 </body>
