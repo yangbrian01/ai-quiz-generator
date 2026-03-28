@@ -66,7 +66,10 @@
         
         .hidden { display: none !important; }
 
+        /* 🧑‍💻 使用者大頭貼與帳號列樣式 */
         .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); transition: 0.3s; }
+        .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-main); }
+        .user-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: none; }
         .account-bar .actions { display: flex; gap: 8px; }
 
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
@@ -155,8 +158,12 @@
     </div>
 
     <div id="appSection" class="hidden">
+        
         <div class="account-bar">
-            <span style="font-weight: 500; font-size: 0.95rem;">👋 <span id="userEmailDisplay"></span></span>
+            <div class="user-profile">
+                <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
+                <span id="userNameDisplay">使用者名稱</span>
+            </div>
             <div class="actions">
                 <button class="btn btn-small btn-outline" onclick="window.fetchHistory()">歷史庫</button>
                 <button class="btn btn-small btn-danger" onclick="window.fetchMistakes()">錯題本</button>
@@ -264,9 +271,29 @@
         initTheme();
         window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
 
+        // 🧑‍💻 登入狀態監聽：加入大頭貼與名稱擷取邏輯
         onAuthStateChanged(auth, (user) => {
-            if (user) { currentUserEmail = user.email; document.getElementById('userEmailDisplay').innerText = currentUserEmail; document.getElementById('authSection').classList.add('hidden'); document.getElementById('appSection').classList.remove('hidden'); } 
-            else { currentUserEmail = ""; document.getElementById('authSection').classList.remove('hidden'); document.getElementById('appSection').classList.add('hidden'); }
+            if (user) { 
+                currentUserEmail = user.email;
+                
+                // 優先抓取 Google 本名，如果沒有 (信箱註冊) 就拿信箱 @ 前面的字當名字
+                const displayName = user.displayName || user.email.split('@')[0];
+                document.getElementById('userNameDisplay').innerText = `👋 ${displayName}`;
+                
+                // 抓取 Google 頭像，如果沒有，就呼叫 API 動態生成一個帶有名字第一個字母的質感頭像
+                const avatarEl = document.getElementById('userAvatar');
+                const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random&color=fff&size=128`;
+                avatarEl.src = photoURL;
+                avatarEl.style.display = 'block';
+
+                document.getElementById('authSection').classList.add('hidden'); 
+                document.getElementById('appSection').classList.remove('hidden'); 
+            } else { 
+                currentUserEmail = ""; 
+                document.getElementById('userAvatar').style.display = 'none';
+                document.getElementById('authSection').classList.remove('hidden'); 
+                document.getElementById('appSection').classList.add('hidden'); 
+            }
         });
 
         window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => showError(err.message));
@@ -280,12 +307,10 @@
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
         
-        // 🌟 魔鬼特訓專用變數
         let isDevilMode = false;
-        let currentMistakes = []; // 存「又答錯」或「新測驗答錯」的題目
-        let resolvedMistakesThisRound = []; // 存「魔鬼特訓中成功答對」的題目
-        let loadedMistakesList = []; // 從資料庫抓下來的原始錯題清單
-
+        let currentMistakes = [];
+        let resolvedMistakesThisRound = [];
+        let loadedMistakesList = []; 
         let currentImageBase64 = null;
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
@@ -322,7 +347,7 @@
                 });
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
-                isDevilMode = false; // 確保不是魔鬼模式
+                isDevilMode = false; 
                 loadPrepSection(result);
             } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
             finally { document.getElementById('loading').style.display = 'none'; }
@@ -330,7 +355,7 @@
 
         window.fetchHistory = async () => { 
             showLoading("正在下載歷史紀錄..."); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
-            document.getElementById('devilModeBtnContainer').classList.add('hidden'); // 隱藏魔鬼按鈕
+            document.getElementById('devilModeBtnContainer').classList.add('hidden'); 
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }) });
                 const result = await response.json();
@@ -357,7 +382,7 @@
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
                 
-                loadedMistakesList = result.mistakes; // 把錯題存起來，準備給魔鬼特訓用
+                loadedMistakesList = result.mistakes; 
                 
                 const listDiv = document.getElementById('dashboardList');
                 if (result.mistakes.length === 0) {
@@ -365,7 +390,7 @@
                     document.getElementById('devilModeBtnContainer').classList.add('hidden');
                 } else {
                     listDiv.innerHTML = '';
-                    document.getElementById('devilModeBtnContainer').classList.remove('hidden'); // 顯示魔鬼按鈕！
+                    document.getElementById('devilModeBtnContainer').classList.remove('hidden'); 
                     result.mistakes.forEach(item => {
                         const div = document.createElement('div'); div.className = 'mistake-card';
                         div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:12px; color:var(--text-main);">Q. ${item.question}</div>
@@ -405,31 +430,19 @@
             } catch (err) { alert("載入測驗畫面時發生錯誤：" + err.message + "\n請重新整理網頁。"); document.getElementById('dashboardSection').classList.remove('hidden'); }
         }
 
-        // 🔥 啟動魔鬼特訓
         window.startDevilTraining = () => {
             if (loadedMistakesList.length === 0) return alert("沒有錯題可以特訓！");
-            
-            // 打亂錯題順序 (Fisher-Yates Shuffle)
             let shuffled = [...loadedMistakesList];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            
-            // 最多抽取 10 題來挑戰
             const selectedMistakes = shuffled.slice(0, 10);
-            
-            // 組裝成假考卷資料
             testData = { questions: selectedMistakes };
-            isDevilMode = true;
-            currentMistakes = [];
-            resolvedMistakesThisRound = [];
-            
-            // 強制設定時間：每題給 1 分鐘
+            isDevilMode = true; currentMistakes = []; resolvedMistakesThisRound = [];
             document.getElementById('timeMinutes').value = selectedMistakes.length;
-            
             document.getElementById('dashboardSection').classList.add('hidden');
-            window.startTest(); // 直接跳過準備區，進入測驗
+            window.startTest(); 
         };
 
         window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
@@ -438,7 +451,6 @@
         window.startTest = () => {
             document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.remove('hidden'); document.getElementById('scoreBoard').classList.add('hidden'); 
             
-            // 魔鬼模式橫幅顯示
             const devilBanner = document.getElementById('devilModeBanner');
             if (isDevilMode) devilBanner.classList.remove('hidden'); else devilBanner.classList.add('hidden');
             
@@ -468,7 +480,6 @@
 
         function updateTimerDisplay() { document.getElementById('timeDisplay').innerText = `${Math.floor(timeRemaining/60).toString().padStart(2,'0')}:${(timeRemaining%60).toString().padStart(2,'0')}`; }
 
-        // 🎯 答題邏輯分歧：魔鬼模式對了要刪除，錯了不理他(原本就在錯題本裡了)
         window.checkAnswer = (selectedEl, selectedIdx, correctIdx, cardEl) => {
             if (cardEl.dataset.answered === "true") return;
             cardEl.dataset.answered = "true";
@@ -479,10 +490,10 @@
 
             if (selectedIdx === correctIdx) { 
                 selectedEl.classList.add('correct'); correctAnswers++; 
-                if (isDevilMode) resolvedMistakesThisRound.push(currentQ.question); // 🔥 魔鬼模式：答對了！加入斬殺清單
+                if (isDevilMode) resolvedMistakesThisRound.push(currentQ.question); 
             } else { 
                 selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct'); 
-                if (!isDevilMode) currentMistakes.push(currentQ); // 一般模式：答錯了！加入錯題本
+                if (!isDevilMode) currentMistakes.push(currentQ); 
             }
             if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
         };
@@ -497,7 +508,7 @@
                     card.querySelectorAll('.option')[correctIdx].classList.add('correct');
                     
                     const currentQ = testData.questions[parseInt(card.dataset.qIdx)];
-                    if (!isDevilMode) currentMistakes.push(currentQ); // 一般模式超時算錯
+                    if (!isDevilMode) currentMistakes.push(currentQ); 
                 }
             });
             submitScoreAndShowResult();
@@ -520,12 +531,7 @@
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST', body: JSON.stringify({ 
-                        action: 'submitScore', 
-                        username: currentUserEmail, 
-                        mistakes: currentMistakes, 
-                        resolvedMistakes: resolvedMistakesThisRound, // 🔥 傳送斬殺清單給後端
-                        isPerfect: (percentage === 100),
-                        isDevilMode: isDevilMode
+                        action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, resolvedMistakes: resolvedMistakesThisRound, isPerfect: (percentage === 100), isDevilMode: isDevilMode
                     })
                 });
                 const result = await response.json();
