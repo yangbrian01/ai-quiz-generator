@@ -213,6 +213,7 @@
         }
         .theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--shadow-hover); border-color: var(--primary); }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -324,7 +325,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // 🔥 你的專屬 Firebase 設定
+        // 🔥 Firebase 設定
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -339,7 +340,6 @@
         const provider = new GoogleAuthProvider();
         let currentUserEmail = ""; 
 
-        // 🌗 暗黑模式初始化
         const initTheme = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.body.setAttribute('data-theme', savedTheme);
@@ -355,7 +355,6 @@
             document.getElementById('themeToggleBtn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
         };
 
-        // 🔒 登入驗證
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserEmail = user.email;
@@ -375,15 +374,11 @@
         window.logout = () => signOut(auth).then(() => { location.reload(); });
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
 
-        // ==============================================================
-        // 🧠 GAS API 串接與測驗核心邏輯
-        // ==============================================================
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; let currentMistakes = [];
 
-        // 📝 產生新內容
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
             if (!note.trim()) return alert('請先輸入內容');
@@ -399,7 +394,6 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        // 📂 讀取歷史
         window.fetchHistory = async () => {
             showLoading(); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
             try {
@@ -416,7 +410,6 @@
                         <button class="btn btn-small btn-primary retest-btn" style="margin:0; box-shadow:none;">重新測驗</button>`;
                     listDiv.appendChild(div);
                     
-                    // 💡 修正點：使用 querySelector 綁定事件，避免 ID 污染，點擊後完美轉場
                     div.querySelector('.retest-btn').onclick = () => { 
                         document.getElementById('dashboardSection').classList.add('hidden'); 
                         loadPrepSection(item); 
@@ -427,7 +420,6 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        // ❌ 讀取錯題
         window.fetchMistakes = async () => {
             showLoading(); document.getElementById('dashboardTitle').innerText = "錯題分析";
             try {
@@ -449,34 +441,59 @@
 
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
-        // 💡 狀態全重置：確保所有看板都收起來，只秀出 loading
         function showLoading() {
             document.getElementById('inputSection').classList.add('hidden'); 
             document.getElementById('dashboardSection').classList.add('hidden'); 
             document.getElementById('prepSection').classList.add('hidden'); 
             document.getElementById('testSection').classList.add('hidden');
-            document.getElementById('scoreBoard').classList.add('hidden'); // 強制關閉結算面板
+            document.getElementById('scoreBoard').classList.add('hidden'); 
             document.getElementById('loading').style.display = 'block';
         }
 
-        // 📖 載入準備畫面
+        // 🛡️ 終極防彈裝甲版：捕捉任何排版錯誤，確保畫面絕對能顯示
         function loadPrepSection(data) {
-            testData = data; currentMistakes = []; 
-            document.getElementById('organizedContent').innerHTML = marked.parse(data.organized_notes || '無筆記資料');
-            document.getElementById('rawMarkdown').value = data.organized_notes || '';
-            document.getElementById('timeMinutes').value = data.suggested_time || 5;
-            document.getElementById('prepSection').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // 回到頂部方便閱讀
+            try {
+                testData = data; currentMistakes = []; 
+                
+                // 強制轉字串，防止舊資料型別錯誤
+                const rawNotes = data.organized_notes ? String(data.organized_notes) : '這份考卷似乎沒有留下筆記紀錄喔！';
+                document.getElementById('rawMarkdown').value = rawNotes;
+                
+                let htmlContent = rawNotes;
+                try {
+                    // 嚴格檢查 marked 工具是否正常運作
+                    if (typeof window.marked !== 'undefined') {
+                        if (typeof window.marked.parse === 'function') {
+                            htmlContent = window.marked.parse(rawNotes);
+                        } else if (typeof window.marked === 'function') {
+                            htmlContent = window.marked(rawNotes);
+                        }
+                    }
+                } catch (parseError) {
+                    console.warn("Markdown 排版失敗，改用純文字顯示:", parseError);
+                    htmlContent = rawNotes.replace(/\n/g, '<br>');
+                }
+
+                document.getElementById('organizedContent').innerHTML = htmlContent;
+                document.getElementById('timeMinutes').value = data.suggested_time || 5;
+                
+                document.getElementById('prepSection').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (err) {
+                // 如果真的遇到未知的靈異 Bug，直接彈窗報錯，絕不給白畫面！
+                alert("載入測驗畫面時發生錯誤：" + err.message + "\n請重新整理網頁。");
+                document.getElementById('dashboardSection').classList.remove('hidden');
+            }
         }
 
         window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
         window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
 
-        // 🚀 啟動測驗
         window.startTest = () => {
             document.getElementById('prepSection').classList.add('hidden'); 
             document.getElementById('testSection').classList.remove('hidden');
-            document.getElementById('scoreBoard').classList.add('hidden'); // 確保開始時結算面板是收起來的
+            document.getElementById('scoreBoard').classList.add('hidden'); 
             
             const qContainer = document.getElementById('questionsContainer'); qContainer.innerHTML = '';
             totalQuestions = testData.questions.length; answeredQuestions = 0; correctAnswers = 0;
