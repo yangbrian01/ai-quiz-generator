@@ -3,62 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知識整理與出題器 (成就+錯題本版)</title>
+    <title>AI 知識整理與出題器 (暗黑進化版)</title>
     <style>
-        :root { --primary: #4a90e2; --primary-hover: #357abd; --bg: #f4f7f6; --text: #2c3e50; --card-bg: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 0 auto; padding: 20px; background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        /* 🎨 全局 CSS 變數：白天模式 (預設) */
+        :root { 
+            --primary: #4a90e2; --primary-hover: #357abd; 
+            --bg: #f4f7f6; --text: #2c3e50; --card-bg: #ffffff; 
+            --border: #e0e0e0; --input-bg: #fcfcfc; --sub-text: #666666;
+            --option-bg: #f8f9fa; --option-hover: #e9ecef;
+            --timer-bg: #fff8e1; --timer-border: #ffecb3;
+            --success-bg: #d4edda; --success-text: #155724;
+            --danger-bg: #f8d7da; --danger-text: #721c24;
+            --history-hover: #e9ecef; --mistake-bg: #fff5f5; --mistake-border: #ffc9c9;
+        }
+
+        /* 🌙 全局 CSS 變數：暗黑模式 */
+        [data-theme="dark"] {
+            --primary: #5ba4f8; --primary-hover: #7ebbfb; 
+            --bg: #121212; --text: #e0e0e0; --card-bg: #1e1e1e; 
+            --border: #333333; --input-bg: #2d2d2d; --sub-text: #aaaaaa;
+            --option-bg: #2a2a2a; --option-hover: #3a3a3a;
+            --timer-bg: #3e3310; --timer-border: #5c4d1c;
+            --success-bg: #1e4620; --success-text: #81c784;
+            --danger-bg: #4a191e; --danger-text: #e57373;
+            --history-hover: #2a2a2a; --mistake-bg: #2b1c1c; --mistake-border: #4a2121;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 0 auto; padding: 20px; background-color: var(--bg); color: var(--text); line-height: 1.6; transition: background-color 0.3s, color 0.3s; }
         h1 { text-align: center; color: var(--primary); font-size: 2.2em; margin-bottom: 20px; font-weight: 700; }
-        .card-panel { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin-bottom: 25px; }
+        
+        .card-panel { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 25px; transition: background-color 0.3s, box-shadow 0.3s; }
         
         button.primary-btn { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: all 0.3s ease; margin-bottom: 10px; }
         button.primary-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
         button.success-btn { background-color: #28a745; margin-top: 15px; }
         button.success-btn:hover { background-color: #218838; }
-        button.google-btn { background-color: #fff; color: #757575; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        button.google-btn:hover { background-color: #f8f9fa; }
-        input[type="email"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button.google-btn { background-color: var(--input-bg); color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        button.google-btn:hover { background-color: var(--option-hover); }
+        
+        input[type="email"], input[type="password"], input[type="number"], select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 16px; background-color: var(--input-bg); color: var(--text); outline: none; transition: 0.3s; }
+        textarea { height: 160px; resize: vertical; }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+        
         .hidden { display: none !important; }
 
-        .account-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .account-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--card-bg); padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.3s; }
         .account-bar button { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
         .account-bar button.nav-btn { background: #6c757d; }
 
         .controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .controls select { padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 15px; outline: none; background-color: #fcfcfc; }
-        textarea { width: 100%; height: 160px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; resize: vertical; margin-bottom: 15px; font-size: 15px; }
+        .controls select { width: auto; flex-grow: 1; margin-bottom: 0; }
+        
         #loading { text-align: center; color: var(--primary); display: none; margin: 30px 0; font-weight: bold; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         
-        .note-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; }
-        .organized-content { background-color: #fafbfc; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); white-space: pre-wrap; font-size: 1.05em; }
+        .note-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        .organized-content { background-color: var(--input-bg); padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); white-space: pre-wrap; font-size: 1.05em; }
+        .copy-btn { background: var(--option-bg); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
         
-        .timer-setup { background: #fff8e1; padding: 20px; border-radius: 8px; border: 1px solid #ffecb3; text-align: center; }
-        .timer-setup input[type="number"] { width: 60px; padding: 5px; font-size: 16px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
-        #stickyTimer { position: sticky; top: 10px; background: #fff3cd; color: #856404; padding: 12px 20px; text-align: center; font-weight: bold; font-size: 1.2em; border-radius: 8px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid #ffeeba; margin-bottom: 20px; display: none; transition: all 0.3s; }
-        #stickyTimer.danger { background: #f8d7da; color: #721c24; border-color: #f5c6cb; animation: shake 0.5s infinite; }
+        .timer-setup { background: var(--timer-bg); border-color: var(--timer-border); }
+        .timer-setup input[type="number"] { width: 70px; display: inline-block; margin: 0 10px; }
+        
+        #stickyTimer { position: sticky; top: 10px; background: var(--timer-bg); color: var(--text); padding: 12px 20px; text-align: center; font-weight: bold; font-size: 1.2em; border-radius: 8px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid var(--timer-border); margin-bottom: 20px; display: none; transition: all 0.3s; }
+        #stickyTimer.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-text); animation: shake 0.5s infinite; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
 
-        .question-card { background: white; border: 1px solid #eaeaea; border-radius: 10px; padding: 20px; margin-bottom: 20px; transition: opacity 0.3s; }
-        .option { display: block; margin: 8px 0; padding: 12px 15px; background-color: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
-        .option.correct { background-color: #d4edda; border-color: #28a745; color: #155724; font-weight: bold; }
-        .option.wrong { background-color: #f8d7da; border-color: #dc3545; color: #721c24; }
+        .question-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; transition: opacity 0.3s; }
+        .option { display: block; margin: 8px 0; padding: 12px 15px; background-color: var(--option-bg); border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .option:hover { background-color: var(--option-hover); }
+        .option.correct { background-color: var(--success-bg); border-color: var(--success-text); color: var(--success-text); font-weight: bold; }
+        .option.wrong { background-color: var(--danger-bg); border-color: var(--danger-text); color: var(--danger-text); }
         
-        .history-item { padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .history-item { padding: 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .history-item:hover { background: var(--history-hover); border-color: var(--primary); }
         
-        /* 🏆 成就彈窗樣式 */
-        .achievement-modal { position: fixed; top: 20px; right: -400px; background: #fff; border-left: 5px solid #ffc107; padding: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 15px; width: 300px; }
+        .achievement-modal { position: fixed; top: 20px; right: -400px; background: var(--card-bg); border-left: 5px solid #ffc107; padding: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 15px; width: 300px; }
         .achievement-modal.show { right: 20px; }
         .achievement-icon { font-size: 3em; }
         .achievement-text h4 { margin: 0 0 5px 0; color: #d39e00; font-size: 1.2em; }
-        .achievement-text p { margin: 0; font-size: 0.9em; color: #666; }
+        .achievement-text p { margin: 0; font-size: 0.9em; color: var(--sub-text); }
 
-        /* ❌ 錯題本專用樣式 */
-        .mistake-card { background: #fff5f5; border: 1px solid #ffc9c9; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
-        .mistake-card .correct-ans { background: #d4edda; padding: 10px; border-radius: 6px; margin-top: 10px; font-weight: bold; color: #155724; }
+        .mistake-card { background: var(--mistake-bg); border: 1px solid var(--mistake-border); border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+        .mistake-card .correct-ans { background: var(--success-bg); padding: 10px; border-radius: 6px; margin-top: 10px; font-weight: bold; color: var(--success-text); }
+
+        /* 🌓 懸浮暗黑模式切換按鈕 */
+        .theme-toggle-btn { position: fixed; bottom: 20px; right: 20px; background: var(--card-bg); border: 2px solid var(--border); color: var(--text); border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle-btn:hover { transform: scale(1.1); border-color: var(--primary); }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="window.toggleTheme()">☀️</button>
 
     <div id="achievementPopup" class="achievement-modal">
         <div class="achievement-icon" id="achIcon">🏆</div>
@@ -76,21 +112,20 @@
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20"> 
             使用 Google 快速登入
         </button>
-        <div style="text-align: center; margin: 15px 0; color: #888;">或是</div>
+        <div style="text-align: center; margin: 15px 0; color: var(--sub-text);">或是</div>
         <input type="email" id="emailInput" placeholder="信箱 (Email)">
         <input type="password" id="passwordInput" placeholder="密碼 (至少 6 碼)">
         <button class="primary-btn" onclick="window.loginWithEmail()">信箱登入</button>
         <button class="primary-btn" onclick="window.registerWithEmail()" style="background-color: #6c757d;">註冊新帳號</button>
-        <p id="authErrorMsg" style="color: #dc3545; text-align: center; margin-top: 10px; font-weight: bold;"></p>
+        <p id="authErrorMsg" style="color: var(--danger-text); text-align: center; margin-top: 10px; font-weight: bold;"></p>
     </div>
 
     <div id="appSection" class="hidden">
-        
         <div class="account-bar">
-            <span>👤 登入身分：<strong id="userEmailDisplay"></strong></span>
+            <span>👤 <strong id="userEmailDisplay"></strong></span>
             <div>
-                <button class="nav-btn" onclick="window.fetchHistory()">📂 歷史題庫</button>
-                <button class="nav-btn" style="background:#dc3545;" onclick="window.fetchMistakes()">❌ 錯題本</button>
+                <button class="nav-btn" onclick="window.fetchHistory()">📂 歷史</button>
+                <button class="nav-btn" style="background:#dc3545;" onclick="window.fetchMistakes()">❌ 錯題</button>
                 <button onclick="window.logout()">登出</button>
             </div>
         </div>
@@ -98,7 +133,7 @@
         <div id="dashboardSection" class="card-panel hidden">
             <div class="note-header">
                 <h2 id="dashboardTitle">📂 你的歷史題庫</h2>
-                <button style="padding: 6px 12px; border-radius: 6px; border:none; cursor: pointer;" onclick="window.closeDashboard()">返回出題</button>
+                <button class="copy-btn" onclick="window.closeDashboard()">返回</button>
             </div>
             <div id="dashboardList"></div>
         </div>
@@ -127,7 +162,7 @@
 
             <div class="timer-setup card-panel">
                 <h3>⏱️ 測驗準備區</h3>
-                <p style="color:#666; margin-bottom:15px;">請先複習上方筆記，準備好後再開始測驗。</p>
+                <p style="color:var(--sub-text); margin-bottom:15px;">請先複習上方筆記，準備好後再開始測驗。</p>
                 <label style="font-size: 1.1em; cursor: pointer; font-weight: bold;">
                     <input type="checkbox" id="enableTimer" checked onchange="window.toggleTimerInput()"> 啟用倒數計時
                 </label>
@@ -141,10 +176,10 @@
         <div id="testSection" class="hidden">
             <div id="stickyTimer">⏱️ 剩餘時間：<span id="timeDisplay">00:00</span></div>
             <div id="questionsContainer"></div>
-            <div id="scoreBoard" class="hidden card-panel" style="text-align: center; background: #e0f7fa;">
+            <div id="scoreBoard" class="hidden card-panel" style="text-align: center; background: var(--timer-bg); border: 2px solid var(--timer-border);">
                 <h2 id="scoreTitle"></h2>
                 <p id="scoreText" style="font-size: 1.2em; font-weight: bold;"></p>
-                <p id="savingText" style="color: #666; font-size: 0.9em;">📡 正在將成績與錯題同步至雲端...</p>
+                <p id="savingText" style="color: var(--sub-text); font-size: 0.9em;">📡 正在將成績與錯題同步至雲端...</p>
                 <button class="primary-btn" style="margin-top: 20px;" onclick="location.reload()">回首頁出新題</button>
             </div>
         </div>
@@ -154,7 +189,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // 🔥 使用你提供的正確 Firebase 設定
+        // 🔥 Firebase 設定
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -169,6 +204,23 @@
         const provider = new GoogleAuthProvider();
         let currentUserEmail = ""; 
 
+        // 🌗 暗黑模式切換邏輯 (一載入就執行)
+        const initTheme = () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeToggleBtn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+        };
+        initTheme();
+
+        window.toggleTheme = () => {
+            const body = document.body;
+            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('themeToggleBtn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
+        };
+
+        // Firebase 登入狀態監聽
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserEmail = user.email;
@@ -200,7 +252,7 @@
         
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
-        let currentMistakes = []; // 📝 記錄這次測驗寫錯的題目
+        let currentMistakes = [];
 
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
@@ -230,7 +282,7 @@
                 result.history.forEach((item, i) => {
                     const dateObj = new Date(item.timestamp);
                     const div = document.createElement('div'); div.className = 'history-item';
-                    div.innerHTML = `<div><strong>${item.noteSnippet}</strong><br><span style="color:#666; font-size:0.9em;">📅 ${dateObj.getMonth()+1}/${dateObj.getDate()} | 🏷️ ${item.diff} ${item.qCount}題 ${item.qType}</span></div>
+                    div.innerHTML = `<div><strong style="color:var(--text);">${item.noteSnippet}</strong><br><span style="color:var(--sub-text); font-size:0.9em;">📅 ${dateObj.getMonth()+1}/${dateObj.getDate()} | 🏷️ ${item.diff} ${item.qCount}題 ${item.qType}</span></div>
                         <button style="background:var(--primary);color:white;border:none;padding:8px;border-radius:4px;cursor:pointer;" id="retest-${i}">重測一次</button>`;
                     listDiv.appendChild(div);
                     document.getElementById(`retest-${i}`).onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); loadPrepSection(item); };
@@ -253,7 +305,7 @@
                 result.mistakes.forEach(item => {
                     const correctText = item.options[item.answer_index];
                     const div = document.createElement('div'); div.className = 'mistake-card';
-                    div.innerHTML = `<div style="font-weight:bold; font-size:1.1em; margin-bottom:10px;">Q. ${item.question}</div>
+                    div.innerHTML = `<div style="font-weight:bold; font-size:1.1em; margin-bottom:10px; color:var(--text);">Q. ${item.question}</div>
                                      <div class="correct-ans">✅ 正確答案：${correctText}</div>`;
                     listDiv.appendChild(div);
                 });
@@ -262,10 +314,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        window.closeDashboard = () => {
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('inputSection').classList.remove('hidden');
-        };
+        window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
         function showLoading(text) {
             document.getElementById('inputSection').classList.add('hidden'); document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.add('hidden');
@@ -273,7 +322,7 @@
         }
 
         function loadPrepSection(data) {
-            testData = data; currentMistakes = []; // 重置錯題紀錄
+            testData = data; currentMistakes = []; 
             document.getElementById('organizedContent').innerHTML = marked.parse(data.organized_notes);
             document.getElementById('rawMarkdown').value = data.organized_notes;
             document.getElementById('timeMinutes').value = data.suggested_time || 5;
@@ -321,10 +370,8 @@
                 selectedEl.classList.add('correct'); correctAnswers++;
             } else {
                 selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct');
-                // 📝 答錯了！存進錯題本陣列
                 currentMistakes.push(testData.questions[parseInt(cardEl.dataset.qIdx)]);
             }
-
             if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
         };
 
@@ -336,14 +383,12 @@
                     const correctIdx = parseInt(card.dataset.ans);
                     card.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
                     card.querySelectorAll('.option')[correctIdx].classList.add('correct');
-                    // 📝 沒寫完也算錯題
                     currentMistakes.push(testData.questions[parseInt(card.dataset.qIdx)]);
                 }
             });
             submitScoreAndShowResult();
         }
 
-        // 🏆 提交成績給後端並結算成就
         async function submitScoreAndShowResult() {
             document.getElementById('stickyTimer').style.display = 'none';
             document.getElementById('scoreBoard').classList.remove('hidden');
@@ -352,23 +397,16 @@
             document.getElementById('scoreTitle').innerText = percentage === 100 ? "太神啦！全對滿分！💯" : percentage >= 80 ? "表現超棒！👍" : percentage >= 60 ? "及格過關！💪" : "再接再厲！🔥";
             document.getElementById('scoreText').innerText = `總共答對： ${correctAnswers} / ${totalQuestions} 題`;
             
-            // 呼叫 API 記錄錯題與統計
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST', body: JSON.stringify({ action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, isPerfect: (percentage === 100) })
                 });
                 const result = await response.json();
                 document.getElementById('savingText').innerText = "✅ 成績與錯題已同步至雲端！";
-
-                // 🌟 如果有解鎖成就，就觸發彈窗！
                 if (result.achievements && result.achievements.length > 0) {
-                    result.achievements.forEach((ach, i) => {
-                        setTimeout(() => showAchievement(ach.icon, ach.title, ach.desc), i * 3500); // 如果同時解鎖多個，間隔顯示
-                    });
+                    result.achievements.forEach((ach, i) => { setTimeout(() => showAchievement(ach.icon, ach.title, ach.desc), i * 3500); });
                 }
-            } catch (error) {
-                document.getElementById('savingText').innerText = "⚠️ 成績同步失敗，請檢查網路狀態。";
-            }
+            } catch (error) { document.getElementById('savingText').innerText = "⚠️ 成績同步失敗，請檢查網路狀態。"; }
             setTimeout(() => document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }), 300);
         }
 
@@ -376,11 +414,8 @@
             document.getElementById('achIcon').innerText = icon;
             document.getElementById('achTitle').innerText = title;
             document.getElementById('achDesc').innerText = desc;
-            
             const popup = document.getElementById('achievementPopup');
             popup.classList.add('show');
-            
-            // 3秒後自動收起
             setTimeout(() => { popup.classList.remove('show'); }, 3000);
         }
     </script>
