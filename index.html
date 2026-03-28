@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知識整理與出題器 (專業會員+計時版)</title>
+    <title>AI 知識整理與出題器 (成就+錯題本版)</title>
     <style>
         :root { --primary: #4a90e2; --primary-hover: #357abd; --bg: #f4f7f6; --text: #2c3e50; --card-bg: #ffffff; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 0 auto; padding: 20px; background-color: var(--bg); color: var(--text); line-height: 1.6; }
@@ -17,47 +17,56 @@
         button.google-btn { background-color: #fff; color: #757575; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
         button.google-btn:hover { background-color: #f8f9fa; }
         input[type="email"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        
         .hidden { display: none !important; }
 
-        /* 帳號列 */
         .account-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .account-bar button { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .account-bar button.history-btn { background: #6c757d; margin-right: 10px;}
+        .account-bar button { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
+        .account-bar button.nav-btn { background: #6c757d; }
 
-        /* 輸入區 */
         .controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .controls select { padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 15px; outline: none; background-color: #fcfcfc; }
         textarea { width: 100%; height: 160px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; resize: vertical; margin-bottom: 15px; font-size: 15px; }
         #loading { text-align: center; color: var(--primary); display: none; margin: 30px 0; font-weight: bold; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         
-        /* 筆記區 */
         .note-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; }
-        .note-header h2 { margin: 0; font-size: 1.5em; }
-        .copy-btn { background: #e8f0fe; color: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
         .organized-content { background-color: #fafbfc; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); white-space: pre-wrap; font-size: 1.05em; }
         
-        /* 計時器設定區 */
         .timer-setup { background: #fff8e1; padding: 20px; border-radius: 8px; border: 1px solid #ffecb3; text-align: center; }
         .timer-setup input[type="number"] { width: 60px; padding: 5px; font-size: 16px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
         #stickyTimer { position: sticky; top: 10px; background: #fff3cd; color: #856404; padding: 12px 20px; text-align: center; font-weight: bold; font-size: 1.2em; border-radius: 8px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid #ffeeba; margin-bottom: 20px; display: none; transition: all 0.3s; }
         #stickyTimer.danger { background: #f8d7da; color: #721c24; border-color: #f5c6cb; animation: shake 0.5s infinite; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
 
-        /* 題目與選項 */
         .question-card { background: white; border: 1px solid #eaeaea; border-radius: 10px; padding: 20px; margin-bottom: 20px; transition: opacity 0.3s; }
-        .question-card.disabled { opacity: 0.6; pointer-events: none; }
         .option { display: block; margin: 8px 0; padding: 12px 15px; background-color: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
         .option.correct { background-color: #d4edda; border-color: #28a745; color: #155724; font-weight: bold; }
         .option.wrong { background-color: #f8d7da; border-color: #dc3545; color: #721c24; }
         
-        /* 歷史清單 */
         .history-item { padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* 🏆 成就彈窗樣式 */
+        .achievement-modal { position: fixed; top: 20px; right: -400px; background: #fff; border-left: 5px solid #ffc107; padding: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 15px; width: 300px; }
+        .achievement-modal.show { right: 20px; }
+        .achievement-icon { font-size: 3em; }
+        .achievement-text h4 { margin: 0 0 5px 0; color: #d39e00; font-size: 1.2em; }
+        .achievement-text p { margin: 0; font-size: 0.9em; color: #666; }
+
+        /* ❌ 錯題本專用樣式 */
+        .mistake-card { background: #fff5f5; border: 1px solid #ffc9c9; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+        .mistake-card .correct-ans { background: #d4edda; padding: 10px; border-radius: 6px; margin-top: 10px; font-weight: bold; color: #155724; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+
+    <div id="achievementPopup" class="achievement-modal">
+        <div class="achievement-icon" id="achIcon">🏆</div>
+        <div class="achievement-text">
+            <h4 id="achTitle">成就解鎖！</h4>
+            <p id="achDesc">說明文字</p>
+        </div>
+    </div>
 
     <h1>🚀 AI 知識整理與出題器</h1>
 
@@ -80,17 +89,18 @@
         <div class="account-bar">
             <span>👤 登入身分：<strong id="userEmailDisplay"></strong></span>
             <div>
-                <button class="history-btn" onclick="window.fetchHistory()">📂 歷史題庫</button>
-                <button onclick="window.logout()">登出系統</button>
+                <button class="nav-btn" onclick="window.fetchHistory()">📂 歷史題庫</button>
+                <button class="nav-btn" style="background:#dc3545;" onclick="window.fetchMistakes()">❌ 錯題本</button>
+                <button onclick="window.logout()">登出</button>
             </div>
         </div>
 
-        <div id="historySection" class="card-panel hidden">
+        <div id="dashboardSection" class="card-panel hidden">
             <div class="note-header">
-                <h2>📂 你的歷史題庫</h2>
-                <button class="copy-btn" onclick="window.closeHistory()">返回出題</button>
+                <h2 id="dashboardTitle">📂 你的歷史題庫</h2>
+                <button style="padding: 6px 12px; border-radius: 6px; border:none; cursor: pointer;" onclick="window.closeDashboard()">返回出題</button>
             </div>
-            <div id="historyList"></div>
+            <div id="dashboardList"></div>
         </div>
 
         <div class="card-panel" id="inputSection">
@@ -134,6 +144,7 @@
             <div id="scoreBoard" class="hidden card-panel" style="text-align: center; background: #e0f7fa;">
                 <h2 id="scoreTitle"></h2>
                 <p id="scoreText" style="font-size: 1.2em; font-weight: bold;"></p>
+                <p id="savingText" style="color: #666; font-size: 0.9em;">📡 正在將成績與錯題同步至雲端...</p>
                 <button class="primary-btn" style="margin-top: 20px;" onclick="location.reload()">回首頁出新題</button>
             </div>
         </div>
@@ -143,7 +154,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // 🔥 已經幫你替換好你的 Firebase 金鑰了！
+        // 🔥 使用你提供的正確 Firebase 設定
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -173,222 +184,204 @@
 
         window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => showError(err.message));
         window.registerWithEmail = () => {
-            const email = document.getElementById('emailInput').value;
-            const pwd = document.getElementById('passwordInput').value;
-            createUserWithEmailAndPassword(auth, email, pwd).then(() => alert("註冊成功！系統將自動登入。")).catch(err => showError(err.message));
+            createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
+            .then(() => alert("註冊成功！系統將自動登入。")).catch(err => showError(err.message));
         };
         window.loginWithEmail = () => {
-            const email = document.getElementById('emailInput').value;
-            const pwd = document.getElementById('passwordInput').value;
-            signInWithEmailAndPassword(auth, email, pwd).catch(err => showError("登入失敗，請檢查帳號密碼。"));
+            signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value).catch(err => showError("登入失敗，請檢查帳號密碼。"));
         };
-        window.logout = () => signOut(auth).then(() => {
-            alert("已成功登出！");
-            location.reload(); // 登出後重整畫面，清空所有測驗狀態
-        });
+        window.logout = () => signOut(auth).then(() => { alert("已成功登出！"); location.reload(); });
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
 
         // ==============================================================
-        // 以下是 GAS API 串接與測驗邏輯
+        // GAS API 與測驗邏輯
         // ==============================================================
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
-        let timerInterval; let timeRemaining = 0;
+        let timerInterval; let timeRemaining = 0; 
+        let currentMistakes = []; // 📝 記錄這次測驗寫錯的題目
 
-        // 生成新測驗
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
             if (!note.trim()) return alert('請先貼上筆記內容喔！');
-
-            document.getElementById('inputSection').classList.add('hidden');
-            document.getElementById('loading').style.display = 'block';
+            showLoading("✨ AI 正在努力處理中...請稍候...");
 
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ 
-                        action: 'generate', username: currentUserEmail, note, 
-                        qType: document.getElementById('qType').value, 
-                        qCount: document.getElementById('qCount').value, 
-                        diff: document.getElementById('diff').value 
-                    }),
+                    method: 'POST', body: JSON.stringify({ action: 'generate', username: currentUserEmail, note, qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value })
                 });
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
-                
                 loadPrepSection(result);
-
-            } catch (error) {
-                alert('錯誤：' + error.message);
-                document.getElementById('inputSection').classList.remove('hidden');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
+            } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
+            finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        // 讀取歷史
         window.fetchHistory = async () => {
-            document.getElementById('inputSection').classList.add('hidden');
-            document.getElementById('historySection').classList.add('hidden');
-            document.getElementById('prepSection').classList.add('hidden');
-            document.getElementById('testSection').classList.add('hidden');
-            document.getElementById('loading').style.display = 'block';
-
+            showLoading("📂 正在從雲端下載歷史紀錄...");
+            document.getElementById('dashboardTitle').innerText = "📂 你的歷史題庫";
             try {
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }), 
-                });
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }) });
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
-
-                const listDiv = document.getElementById('historyList');
+                const listDiv = document.getElementById('dashboardList');
                 listDiv.innerHTML = result.history.length === 0 ? '<p style="text-align:center;">尚無歷史紀錄，去生一份考卷吧！</p>' : '';
-                
-                result.history.forEach((item, index) => {
+                result.history.forEach((item, i) => {
                     const dateObj = new Date(item.timestamp);
-                    const dateStr = `${dateObj.getMonth()+1}/${dateObj.getDate()} ${dateObj.getHours()}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
-                    const div = document.createElement('div');
-                    div.className = 'history-item';
-                    div.innerHTML = `
-                        <div><strong>${item.noteSnippet}</strong><br><span style="color:#666; font-size:0.9em;">📅 ${dateStr} | 🏷️ ${item.diff} ${item.qCount}題 ${item.qType}</span></div>
-                        <button style="background:var(--primary);color:white;border:none;padding:8px;border-radius:4px;cursor:pointer;" id="retest-${index}">重測一次</button>
-                    `;
+                    const div = document.createElement('div'); div.className = 'history-item';
+                    div.innerHTML = `<div><strong>${item.noteSnippet}</strong><br><span style="color:#666; font-size:0.9em;">📅 ${dateObj.getMonth()+1}/${dateObj.getDate()} | 🏷️ ${item.diff} ${item.qCount}題 ${item.qType}</span></div>
+                        <button style="background:var(--primary);color:white;border:none;padding:8px;border-radius:4px;cursor:pointer;" id="retest-${i}">重測一次</button>`;
                     listDiv.appendChild(div);
-                    document.getElementById(`retest-${index}`).onclick = () => {
-                        document.getElementById('historySection').classList.add('hidden');
-                        loadPrepSection(item);
-                    };
+                    document.getElementById(`retest-${i}`).onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); loadPrepSection(item); };
                 });
-                document.getElementById('historySection').classList.remove('hidden');
-
-            } catch (error) {
-                alert('查詢失敗：' + error.message);
-                document.getElementById('inputSection').classList.remove('hidden');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
+                document.getElementById('dashboardSection').classList.remove('hidden');
+            } catch (error) { alert('查詢失敗：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
+            finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        window.closeHistory = () => {
-            document.getElementById('historySection').classList.add('hidden');
+        window.fetchMistakes = async () => {
+            showLoading("❌ 正在翻找你的錯題本...");
+            document.getElementById('dashboardTitle').innerText = "❌ 你的專屬錯題本";
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getMistakes', username: currentUserEmail }) });
+                const result = await response.json();
+                if (result.status === 'error') throw new Error(result.message);
+                const listDiv = document.getElementById('dashboardList');
+                listDiv.innerHTML = result.mistakes.length === 0 ? '<p style="text-align:center;">太強了！你目前沒有任何錯題紀錄喔！💯</p>' : '';
+                
+                result.mistakes.forEach(item => {
+                    const correctText = item.options[item.answer_index];
+                    const div = document.createElement('div'); div.className = 'mistake-card';
+                    div.innerHTML = `<div style="font-weight:bold; font-size:1.1em; margin-bottom:10px;">Q. ${item.question}</div>
+                                     <div class="correct-ans">✅ 正確答案：${correctText}</div>`;
+                    listDiv.appendChild(div);
+                });
+                document.getElementById('dashboardSection').classList.remove('hidden');
+            } catch (error) { alert('查詢失敗：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
+            finally { document.getElementById('loading').style.display = 'none'; }
+        };
+
+        window.closeDashboard = () => {
+            document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('inputSection').classList.remove('hidden');
         };
 
-        // 載入準備區 (顯示筆記與設定時間)
+        function showLoading(text) {
+            document.getElementById('inputSection').classList.add('hidden'); document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.add('hidden');
+            document.getElementById('loading').innerText = text; document.getElementById('loading').style.display = 'block';
+        }
+
         function loadPrepSection(data) {
-            testData = data;
-            document.getElementById('inputSection').classList.add('hidden');
+            testData = data; currentMistakes = []; // 重置錯題紀錄
             document.getElementById('organizedContent').innerHTML = marked.parse(data.organized_notes);
             document.getElementById('rawMarkdown').value = data.organized_notes;
             document.getElementById('timeMinutes').value = data.suggested_time || 5;
             document.getElementById('prepSection').classList.remove('hidden');
         }
 
-        window.toggleTimerInput = () => {
-            document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'block' : 'none';
-        };
+        window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'block' : 'none';
+        window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 筆記已複製！'); };
 
-        window.copyNote = () => {
-            const raw = document.getElementById('rawMarkdown');
-            raw.style.display = 'block'; raw.select(); document.execCommand('copy'); raw.style.display = 'none';
-            alert('✅ 筆記已複製！');
-        };
-
-        // 啟動測驗
         window.startTest = () => {
-            document.getElementById('prepSection').classList.add('hidden');
-            document.getElementById('testSection').classList.remove('hidden');
-
-            const qContainer = document.getElementById('questionsContainer');
-            qContainer.innerHTML = '';
-            totalQuestions = testData.questions.length;
-            answeredQuestions = 0; correctAnswers = 0;
+            document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.remove('hidden');
+            const qContainer = document.getElementById('questionsContainer'); qContainer.innerHTML = '';
+            totalQuestions = testData.questions.length; answeredQuestions = 0; correctAnswers = 0;
 
             testData.questions.forEach((q, index) => {
-                const card = document.createElement('div');
-                card.className = 'question-card';
-                card.dataset.ans = q.answer_index; 
-                
+                const card = document.createElement('div'); card.className = 'question-card'; card.dataset.ans = q.answer_index; card.dataset.qIdx = index;
                 let html = `<div style="font-weight:bold; margin-bottom:15px; font-size:1.15em;">Q${index + 1}. ${q.question}</div>`;
-                q.options.forEach((opt, optIndex) => {
-                    html += `<div class="option" data-opt="${optIndex}">${opt}</div>`;
-                });
-                card.innerHTML = html;
-                qContainer.appendChild(card);
-
-                card.querySelectorAll('.option').forEach(optEl => {
-                    optEl.onclick = () => window.checkAnswer(optEl, parseInt(optEl.dataset.opt), parseInt(card.dataset.ans), card);
-                });
+                q.options.forEach((opt, optIndex) => { html += `<div class="option" data-opt="${optIndex}">${opt}</div>`; });
+                card.innerHTML = html; qContainer.appendChild(card);
+                card.querySelectorAll('.option').forEach(optEl => { optEl.onclick = () => window.checkAnswer(optEl, parseInt(optEl.dataset.opt), parseInt(card.dataset.ans), card); });
             });
 
-            // 計時器邏輯
             const stickyTimer = document.getElementById('stickyTimer');
             if (document.getElementById('enableTimer').checked) {
                 timeRemaining = parseInt(document.getElementById('timeMinutes').value) * 60;
-                stickyTimer.style.display = 'block';
-                stickyTimer.classList.remove('danger');
-                updateTimerDisplay();
-                
+                stickyTimer.style.display = 'block'; stickyTimer.classList.remove('danger'); updateTimerDisplay();
                 timerInterval = setInterval(() => {
-                    timeRemaining--;
-                    updateTimerDisplay();
+                    timeRemaining--; updateTimerDisplay();
                     if (timeRemaining <= 10) stickyTimer.classList.add('danger');
                     if (timeRemaining <= 0) { clearInterval(timerInterval); forceSubmit(); }
                 }, 1000);
-            } else {
-                stickyTimer.style.display = 'none';
-            }
+            } else stickyTimer.style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        function updateTimerDisplay() {
-            const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
-            const s = (timeRemaining % 60).toString().padStart(2, '0');
-            document.getElementById('timeDisplay').innerText = `${m}:${s}`;
-        }
+        function updateTimerDisplay() { document.getElementById('timeDisplay').innerText = `${Math.floor(timeRemaining/60).toString().padStart(2,'0')}:${(timeRemaining%60).toString().padStart(2,'0')}`; }
 
         window.checkAnswer = (selectedEl, selectedIdx, correctIdx, cardEl) => {
             if (cardEl.dataset.answered === "true") return;
             cardEl.dataset.answered = "true";
-
             cardEl.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
             answeredQuestions++;
 
             if (selectedIdx === correctIdx) {
                 selectedEl.classList.add('correct'); correctAnswers++;
             } else {
-                selectedEl.classList.add('wrong');
-                cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct');
+                selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct');
+                // 📝 答錯了！存進錯題本陣列
+                currentMistakes.push(testData.questions[parseInt(cardEl.dataset.qIdx)]);
             }
 
-            if (answeredQuestions === totalQuestions) {
-                clearInterval(timerInterval);
-                showScore();
-            }
+            if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
         };
 
         function forceSubmit() {
             alert("⏰ 時間到！系統已自動為您交卷。");
             document.querySelectorAll('.question-card').forEach(card => {
                 if (card.dataset.answered !== "true") {
-                    card.dataset.answered = "true";
-                    card.classList.add('disabled');
+                    card.dataset.answered = "true"; card.classList.add('disabled');
                     const correctIdx = parseInt(card.dataset.ans);
                     card.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
                     card.querySelectorAll('.option')[correctIdx].classList.add('correct');
+                    // 📝 沒寫完也算錯題
+                    currentMistakes.push(testData.questions[parseInt(card.dataset.qIdx)]);
                 }
             });
-            showScore();
+            submitScoreAndShowResult();
         }
 
-        function showScore() {
+        // 🏆 提交成績給後端並結算成就
+        async function submitScoreAndShowResult() {
             document.getElementById('stickyTimer').style.display = 'none';
             document.getElementById('scoreBoard').classList.remove('hidden');
+            
             let percentage = (correctAnswers / totalQuestions) * 100;
             document.getElementById('scoreTitle').innerText = percentage === 100 ? "太神啦！全對滿分！💯" : percentage >= 80 ? "表現超棒！👍" : percentage >= 60 ? "及格過關！💪" : "再接再厲！🔥";
             document.getElementById('scoreText').innerText = `總共答對： ${correctAnswers} / ${totalQuestions} 題`;
+            
+            // 呼叫 API 記錄錯題與統計
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: 'POST', body: JSON.stringify({ action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, isPerfect: (percentage === 100) })
+                });
+                const result = await response.json();
+                document.getElementById('savingText').innerText = "✅ 成績與錯題已同步至雲端！";
+
+                // 🌟 如果有解鎖成就，就觸發彈窗！
+                if (result.achievements && result.achievements.length > 0) {
+                    result.achievements.forEach((ach, i) => {
+                        setTimeout(() => showAchievement(ach.icon, ach.title, ach.desc), i * 3500); // 如果同時解鎖多個，間隔顯示
+                    });
+                }
+            } catch (error) {
+                document.getElementById('savingText').innerText = "⚠️ 成績同步失敗，請檢查網路狀態。";
+            }
             setTimeout(() => document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }), 300);
+        }
+
+        function showAchievement(icon, title, desc) {
+            document.getElementById('achIcon').innerText = icon;
+            document.getElementById('achTitle').innerText = title;
+            document.getElementById('achDesc').innerText = desc;
+            
+            const popup = document.getElementById('achievementPopup');
+            popup.classList.add('show');
+            
+            // 3秒後自動收起
+            setTimeout(() => { popup.classList.remove('show'); }, 3000);
         }
     </script>
 </body>
