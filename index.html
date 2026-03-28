@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知識整理與出題器</title>
+    <title>AI 知識整理與出題器 (聯網強化版)</title>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; background-color: #f4f4f9; color: #333; }
         h1 { text-align: center; color: #4a90e2; }
         .input-group, .output-group { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 10px; }
+        textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 10px; font-size: 15px; }
         button { background-color: #4a90e2; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
         button:hover { background-color: #357abd; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
         #loading { text-align: center; color: #888; display: none; margin: 20px 0; }
         .organized-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0; }
         .organized-section h2 { color: #2c3e50; }
-        .organized-content { background-color: #f9f9f9; padding: 15px; border-radius: 4px; border-left: 4px solid #4a90e2; white-space: pre-wrap; /* 保持 Markdown 的換行 */ }
+        .organized-content { background-color: #f9f9f9; padding: 15px; border-radius: 4px; border-left: 4px solid #4a90e2; white-space: pre-wrap; line-height: 1.6; }
+        .organized-content a { color: #4a90e2; text-decoration: none; }
+        .organized-content a:hover { text-decoration: underline; }
         .question-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
         .question-text { font-weight: bold; margin-bottom: 10px; color: #333; }
-        .option { display: block; margin: 5px 0; padding: 8px; background-color: #f8f9fa; border-radius: 4px; cursor: pointer; }
+        .option { display: block; margin: 5px 0; padding: 8px; background-color: #f8f9fa; border-radius: 4px; cursor: pointer; border: 1px solid transparent; }
         .option:hover { background-color: #e9ecef; }
         .option.correct { background-color: #d4edda; border-color: #c3e6cb; color: #155724; font-weight: bold; }
         .option.wrong { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; opacity: 0.7; }
@@ -31,17 +33,17 @@
 
     <div class="input-group">
         <h3>1. 貼上你的破碎筆記</h3>
-        <p style="color: #666; font-size: 0.9em;">(內容不完整也沒關係，AI 會幫你補充)</p>
-        <textarea id="noteInput" placeholder="在此處貼上文字...例如：\n光合作用\n植物\n太陽光\n水+二氧化碳->糖+氧氣\n葉綠體"></textarea>
+        <p style="color: #666; font-size: 0.9em;">(支援最新資訊查核！你可以試著輸入最近很紅的電影、新聞或人物)</p>
+        <textarea id="noteInput" placeholder="在此處貼上文字...例如：\n陽光女子合唱團\n2025電影\n主題曲：幸福在歌唱\n陳意涵、翁倩玉"></textarea>
         <button id="generateBtn" onclick="generateContent()">生成整理與題目</button>
     </div>
 
-    <div id="loading">✨ AI 正在努力閱讀、補充並編寫題目中...請稍候...</div>
+    <div id="loading">✨ AI 正在努力聯網搜尋、閱讀並編寫題目中...請稍候...</div>
 
     <div class="output-group" id="outputGroup" style="display: none;">
         
         <div class="organized-section">
-            <h2>✨ AI 幫你整理的完整知識點</h2>
+            <h2>✨ AI 幫你整理的完整知識點 (附來源)</h2>
             <div id="organizedContent" class="organized-content"></div>
         </div>
 
@@ -52,9 +54,7 @@
     </div>
 
     <script>
-        // ==========================================
-        // 3. 設定區：請在這裡填入你的 GAS 佈署網址
-        // ==========================================
+        // 這裡已經換成你提供的 GAS 網址了！
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
 
         async function generateContent() {
@@ -68,19 +68,15 @@
                 return;
             }
 
-            // UI 狀態設定
             generateBtn.disabled = true;
             generateBtn.innerText = '處理中...';
             loading.style.display = 'block';
             outputGroup.style.display = 'none';
 
             try {
-                // 發送 POST 請求給 GAS
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
                     body: JSON.stringify({ note: note }),
-                    // GAS web app doPost 不需要特定的 mode: 'no-cors'，
-                    // 只要 GAS 裡面正確回傳 TextOutput 即可。
                 });
 
                 if (!response.ok) throw new Error('網路連線似乎有點問題...');
@@ -91,13 +87,11 @@
                     throw new Error(result.message);
                 }
 
-                // 渲染結果
                 renderResult(result);
 
             } catch (error) {
                 alert('發生錯誤了：' + error.message);
             } finally {
-                // 還原 UI 狀態
                 generateBtn.disabled = false;
                 generateBtn.innerText = '生成整理與題目';
                 loading.style.display = 'none';
@@ -109,10 +103,10 @@
             const organizedContent = document.getElementById('organizedContent');
             const questionsContainer = document.getElementById('questionsContainer');
 
-            // 1. 渲染整理後的筆記 (使用 marked 解析 Markdown)
+            // 渲染整理後的 Markdown
             organizedContent.innerHTML = marked.parse(data.organized_notes);
 
-            // 2. 清空並渲染題目
+            // 渲染題目
             questionsContainer.innerHTML = '';
             data.questions.forEach((q, index) => {
                 const card = document.createElement('div');
@@ -127,7 +121,6 @@
                     const optionEl = document.createElement('div');
                     optionEl.className = 'option';
                     optionEl.innerText = option;
-                    // 點擊選項確認答案
                     optionEl.onclick = () => checkAnswer(optionEl, optionIndex, q.answer_index);
                     card.appendChild(optionEl);
                 });
@@ -136,26 +129,21 @@
             });
 
             outputGroup.style.display = 'block';
-            // 自動滾動到結果區域
             outputGroup.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 檢查答案的函數
         function checkAnswer(selectedEl, selectedIndex, correctIndex) {
             const options = selectedEl.parentElement.querySelectorAll('.option');
             
-            // 移除該題所有選項的點擊效果和舊狀態
             options.forEach(opt => {
                 opt.style.pointerEvents = 'none';
                 opt.classList.remove('correct', 'wrong');
             });
 
-            // 標示正確與錯誤選項
             if (selectedIndex === correctIndex) {
                 selectedEl.classList.add('correct');
             } else {
                 selectedEl.classList.add('wrong');
-                // 顯示哪個才是正確答案
                 options[correctIndex].classList.add('correct');
             }
         }
