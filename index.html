@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知識整理與出題器 (計時進化版)</title>
+    <title>AI 知識整理與出題器 (帳號題庫版)</title>
     <style>
         :root { --primary: #4a90e2; --primary-hover: #357abd; --bg: #f4f7f6; --text: #2c3e50; --card-bg: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 0 auto; padding: 30px 20px; background-color: var(--bg); color: var(--text); line-height: 1.6; }
-        h1 { text-align: center; color: var(--primary); font-size: 2.2em; margin-bottom: 30px; font-weight: 700; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 0 auto; padding: 20px; background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        h1 { text-align: center; color: var(--primary); font-size: 2.2em; margin-bottom: 20px; font-weight: 700; }
         
+        /* 帳號列 */
+        .account-bar { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px; background: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .account-bar input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; outline: none; }
+        .account-bar button { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .account-bar button:hover { background: #5a6268; }
+
         .card-panel { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin-bottom: 25px; }
         .controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .controls select { padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 15px; outline: none; background-color: #fcfcfc; cursor: pointer; }
@@ -28,7 +34,6 @@
         .copy-btn { background: #e8f0fe; color: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
         .organized-content { background-color: #fafbfc; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); white-space: pre-wrap; font-size: 1.05em; }
         
-        /* 準備區與計時器專屬樣式 */
         .timer-setup { background: #fff8e1; padding: 20px; border-radius: 8px; border: 1px solid #ffecb3; text-align: center; }
         .timer-setup input[type="number"] { width: 60px; padding: 5px; font-size: 16px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
         #stickyTimer { position: sticky; top: 10px; background: #fff3cd; color: #856404; padding: 12px 20px; text-align: center; font-weight: bold; font-size: 1.2em; border-radius: 8px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid #ffeeba; margin-bottom: 20px; display: none; transition: all 0.3s; }
@@ -44,14 +49,33 @@
         .option.wrong { background-color: #f8d7da; border-color: #dc3545; color: #721c24; opacity: 0.8; }
         
         #scoreBoard { display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%); border-radius: 12px; margin-top: 30px; }
-        #scoreBoard h2 { margin: 0 0 10px 0; color: #00695c; font-size: 2em; }
-        #scoreBoard p { font-size: 1.2em; color: #004d40; margin: 0; }
+        
+        /* 歷史清單樣式 */
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; margin-bottom: 10px; transition: 0.2s; }
+        .history-item:hover { background: #e9ecef; border-color: var(--primary); }
+        .history-info span { display: block; font-size: 0.9em; color: #666; }
+        .history-info strong { color: var(--text); font-size: 1.1em; }
+        .history-btn { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
+    <div class="account-bar">
+        <span>👤 代號：</span>
+        <input type="text" id="usernameInput" placeholder="請輸入學號或暱稱">
+        <button onclick="fetchHistory()">📂 我的歷史題庫</button>
+    </div>
+
     <h1>🚀 AI 知識整理與出題器</h1>
+
+    <div id="historySection" class="card-panel" style="display: none;">
+        <div class="note-header">
+            <h2>📂 你的歷史題庫</h2>
+            <button class="copy-btn" onclick="closeHistory()">返回出題</button>
+        </div>
+        <div id="historyList"></div>
+    </div>
 
     <div class="card-panel" id="inputSection">
         <div class="controls">
@@ -63,12 +87,12 @@
         <button id="generateBtn" class="primary-btn" onclick="generateContent()">✨ 整理筆記並生成測驗</button>
     </div>
 
-    <div id="loading">✨ AI 正在聯網搜尋、閱讀並思考最適合你的作答時間...</div>
+    <div id="loading">✨ AI 正在努力處理中...請稍候...</div>
 
     <div id="prepSection" style="display: none;">
         <div class="card-panel">
             <div class="note-header">
-                <h2>📚 AI 完整知識點整理</h2>
+                <h2>📚 完整知識點整理</h2>
                 <button class="copy-btn" onclick="copyNote()">📋 複製</button>
             </div>
             <div id="organizedContent" class="organized-content"></div>
@@ -82,7 +106,7 @@
                 <input type="checkbox" id="enableTimer" checked onchange="toggleTimerInput()"> 啟用倒數計時
             </label>
             <div id="timeInputDiv" style="margin-top: 15px; font-size: 1.1em;">
-                🤖 AI 建議作答時間：<input type="number" id="timeMinutes" min="1"> 分鐘
+                預估作答時間：<input type="number" id="timeMinutes" min="1"> 分鐘
             </div>
             <button class="primary-btn success-btn" onclick="startTest()">🚀 開始測驗</button>
         </div>
@@ -94,21 +118,106 @@
         <div id="scoreBoard">
             <h2 id="scoreTitle">測驗完成！</h2>
             <p id="scoreText">你答對了 0 題！</p>
+            <button class="primary-btn" style="margin-top: 20px;" onclick="location.reload()">再出一次新題目</button>
         </div>
     </div>
 
     <script>
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
 
-        // 全域變數
         let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; let testData = null;
+
+        // 頁面載入時讀取存好的名字
+        window.onload = () => {
+            const savedName = localStorage.getItem('quiz_username');
+            if (savedName) document.getElementById('usernameInput').value = savedName;
+        };
+
+        // 取得使用者名稱並存檔
+        function getUsername() {
+            const name = document.getElementById('usernameInput').value.trim();
+            if (!name) return '匿名使用者';
+            localStorage.setItem('quiz_username', name);
+            return name;
+        }
+
+        // 📂 查詢歷史紀錄
+        async function fetchHistory() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) return alert("請先輸入代號才能查詢歷史紀錄喔！");
+
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerText = "📂 正在資料庫翻找你的歷史考卷...";
+
+            try {
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getHistory', username: getUsername() }),
+                });
+                const result = await response.json();
+                if (result.status === 'error') throw new Error(result.message);
+
+                renderHistoryList(result.history);
+            } catch (error) {
+                alert('查詢失敗：' + error.message);
+                closeHistory();
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading').innerText = "✨ AI 正在努力處理中...請稍候...";
+            }
+        }
+
+        function renderHistoryList(historyArray) {
+            const listDiv = document.getElementById('historyList');
+            listDiv.innerHTML = '';
+
+            if (historyArray.length === 0) {
+                listDiv.innerHTML = '<p style="text-align:center; color:#666;">你還沒有留下任何歷史紀錄喔！趕快去生一份題目吧！</p>';
+            } else {
+                historyArray.forEach((item, index) => {
+                    // 把字串時間轉成漂亮格式
+                    const dateObj = new Date(item.timestamp);
+                    const dateStr = `${dateObj.getMonth()+1}/${dateObj.getDate()} ${dateObj.getHours()}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="history-info">
+                            <strong>${item.noteSnippet}</strong>
+                            <span>📅 ${dateStr} | 🏷️ ${item.diff} ${item.qCount}題 ${item.qType}</span>
+                        </div>
+                        <button class="history-btn" onclick='loadHistoricalQuiz(${JSON.stringify(item)})'>重測一次</button>
+                    `;
+                    listDiv.appendChild(div);
+                });
+            }
+            document.getElementById('historySection').style.display = 'block';
+        }
+
+        function closeHistory() {
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('inputSection').style.display = 'block';
+        }
+
+        // 載入舊考卷並進入準備區
+        function loadHistoricalQuiz(itemData) {
+            testData = itemData;
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('organizedContent').innerHTML = marked.parse(itemData.organized_notes);
+            document.getElementById('rawMarkdown').value = itemData.organized_notes;
+            document.getElementById('timeMinutes').value = itemData.suggested_time;
+            document.getElementById('prepSection').style.display = 'block';
+        }
 
         function toggleTimerInput() {
             const isEnabled = document.getElementById('enableTimer').checked;
             document.getElementById('timeInputDiv').style.display = isEnabled ? 'block' : 'none';
         }
 
+        // 生成新題目
         async function generateContent() {
             const note = document.getElementById('noteInput').value;
             if (!note.trim()) return alert('請先貼上筆記內容喔！');
@@ -120,6 +229,8 @@
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
                     body: JSON.stringify({ 
+                        action: 'generate', // 告訴 GAS 這是生成新題目的請求
+                        username: getUsername(), // 傳送使用者名稱
                         note, 
                         qType: document.getElementById('qType').value, 
                         qCount: document.getElementById('qCount').value, 
@@ -129,15 +240,13 @@
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
 
-                testData = result; // 存下資料準備測驗
-                
-                // 渲染筆記區與預設時間
+                testData = result;
                 document.getElementById('organizedContent').innerHTML = marked.parse(result.organized_notes);
                 document.getElementById('rawMarkdown').value = result.organized_notes;
-                document.getElementById('timeMinutes').value = result.suggested_time; // 填入 AI 建議時間
+                document.getElementById('timeMinutes').value = result.suggested_time;
 
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('prepSection').style.display = 'block'; // 顯示準備區
+                document.getElementById('prepSection').style.display = 'block'; 
 
             } catch (error) {
                 alert('錯誤：' + error.message);
@@ -146,22 +255,19 @@
             }
         }
 
-        // 點擊「開始測驗」觸發
         function startTest() {
-            document.getElementById('prepSection').style.display = 'none'; // 隱藏準備區
-            document.getElementById('testSection').style.display = 'block'; // 顯示測驗區
+            document.getElementById('prepSection').style.display = 'none'; 
+            document.getElementById('testSection').style.display = 'block'; 
 
-            // 渲染題目
             const qContainer = document.getElementById('questionsContainer');
             qContainer.innerHTML = '';
             totalQuestions = testData.questions.length;
-            answeredQuestions = 0;
-            correctAnswers = 0;
+            answeredQuestions = 0; correctAnswers = 0;
 
             testData.questions.forEach((q, index) => {
                 const card = document.createElement('div');
                 card.className = 'question-card';
-                card.dataset.correctIndex = q.answer_index; // 把正確答案存起來，超時強制交卷時用
+                card.dataset.correctIndex = q.answer_index; 
 
                 let html = `<div class="question-text">Q${index + 1}. ${q.question}</div>`;
                 q.options.forEach((opt, optIndex) => {
@@ -171,7 +277,6 @@
                 qContainer.appendChild(card);
             });
 
-            // 處理計時器
             const isTimerEnabled = document.getElementById('enableTimer').checked;
             const stickyTimer = document.getElementById('stickyTimer');
             
@@ -184,19 +289,15 @@
                 timerInterval = setInterval(() => {
                     timeRemaining--;
                     updateTimerDisplay();
-                    
-                    // 最後 10 秒變紅閃爍
                     if (timeRemaining <= 10) stickyTimer.classList.add('danger');
-                    
                     if (timeRemaining <= 0) {
                         clearInterval(timerInterval);
-                        forceSubmit(); // 時間到強制交卷
+                        forceSubmit(); 
                     }
                 }, 1000);
             } else {
                 stickyTimer.style.display = 'none';
             }
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -206,14 +307,12 @@
             document.getElementById('timeDisplay').innerText = `${m}:${s}`;
         }
 
-        // 作答邏輯
         function checkAnswer(selectedEl, selectedIndex, correctIndex, cardEl) {
             if (cardEl.dataset.answered === "true") return;
             cardEl.dataset.answered = "true";
 
             const options = cardEl.querySelectorAll('.option');
             options.forEach(opt => opt.style.pointerEvents = 'none');
-
             answeredQuestions++;
 
             if (selectedIndex === correctIndex) {
@@ -225,25 +324,22 @@
             }
 
             if (answeredQuestions === totalQuestions) {
-                clearInterval(timerInterval); // 提早寫完停止計時
+                clearInterval(timerInterval); 
                 showScore();
             }
         }
 
-        // 時間到強制交卷
         function forceSubmit() {
             alert("⏰ 時間到！系統已自動為您交卷。");
             const cards = document.querySelectorAll('.question-card');
-            
             cards.forEach(card => {
-                // 把沒寫的題目鎖起來，並顯示正確答案
                 if (card.dataset.answered !== "true") {
                     card.dataset.answered = "true";
-                    card.classList.add('disabled'); // 視覺上變灰
+                    card.classList.add('disabled');
                     const correctIndex = parseInt(card.dataset.correctIndex);
                     const options = card.querySelectorAll('.option');
                     options.forEach(opt => opt.style.pointerEvents = 'none');
-                    options[correctIndex].classList.add('correct'); // 直接秀出正解
+                    options[correctIndex].classList.add('correct'); 
                 }
             });
             showScore();
@@ -251,7 +347,7 @@
 
         function showScore() {
             document.getElementById('scoreBoard').style.display = 'block';
-            document.getElementById('stickyTimer').style.display = 'none'; // 隱藏計時器
+            document.getElementById('stickyTimer').style.display = 'none'; 
             
             let percentage = (correctAnswers / totalQuestions) * 100;
             let feedback = percentage === 100 ? "太神啦！全對滿分！💯" : 
@@ -260,7 +356,6 @@
 
             document.getElementById('scoreTitle').innerText = feedback;
             document.getElementById('scoreText').innerText = `你總共答對了 ${correctAnswers} / ${totalQuestions} 題`;
-            
             setTimeout(() => { document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }); }, 300);
         }
 
