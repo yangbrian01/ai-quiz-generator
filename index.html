@@ -3,40 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知識整理與出題器 (功能完全版)</title>
+    <title>AI 知識整理與出題器 (專業版)</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; background-color: #f4f4f9; color: #333; }
-        h1 { text-align: center; color: #4a90e2; }
-        .input-group, .output-group { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        /* 基礎排版與色彩 */
+        :root { --primary: #4a90e2; --primary-hover: #357abd; --bg: #f4f7f6; --text: #2c3e50; --card-bg: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 0 auto; padding: 30px 20px; background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        h1 { text-align: center; color: var(--primary); font-size: 2.2em; margin-bottom: 30px; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.05); }
         
-        /* 新增：控制面板的基礎排版 */
-        .controls { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
-        .controls select { padding: 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 15px; outline: none; }
+        /* 區塊陰影與圓角 */
+        .card-panel { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin-bottom: 25px; transition: transform 0.3s ease; }
+        .card-panel:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         
-        textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 10px; font-size: 15px; }
-        button { background-color: #4a90e2; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
-        button:hover { background-color: #357abd; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        #loading { text-align: center; color: #888; display: none; margin: 20px 0; font-weight: bold; }
-        .organized-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0; }
-        .organized-section h2 { color: #2c3e50; }
-        .organized-content { background-color: #f9f9f9; padding: 15px; border-radius: 4px; border-left: 4px solid #4a90e2; white-space: pre-wrap; line-height: 1.6; }
-        .organized-content a { color: #4a90e2; text-decoration: none; }
+        /* 控制面板 */
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .controls select { padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 15px; outline: none; background-color: #fcfcfc; cursor: pointer; transition: border-color 0.2s; }
+        .controls select:focus { border-color: var(--primary); }
+        
+        /* 輸入框與按鈕 */
+        textarea { width: 100%; height: 160px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; resize: vertical; margin-bottom: 15px; font-size: 15px; background-color: #fcfcfc; transition: border-color 0.2s; }
+        textarea:focus { border-color: var(--primary); outline: none; }
+        button.primary-btn { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; letter-spacing: 1px; transition: all 0.3s ease; }
+        button.primary-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3); }
+        button.primary-btn:disabled { background-color: #bdc3c7; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        /* 載入動畫 */
+        #loading { text-align: center; color: var(--primary); display: none; margin: 30px 0; font-weight: bold; font-size: 1.1em; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        /* 筆記區塊 */
+        .note-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; }
+        .note-header h2 { margin: 0; color: var(--text); font-size: 1.5em; }
+        .copy-btn { background: #e8f0fe; color: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+        .copy-btn:hover { background: #d2e3fc; }
+        .organized-content { background-color: #fafbfc; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); white-space: pre-wrap; font-size: 1.05em; }
+        .organized-content a { color: var(--primary); text-decoration: none; font-weight: bold; }
         .organized-content a:hover { text-decoration: underline; }
-        .question-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-        .question-text { font-weight: bold; margin-bottom: 10px; color: #333; }
-        .option { display: block; margin: 5px 0; padding: 8px; background-color: #f8f9fa; border-radius: 4px; cursor: pointer; border: 1px solid transparent; }
-        .option:hover { background-color: #e9ecef; }
-        .option.correct { background-color: #d4edda; border-color: #c3e6cb; color: #155724; font-weight: bold; }
-        .option.wrong { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; opacity: 0.7; }
+
+        /* 題目卡片 */
+        .question-card { background: white; border: 1px solid #eaeaea; border-radius: 10px; padding: 20px; margin-bottom: 20px; transition: transform 0.2s; }
+        .question-text { font-weight: bold; margin-bottom: 15px; color: var(--text); font-size: 1.15em; }
+        .option { display: block; margin: 8px 0; padding: 12px 15px; background-color: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; }
+        .option:hover { background-color: #e9ecef; transform: translateX(5px); }
+        .option.correct { background-color: #d4edda; border-color: #28a745; color: #155724; font-weight: bold; }
+        .option.wrong { background-color: #f8d7da; border-color: #dc3545; color: #721c24; opacity: 0.8; }
+        
+        /* 結算區塊 */
+        #scoreBoard { display: none; text-align: center; padding: 30px; background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%); border-radius: 12px; margin-top: 30px; border: 1px solid #b2dfdb; animation: popIn 0.5s ease; }
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        #scoreBoard h2 { margin: 0 0 10px 0; color: #00695c; font-size: 2em; }
+        #scoreBoard p { font-size: 1.2em; color: #004d40; margin: 0; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-    <h1>AI 知識整理與出題器</h1>
+    <h1>🚀 AI 知識整理與出題器</h1>
 
-    <div class="input-group">
+    <div class="card-panel">
         <h3>1. 選擇出題設定</h3>
         <div class="controls">
             <select id="qType">
@@ -55,31 +78,46 @@
             </select>
         </div>
 
-        <h3>2. 貼上你的破碎筆記</h3>
-        <textarea id="noteInput" placeholder="在此處貼上文字..."></textarea>
-        <button id="generateBtn" onclick="generateContent()">開始生成</button>
+        <h3>2. 貼上你的學習筆記</h3>
+        <textarea id="noteInput" placeholder="在此處貼上文字...越破碎越好，AI 會幫你還原真相！"></textarea>
+        <button id="generateBtn" class="primary-btn" onclick="generateContent()">✨ 開始生成專屬教材</button>
     </div>
 
-    <div id="loading">✨ AI 正在努力聯網搜尋、閱讀並編寫題目中...請稍候...</div>
+    <div id="loading">✨ AI 正在聯網搜尋、深度閱讀並為您編寫題目中...請稍候...</div>
 
-    <div class="output-group" id="outputGroup" style="display: none;">
-        <div class="organized-section">
-            <h2>✨ AI 幫你整理的完整知識點 (附來源)</h2>
+    <div id="outputGroup" style="display: none;">
+        
+        <div class="card-panel">
+            <div class="note-header">
+                <h2>📚 AI 完整知識點整理</h2>
+                <button class="copy-btn" onclick="copyNote()">📋 複製筆記</button>
+            </div>
             <div id="organizedContent" class="organized-content"></div>
+            <textarea id="rawMarkdown" style="display:none;"></textarea>
         </div>
 
-        <div class="organized-section">
-            <h2>📝 測驗題目</h2>
+        <div class="card-panel" style="background: transparent; box-shadow: none; padding: 0;">
+            <h2 style="margin-bottom: 20px; color: var(--text);">📝 測驗開始 (點擊選項作答)</h2>
             <div id="questionsContainer"></div>
         </div>
+
+        <div id="scoreBoard">
+            <h2 id="scoreTitle">測驗完成！</h2>
+            <p id="scoreText">你答對了 0 題！</p>
+        </div>
+
     </div>
 
     <script>
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
 
+        // 計分全域變數
+        let totalQuestions = 0;
+        let answeredQuestions = 0;
+        let correctAnswers = 0;
+
         async function generateContent() {
             const note = document.getElementById('noteInput').value;
-            // 抓取新的控制變數
             const qType = document.getElementById('qType').value;
             const qCount = document.getElementById('qCount').value;
             const diff = document.getElementById('diff').value;
@@ -87,36 +125,32 @@
             const generateBtn = document.getElementById('generateBtn');
             const loading = document.getElementById('loading');
             const outputGroup = document.getElementById('outputGroup');
+            const scoreBoard = document.getElementById('scoreBoard');
             
             if (!note.trim()) {
                 alert('請先貼上一些筆記內容喔！');
                 return;
             }
 
+            // 重置狀態
             generateBtn.disabled = true;
             generateBtn.innerText = '處理中...';
             loading.style.display = 'block';
             outputGroup.style.display = 'none';
+            scoreBoard.style.display = 'none';
+            answeredQuestions = 0;
+            correctAnswers = 0;
 
             try {
-                // 將設定一起打包成 JSON 傳給 GAS
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ 
-                        note: note,
-                        qType: qType,
-                        qCount: qCount,
-                        diff: diff
-                    }),
+                    body: JSON.stringify({ note, qType, qCount, diff }),
                 });
 
-                if (!response.ok) throw new Error('網路連線似乎有點問題...');
+                if (!response.ok) throw new Error('網路連線異常，請稍後再試。');
 
                 const result = await response.json();
-
-                if (result.status === 'error') {
-                    throw new Error(result.message);
-                }
+                if (result.status === 'error') throw new Error(result.message);
 
                 renderResult(result);
 
@@ -124,7 +158,7 @@
                 alert('發生錯誤了：' + error.message);
             } finally {
                 generateBtn.disabled = false;
-                generateBtn.innerText = '開始生成';
+                generateBtn.innerText = '✨ 重新生成專屬教材';
                 loading.style.display = 'none';
             }
         }
@@ -133,24 +167,30 @@
             const outputGroup = document.getElementById('outputGroup');
             const organizedContent = document.getElementById('organizedContent');
             const questionsContainer = document.getElementById('questionsContainer');
+            const rawMarkdown = document.getElementById('rawMarkdown');
 
+            // 渲染筆記與儲存原始 Markdown 供複製
             organizedContent.innerHTML = marked.parse(data.organized_notes);
+            rawMarkdown.value = data.organized_notes;
 
+            // 渲染題目
             questionsContainer.innerHTML = '';
+            totalQuestions = data.questions.length;
+
             data.questions.forEach((q, index) => {
                 const card = document.createElement('div');
                 card.className = 'question-card';
 
                 const questionText = document.createElement('div');
                 questionText.className = 'question-text';
-                questionText.innerText = `${index + 1}. ${q.question}`;
+                questionText.innerText = `Q${index + 1}. ${q.question}`;
                 card.appendChild(questionText);
 
                 q.options.forEach((option, optionIndex) => {
                     const optionEl = document.createElement('div');
                     optionEl.className = 'option';
                     optionEl.innerText = option;
-                    optionEl.onclick = () => checkAnswer(optionEl, optionIndex, q.answer_index);
+                    optionEl.onclick = () => checkAnswer(optionEl, optionIndex, q.answer_index, card);
                     card.appendChild(optionEl);
                 });
 
@@ -161,20 +201,63 @@
             outputGroup.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function checkAnswer(selectedEl, selectedIndex, correctIndex) {
-            const options = selectedEl.parentElement.querySelectorAll('.option');
+        function checkAnswer(selectedEl, selectedIndex, correctIndex, cardEl) {
+            // 如果這題已經答過了，就不允許再點擊
+            if (cardEl.dataset.answered === "true") return;
+            cardEl.dataset.answered = "true"; // 標記為已作答
+
+            const options = cardEl.querySelectorAll('.option');
             
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'none';
-                opt.classList.remove('correct', 'wrong');
-            });
+            // 停用所有選項的 hover 效果
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            answeredQuestions++;
 
             if (selectedIndex === correctIndex) {
                 selectedEl.classList.add('correct');
+                correctAnswers++;
             } else {
                 selectedEl.classList.add('wrong');
                 options[correctIndex].classList.add('correct');
             }
+
+            // 檢查是否全部答完
+            if (answeredQuestions === totalQuestions) {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            const scoreBoard = document.getElementById('scoreBoard');
+            const scoreTitle = document.getElementById('scoreTitle');
+            const scoreText = document.getElementById('scoreText');
+            
+            scoreBoard.style.display = 'block';
+            
+            let percentage = (correctAnswers / totalQuestions) * 100;
+            let feedback = "";
+            
+            if (percentage === 100) feedback = "太神啦！全對滿分！💯";
+            else if (percentage >= 80) feedback = "觀念很清晰喔，表現超棒！👍";
+            else if (percentage >= 60) feedback = "及格了！可以再把筆記複習一下會更穩喔！💪";
+            else feedback = "革命尚未成功，再看一次上面的整理筆記吧！🔥";
+
+            scoreTitle.innerText = feedback;
+            scoreText.innerText = `你總共答對了 ${correctAnswers} / ${totalQuestions} 題`;
+            
+            // 自動滾動到底部看分數
+            setTimeout(() => {
+                scoreBoard.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 300);
+        }
+
+        function copyNote() {
+            const rawMarkdown = document.getElementById('rawMarkdown');
+            rawMarkdown.style.display = 'block';
+            rawMarkdown.select();
+            document.execCommand('copy');
+            rawMarkdown.style.display = 'none';
+            alert('✅ Markdown 筆記已成功複製到剪貼簿！');
         }
     </script>
 </body>
