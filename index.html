@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI 知識萃取與測驗系統 | Vision Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -65,7 +65,7 @@
         
         .hidden { display: none !important; }
 
-        .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); }
+        .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); transition: 0.3s; }
         .account-bar .actions { display: flex; gap: 8px; }
 
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
@@ -113,6 +113,39 @@
         .image-preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
         .image-preview-card .remove-btn { position: absolute; top: -10px; right: -10px; background: var(--danger-text); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .image-preview-card .remove-btn:hover { transform: scale(1.1); }
+
+        /* ==========================================
+           📱 手機版 RWD 優化 (關鍵升級點)
+           ========================================== */
+        @media (max-width: 600px) {
+            body { padding: 10px 10px 80px 10px; }
+            h1 { font-size: 2rem; }
+            .card-panel { padding: 20px; border-radius: 12px; }
+            .organized-content, .question-card { padding: 20px; }
+            
+            /* 帳號列折疊：把信箱跟按鈕排成上下排 */
+            .account-bar { flex-direction: column; gap: 12px; border-radius: 16px; padding: 16px; align-items: flex-start; }
+            .account-bar .actions { width: 100%; justify-content: space-between; }
+            .account-bar .actions button { flex: 1; padding: 10px 8px; font-size: 0.85rem; }
+            
+            /* 下拉選單佔滿整排 */
+            .controls-grid { grid-template-columns: 1fr; }
+            
+            /* 測驗設定區的排版調整 */
+            .timer-setup > div { flex-direction: column; gap: 12px; }
+            
+            /* 成就彈窗改從下方彈出，避免超出螢幕寬度 */
+            .achievement-modal { 
+                width: calc(100vw - 40px); 
+                left: 20px; right: auto; 
+                bottom: -150px; /* 藏在下面 */
+                transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .achievement-modal.show { bottom: 20px; left: 20px; right: auto; }
+            
+            /* 暗黑模式切換按鈕稍微縮小並移到左下角，避免擋住成就彈窗 */
+            .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -267,9 +300,8 @@
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
-                    // 使用 Canvas 進行壓縮，避免圖片過大導致 GAS 拒絕連線
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1024; // 控制最大寬度
+                    const MAX_WIDTH = 1024;
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
@@ -277,13 +309,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    // 轉出被壓縮過的 JPEG base64
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    
-                    // 去除 "data:image/jpeg;base64," 前綴，只保留純密碼給 AI
                     currentImageBase64 = dataUrl.split(',')[1]; 
                     
-                    // 顯示預覽圖
                     document.getElementById('previewImg').src = dataUrl;
                     document.getElementById('imagePreviewContainer').classList.remove('hidden');
                 }
@@ -292,18 +320,14 @@
             reader.readAsDataURL(file);
         });
 
-        // 移除圖片
         window.removeImage = () => {
             currentImageBase64 = null;
             document.getElementById('imageInput').value = '';
             document.getElementById('imagePreviewContainer').classList.add('hidden');
         };
 
-        // 🚀 生成內容 (支援文字+圖片)
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
-            
-            // 雙重檢查：現在允許不打字，但至少要傳圖片！
             if (!note.trim() && !currentImageBase64) return alert('請輸入文字筆記，或上傳一張圖片！');
             
             showLoading();
@@ -311,13 +335,8 @@
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST', 
                     body: JSON.stringify({ 
-                        action: 'generate', 
-                        username: currentUserEmail, 
-                        note: note, 
-                        imageBase64: currentImageBase64, // 🚀 傳送圖片！
-                        qType: document.getElementById('qType').value, 
-                        qCount: document.getElementById('qCount').value, 
-                        diff: document.getElementById('diff').value 
+                        action: 'generate', username: currentUserEmail, note: note, imageBase64: currentImageBase64, 
+                        qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value 
                     })
                 });
                 const result = await response.json();
@@ -327,8 +346,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        // 其他功能維持不變
-        window.fetchHistory = async () => { /*...維持原樣...*/
+        window.fetchHistory = async () => { 
             showLoading(); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }) });
@@ -349,7 +367,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        window.fetchMistakes = async () => { /*...維持原樣...*/
+        window.fetchMistakes = async () => { 
             showLoading(); document.getElementById('dashboardTitle').innerText = "錯題分析";
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getMistakes', username: currentUserEmail }) });
