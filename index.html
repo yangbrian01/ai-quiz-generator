@@ -123,15 +123,19 @@
         
         .option { display: flex; align-items: center; padding: 16px 20px; margin-bottom: 12px; background-color: var(--option-bg); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 1.05rem; transition: all 0.2s ease; }
         .option:hover { background-color: var(--option-hover); border-color: var(--primary); }
+        
+        /* 🚀 點擊選項時的選取狀態 */
+        .option.selected { border-color: var(--primary); background-color: var(--primary-ring); font-weight: 600; }
+        
+        /* 交卷後呈現的正確與錯誤樣式 */
         .option.correct { background-color: var(--success-bg); border-color: var(--success-border); color: var(--success-text); font-weight: 600; }
         .option.wrong { background-color: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
         .question-card.disabled .option { pointer-events: none; opacity: 0.8; }
 
-        /* 🧠 SM-2 記憶按鈕區塊 */
-        .sm2-rating-box { margin-top: 24px; padding-top: 24px; border-top: 1px dashed var(--border); display: flex; gap: 12px; justify-content: center; }
-        .sm2-btn { flex: 1; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; color: white; line-height: 1.4; }
-        .sm2-again { background: #ef4444; } .sm2-hard { background: #f59e0b; } .sm2-good { background: #3b82f6; } .sm2-easy { background: #10b981; }
-        .sm2-btn:hover { filter: brightness(0.9); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        /* 🚀 解析區塊樣式 */
+        .explanation-box { background: var(--input-bg); border-left: 4px solid var(--primary); padding: 16px; margin-top: 16px; border-radius: 8px; font-size: 0.95rem; color: var(--text-main); line-height: 1.6; }
+        .explanation-box.correct-exp { border-left-color: var(--success-text); background: var(--success-bg); }
+        .explanation-box.wrong-exp { border-left-color: var(--danger-text); background: var(--danger-bg); }
         
         /* 清單項目 */
         .list-item { padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; }
@@ -171,8 +175,6 @@
             
             .controls-grid { grid-template-columns: 1fr; }
             .timer-setup > div { flex-direction: column; gap: 12px; }
-            .sm2-rating-box { flex-wrap: wrap; } 
-            .sm2-btn { min-width: 45%; }
             
             .achievement-modal { width: calc(100vw - 40px); left: 20px; right: auto; bottom: -150px; transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
             .achievement-modal.show { bottom: 20px; left: 20px; right: auto; }
@@ -299,7 +301,7 @@
 
         <div id="testSection" class="hidden">
             <div id="devilModeBanner" class="hidden" style="background: #ef4444; color: white; padding: 12px; text-align: center; font-weight: bold; border-radius: 8px; margin-bottom: 20px;">
-                🔥 魔鬼特訓 (SM-2)：請誠實評估你的記憶熟悉度！
+                🔥 魔鬼特訓 (自動 SM-2)：系統將依照你的作答正確率自動調整記憶曲線！
             </div>
             
             <div id="stickyTimer">剩餘時間 <span id="timeDisplay" style="margin-left: 8px;">00:00</span></div>
@@ -309,7 +311,11 @@
                 <h2 id="scoreTitle" style="font-size: 2rem; margin-bottom: 8px;"></h2>
                 <p id="scoreText" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;"></p>
                 <p id="savingText" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px;">數據同步中...</p>
-                <button class="btn btn-primary" style="max-width: 200px; margin: 0 auto;" onclick="location.reload()">返回首頁</button>
+                
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次</button>
+                    <button class="btn btn-primary" style="max-width: 200px;" onclick="location.reload()">🏠 返回首頁 / 新測驗</button>
+                </div>
             </div>
         </div>
     </div>
@@ -318,8 +324,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+        // ⚠️ 已經幫你替換掉金鑰，請務必重新生成後再填入
         const firebaseConfig = {
-            apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
+            apiKey: "請填入你重新生成的_FIREBASE_API_KEY",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
             projectId: "ai-quiz-app-f2a9e",
             storageBucket: "ai-quiz-app-f2a9e.firebasestorage.app",
@@ -333,14 +340,14 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
         let currentUserEmail = ""; let currentGuestName = "";
-        let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
+        let testData = null; let totalQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
         
         let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null;
 
-        // 🔗 路由偵測：網頁一打開先檢查有沒有 ?quiz= 參數
+        // 🔗 路由偵測
         const urlParams = new URLSearchParams(window.location.search);
         const sharedQuizId = urlParams.get('quiz');
 
@@ -364,7 +371,7 @@
             });
         }
 
-        // 🔗 訪客開始挑戰 (修復：自動切除 @gmail.com)
+        // 🔗 訪客開始挑戰
         window.startGuestChallenge = async () => {
             const name = document.getElementById('guestNameInput').value.trim();
             if (!name) return document.getElementById('guestErrorMsg').innerText = "請先輸入名字！";
@@ -382,8 +389,8 @@
                 document.getElementById('inputSection').classList.add('hidden'); 
                 document.querySelector('.account-bar').classList.add('hidden'); 
                 
-                // ✅ 完美切除信箱後綴
-                const creatorName = result.creator.split('@')[0];
+                // 🚀 正確顯示建立者姓名
+                const creatorName = result.creatorName || '神秘人';
                 alert(`這份考卷由 ${creatorName} 建立！準備好就開始吧！`);
                 loadPrepSection(result);
             } catch (error) { 
@@ -434,8 +441,24 @@
             const note = document.getElementById('noteInput').value;
             if (!note.trim() && !currentImageBase64) return alert('請輸入文字或圖片！');
             showLoading("AI 解析中...");
+            
+            const user = auth.currentUser;
+            const dName = user ? (user.displayName || user.email.split('@')[0]) : '匿名';
+
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'generate', username: currentUserEmail, note: note, imageBase64: currentImageBase64, qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value }) });
+                const response = await fetch(GAS_WEB_APP_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'generate', 
+                        username: currentUserEmail,
+                        displayName: dName, // 🚀 傳送真實姓名
+                        note: note, 
+                        imageBase64: currentImageBase64, 
+                        qType: document.getElementById('qType').value, 
+                        qCount: document.getElementById('qCount').value, 
+                        diff: document.getElementById('diff').value 
+                    }) 
+                });
                 const result = await response.json(); if (result.status === 'error') throw new Error(result.message);
                 isDevilMode = false; currentQuizId = result.quizId; 
                 loadPrepSection(result);
@@ -555,7 +578,7 @@
             if (isDevilMode) devilBanner.classList.remove('hidden'); else devilBanner.classList.add('hidden');
             
             const qContainer = document.getElementById('questionsContainer'); qContainer.innerHTML = '';
-            totalQuestions = testData.questions.length; answeredQuestions = 0; correctAnswers = 0;
+            totalQuestions = testData.questions.length; correctAnswers = 0;
 
             testData.questions.forEach((q, index) => {
                 const card = document.createElement('div'); card.className = 'question-card card-panel'; card.dataset.ans = q.answer_index; card.dataset.qIdx = index;
@@ -563,19 +586,22 @@
                 q.options.forEach((opt, optIndex) => { html += `<div class="option" data-opt="${optIndex}">${opt}</div>`; });
                 html += `</div>`;
                 
-                if (isDevilMode) {
-                    html += `
-                    <div class="sm2-rating-box hidden">
-                        <button class="sm2-btn sm2-again" onclick="window.rateSM2(this, ${index}, 1)">忘記 <br><small>(重來)</small></button>
-                        <button class="sm2-btn sm2-hard" onclick="window.rateSM2(this, ${index}, 3)">困難 <br><small>(短期)</small></button>
-                        <button class="sm2-btn sm2-good" onclick="window.rateSM2(this, ${index}, 4)">良好 <br><small>(正常)</small></button>
-                        <button class="sm2-btn sm2-easy" onclick="window.rateSM2(this, ${index}, 5)">簡單 <br><small>(長期)</small></button>
-                    </div>`;
-                }
+                // 🚀 預設隱藏解析區塊
+                html += `<div class="explanation-box hidden"><strong>💡 解析：</strong><br>${q.explanation ? q.explanation.replace(/\n/g, '<br>') : '此題無詳細解析。'}</div>`;
                 
                 card.innerHTML = html; qContainer.appendChild(card);
-                card.querySelectorAll('.option').forEach(optEl => { optEl.onclick = () => window.checkAnswer(optEl, parseInt(optEl.dataset.opt), parseInt(card.dataset.ans), card); });
+                card.querySelectorAll('.option').forEach(optEl => { 
+                    optEl.onclick = () => window.checkAnswer(optEl, parseInt(optEl.dataset.opt), card); 
+                });
             });
+
+            // 🚀 加入交卷按鈕
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'btn btn-primary';
+            submitBtn.style.marginTop = '24px';
+            submitBtn.innerText = '📝 寫完交卷';
+            submitBtn.onclick = () => window.forceSubmit();
+            qContainer.appendChild(submitBtn);
 
             const stickyTimer = document.getElementById('stickyTimer');
             if (document.getElementById('enableTimer').checked) {
@@ -584,7 +610,7 @@
                 timerInterval = setInterval(() => {
                     timeRemaining--; updateTimerDisplay();
                     if (timeRemaining <= 10) stickyTimer.classList.add('danger');
-                    if (timeRemaining <= 0) { clearInterval(timerInterval); forceSubmit(); }
+                    if (timeRemaining <= 0) { clearInterval(timerInterval); window.forceSubmit(); }
                 }, 1000);
             } else stickyTimer.style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -592,68 +618,67 @@
 
         function updateTimerDisplay() { document.getElementById('timeDisplay').innerText = `${Math.floor(timeRemaining/60).toString().padStart(2,'0')}:${(timeRemaining%60).toString().padStart(2,'0')}`; }
 
-        window.checkAnswer = (selectedEl, selectedIdx, correctIdx, cardEl) => {
-            if (cardEl.dataset.answered === "true") return;
-            cardEl.dataset.answered = "true";
-            cardEl.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
-            
-            const currentQ = testData.questions[parseInt(cardEl.dataset.qIdx)];
-
-            if (selectedIdx === correctIdx) { 
-                selectedEl.classList.add('correct'); correctAnswers++; 
-                if (isDevilMode) {
-                    cardEl.querySelector('.sm2-rating-box').classList.remove('hidden');
-                    return; 
-                }
-            } else { 
-                selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct'); 
-                if (isDevilMode) {
-                    const res = calcSM2(1, currentQ.interval, currentQ.repetitions, currentQ.easeFactor);
-                    srsUpdatesThisRound.push({ rowIndex: currentQ.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
-                } else {
-                    if (!isGuestMode) currentMistakes.push(currentQ); 
-                }
-            }
-            
-            answeredQuestions++;
-            if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
+        // 🚀 修改：點擊選項時只會有「選取狀態」，不馬上回饋對錯
+        window.checkAnswer = (selectedEl, selectedIdx, cardEl) => {
+            if (cardEl.dataset.locked === "true") return; 
+            cardEl.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            selectedEl.classList.add('selected');
+            cardEl.dataset.userAns = selectedIdx; 
         };
 
-        window.rateSM2 = (btnEl, qIdx, quality) => {
-            const cardEl = btnEl.closest('.question-card');
-            const ratingBox = cardEl.querySelector('.sm2-rating-box');
-            ratingBox.innerHTML = `<p style="text-align:center; color:var(--success-text); font-weight:bold; width:100%;">✅ 記憶參數已更新</p>`; 
-            
-            const currentQ = testData.questions[qIdx];
-            const res = calcSM2(quality, currentQ.interval, currentQ.repetitions, currentQ.easeFactor);
-            srsUpdatesThisRound.push({ rowIndex: currentQ.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
-            
-            answeredQuestions++;
-            if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
-        };
+        // 🚀 修改：一鍵交卷邏輯
+        window.forceSubmit = () => {
+            clearInterval(timerInterval);
+            let correctCount = 0;
+            currentMistakes = [];
+            srsUpdatesThisRound = [];
 
-        function forceSubmit() {
-            alert("時間結束，強制交卷！");
+            // 隱藏交卷按鈕
+            const submitBtn = document.querySelector('#questionsContainer .btn-primary');
+            if(submitBtn) submitBtn.style.display = 'none';
+
             document.querySelectorAll('.question-card').forEach(card => {
-                if (card.dataset.answered !== "true") {
-                    card.dataset.answered = "true"; card.classList.add('disabled');
-                    card.querySelectorAll('.option')[parseInt(card.dataset.ans)].classList.add('correct');
-                    const q = testData.questions[parseInt(card.dataset.qIdx)];
+                card.dataset.locked = "true"; 
+                card.style.pointerEvents = "none"; 
+
+                const correctIdx = parseInt(card.dataset.ans);
+                const userAns = card.dataset.userAns !== undefined ? parseInt(card.dataset.userAns) : -1;
+                const options = card.querySelectorAll('.option');
+                const q = testData.questions[parseInt(card.dataset.qIdx)];
+
+                options[correctIdx].classList.add('correct'); // 顯示正確答案
+
+                if (userAns === correctIdx) {
+                    correctCount++;
+                    // 魔鬼特訓：答對自動視為「良好 (4)」
                     if (isDevilMode) {
-                        const res = calcSM2(1, q.interval, q.repetitions, q.easeFactor); 
+                        const res = calcSM2(4, q.interval, q.repetitions, q.easeFactor);
                         srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
-                        answeredQuestions++;
-                    } else if (!isGuestMode) { currentMistakes.push(q); answeredQuestions++; }
-                } else if (isDevilMode && !card.querySelector('.sm2-rating-box').classList.contains('hidden')) {
-                    const q = testData.questions[parseInt(card.dataset.qIdx)];
-                    const res = calcSM2(3, q.interval, q.repetitions, q.easeFactor); 
-                    srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
-                    card.querySelector('.sm2-rating-box').classList.add('hidden');
-                    answeredQuestions++;
+                    }
+                } else {
+                    if (userAns !== -1) options[userAns].classList.add('wrong'); // 標記錯誤選項
+                    
+                    if (isDevilMode) {
+                        // 魔鬼特訓：答錯自動視為「忘記 (1)」
+                        const res = calcSM2(1, q.interval, q.repetitions, q.easeFactor);
+                        srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
+                    } else if (!isGuestMode) {
+                        currentMistakes.push(q); 
+                    }
+                }
+
+                // 展開解析並套用顏色
+                const expBox = card.querySelector('.explanation-box');
+                if (expBox) {
+                    expBox.classList.remove('hidden');
+                    if (userAns === correctIdx) expBox.classList.add('correct-exp');
+                    else expBox.classList.add('wrong-exp');
                 }
             });
-            if (answeredQuestions >= totalQuestions) submitScoreAndShowResult();
-        }
+
+            correctAnswers = correctCount;
+            submitScoreAndShowResult();
+        };
 
         async function submitScoreAndShowResult() {
             document.getElementById('stickyTimer').style.display = 'none'; document.getElementById('scoreBoard').classList.remove('hidden');
@@ -677,6 +702,12 @@
             } catch (error) { document.getElementById('savingText').innerText = "⚠️ 數據同步異常"; }
             setTimeout(() => document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }), 300);
         }
+
+        // 🚀 新增：再測一次邏輯
+        window.retrySameQuiz = () => {
+            document.getElementById('scoreBoard').classList.add('hidden');
+            window.startTest();
+        };
     </script>
 </body>
 </html>
