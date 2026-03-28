@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI 知識萃取與測驗系統 | Vision Pro</title>
+    <title>AI 知識萃取與測驗系統 | Devil Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* 🎨 大師級調色盤 & 變數 */
@@ -26,7 +26,6 @@
             --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
-        /* 🌙 暗黑模式調色盤 */
         [data-theme="dark"] {
             --bg: #0f172a; --card-bg: #1e293b; 
             --text-main: #f8fafc; --text-muted: #94a3b8;
@@ -58,6 +57,8 @@
         .btn-danger { background-color: transparent; color: var(--danger-text); border: 1px solid var(--danger-border); }
         .btn-danger:hover { background-color: var(--danger-bg); }
         .btn-small { width: auto; padding: 8px 16px; font-size: 0.9rem; border-radius: 8px; }
+        .btn-devil { background-color: #ef4444; color: white; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.3); }
+        .btn-devil:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.4); }
 
         input, select, textarea { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; background-color: var(--input-bg); color: var(--text-main); transition: all 0.2s ease; outline: none; }
         textarea { height: 120px; resize: vertical; line-height: 1.6; }
@@ -107,43 +108,24 @@
         .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
         .theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--shadow-hover); border-color: var(--primary); }
 
-        /* 📸 圖片上傳區塊樣式 */
         .image-upload-zone { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .image-preview-card { position: relative; display: inline-block; border-radius: 12px; border: 2px dashed var(--border); padding: 8px; background: var(--input-bg); }
         .image-preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
         .image-preview-card .remove-btn { position: absolute; top: -10px; right: -10px; background: var(--danger-text); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .image-preview-card .remove-btn:hover { transform: scale(1.1); }
 
-        /* ==========================================
-           📱 手機版 RWD 優化 (關鍵升級點)
-           ========================================== */
         @media (max-width: 600px) {
             body { padding: 10px 10px 80px 10px; }
             h1 { font-size: 2rem; }
             .card-panel { padding: 20px; border-radius: 12px; }
             .organized-content, .question-card { padding: 20px; }
-            
-            /* 帳號列折疊：把信箱跟按鈕排成上下排 */
             .account-bar { flex-direction: column; gap: 12px; border-radius: 16px; padding: 16px; align-items: flex-start; }
             .account-bar .actions { width: 100%; justify-content: space-between; }
             .account-bar .actions button { flex: 1; padding: 10px 8px; font-size: 0.85rem; }
-            
-            /* 下拉選單佔滿整排 */
             .controls-grid { grid-template-columns: 1fr; }
-            
-            /* 測驗設定區的排版調整 */
             .timer-setup > div { flex-direction: column; gap: 12px; }
-            
-            /* 成就彈窗改從下方彈出，避免超出螢幕寬度 */
-            .achievement-modal { 
-                width: calc(100vw - 40px); 
-                left: 20px; right: auto; 
-                bottom: -150px; /* 藏在下面 */
-                transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            }
+            .achievement-modal { width: calc(100vw - 40px); left: 20px; right: auto; bottom: -150px; transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
             .achievement-modal.show { bottom: 20px; left: 20px; right: auto; }
-            
-            /* 暗黑模式切換按鈕稍微縮小並移到左下角，避免擋住成就彈窗 */
             .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
         }
     </style>
@@ -187,6 +169,12 @@
                 <h2 id="dashboardTitle" style="margin: 0;">檔案庫</h2>
                 <button class="btn btn-small btn-outline" onclick="window.closeDashboard()">返回</button>
             </div>
+            
+            <div id="devilModeBtnContainer" class="hidden" style="margin-bottom: 24px;">
+                <button class="btn btn-devil" onclick="window.startDevilTraining()">🔥 啟動魔鬼特訓 (消滅錯題)</button>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">系統將打亂您的錯題進行重測。答對的題目將從此清單中永久移除！</p>
+            </div>
+
             <div id="dashboardList"></div>
         </div>
 
@@ -213,7 +201,7 @@
             <button class="btn btn-primary" onclick="window.generateContent()">生成專業教材</button>
         </div>
 
-        <div id="loading"><div class="loader"></div><div class="loading-text">AI 視覺神經解析中，請稍候...</div></div>
+        <div id="loading"><div class="loader"></div><div id="loadingText" class="loading-text">AI 神經解析中，請稍候...</div></div>
 
         <div id="prepSection" class="hidden">
             <div class="card-panel">
@@ -239,13 +227,17 @@
         </div>
 
         <div id="testSection" class="hidden">
+            <div id="devilModeBanner" class="hidden" style="background: #ef4444; color: white; padding: 12px; text-align: center; font-weight: bold; border-radius: 8px; margin-bottom: 20px;">
+                🔥 魔鬼特訓進行中：只許成功，不許失敗！
+            </div>
+            
             <div id="stickyTimer">剩餘時間 <span id="timeDisplay" style="margin-left: 8px;">00:00</span></div>
             <div id="questionsContainer"></div>
             <div id="scoreBoard" class="hidden card-panel" style="text-align: center; border: 2px solid var(--primary); background: var(--input-bg);">
                 <h2 id="scoreTitle" style="font-size: 2rem; margin-bottom: 8px;"></h2>
                 <p id="scoreText" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;"></p>
                 <p id="savingText" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px;">數據同步中...</p>
-                <button class="btn btn-primary" style="max-width: 200px; margin: 0 auto;" onclick="location.reload()">建立新測驗</button>
+                <button class="btn btn-primary" style="max-width: 200px; margin: 0 auto;" onclick="location.reload()">完成</button>
             </div>
         </div>
     </div>
@@ -286,16 +278,19 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
-        let timerInterval; let timeRemaining = 0; let currentMistakes = [];
+        let timerInterval; let timeRemaining = 0; 
         
-        // 📸 圖片壓縮與儲存全域變數
+        // 🌟 魔鬼特訓專用變數
+        let isDevilMode = false;
+        let currentMistakes = []; // 存「又答錯」或「新測驗答錯」的題目
+        let resolvedMistakesThisRound = []; // 存「魔鬼特訓中成功答對」的題目
+        let loadedMistakesList = []; // 從資料庫抓下來的原始錯題清單
+
         let currentImageBase64 = null;
 
-        // 🖼️ 監聽圖片上傳事件 (含自動壓縮防當機)
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-            
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image();
@@ -303,15 +298,10 @@
                     const canvas = document.createElement('canvas');
                     const MAX_WIDTH = 1024;
                     const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-                    
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
+                    canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
                     currentImageBase64 = dataUrl.split(',')[1]; 
-                    
                     document.getElementById('previewImg').src = dataUrl;
                     document.getElementById('imagePreviewContainer').classList.remove('hidden');
                 }
@@ -320,34 +310,27 @@
             reader.readAsDataURL(file);
         });
 
-        window.removeImage = () => {
-            currentImageBase64 = null;
-            document.getElementById('imageInput').value = '';
-            document.getElementById('imagePreviewContainer').classList.add('hidden');
-        };
+        window.removeImage = () => { currentImageBase64 = null; document.getElementById('imageInput').value = ''; document.getElementById('imagePreviewContainer').classList.add('hidden'); };
 
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
             if (!note.trim() && !currentImageBase64) return alert('請輸入文字筆記，或上傳一張圖片！');
-            
-            showLoading();
+            showLoading("AI 視覺神經解析中，請稍候...");
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'generate', username: currentUserEmail, note: note, imageBase64: currentImageBase64, 
-                        qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value 
-                    })
+                    method: 'POST', body: JSON.stringify({ action: 'generate', username: currentUserEmail, note: note, imageBase64: currentImageBase64, qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value })
                 });
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
+                isDevilMode = false; // 確保不是魔鬼模式
                 loadPrepSection(result);
             } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
         window.fetchHistory = async () => { 
-            showLoading(); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
+            showLoading("正在下載歷史紀錄..."); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
+            document.getElementById('devilModeBtnContainer').classList.add('hidden'); // 隱藏魔鬼按鈕
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }) });
                 const result = await response.json();
@@ -360,7 +343,7 @@
                     div.innerHTML = `<div><strong style="font-size:1.1rem;">${item.noteSnippet}</strong><div class="item-meta"><span>${d.getMonth()+1}/${d.getDate()}</span><span>${item.diff} • ${item.qCount}題</span></div></div>
                         <button class="btn btn-small btn-primary retest-btn" style="margin:0; box-shadow:none;">重新測驗</button>`;
                     listDiv.appendChild(div);
-                    div.querySelector('.retest-btn').onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); loadPrepSection(item); };
+                    div.querySelector('.retest-btn').onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); isDevilMode = false; loadPrepSection(item); };
                 });
                 document.getElementById('dashboardSection').classList.remove('hidden');
             } catch (error) { alert('查詢失敗：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
@@ -368,19 +351,28 @@
         };
 
         window.fetchMistakes = async () => { 
-            showLoading(); document.getElementById('dashboardTitle').innerText = "錯題分析";
+            showLoading("正在翻找你的錯題本..."); document.getElementById('dashboardTitle').innerText = "錯題分析";
             try {
                 const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getMistakes', username: currentUserEmail }) });
                 const result = await response.json();
                 if (result.status === 'error') throw new Error(result.message);
+                
+                loadedMistakesList = result.mistakes; // 把錯題存起來，準備給魔鬼特訓用
+                
                 const listDiv = document.getElementById('dashboardList');
-                listDiv.innerHTML = result.mistakes.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">目前沒有錯題紀錄，繼續保持！</p>' : '';
-                result.mistakes.forEach(item => {
-                    const div = document.createElement('div'); div.className = 'mistake-card';
-                    div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:12px; color:var(--text-main);">Q. ${item.question}</div>
-                                     <div class="correct-ans">正確答案：${item.options[item.answer_index]}</div>`;
-                    listDiv.appendChild(div);
-                });
+                if (result.mistakes.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align:center; color:var(--text-muted);">目前沒有錯題紀錄，繼續保持！</p>';
+                    document.getElementById('devilModeBtnContainer').classList.add('hidden');
+                } else {
+                    listDiv.innerHTML = '';
+                    document.getElementById('devilModeBtnContainer').classList.remove('hidden'); // 顯示魔鬼按鈕！
+                    result.mistakes.forEach(item => {
+                        const div = document.createElement('div'); div.className = 'mistake-card';
+                        div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:12px; color:var(--text-main);">Q. ${item.question}</div>
+                                         <div class="correct-ans">正確答案：${item.options[item.answer_index]}</div>`;
+                        listDiv.appendChild(div);
+                    });
+                }
                 document.getElementById('dashboardSection').classList.remove('hidden');
             } catch (error) { alert('查詢失敗：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
             finally { document.getElementById('loading').style.display = 'none'; }
@@ -388,14 +380,14 @@
 
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
-        function showLoading() {
+        function showLoading(text = "處理中...") {
             document.getElementById('inputSection').classList.add('hidden'); document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.add('hidden'); document.getElementById('scoreBoard').classList.add('hidden'); 
-            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loadingText').innerText = text; document.getElementById('loading').style.display = 'block';
         }
 
         function loadPrepSection(data) {
             try {
-                testData = data; currentMistakes = []; 
+                testData = data; currentMistakes = []; resolvedMistakesThisRound = [];
                 const rawNotes = data.organized_notes ? String(data.organized_notes) : '這份考卷似乎沒有留下筆記紀錄喔！';
                 document.getElementById('rawMarkdown').value = rawNotes;
                 let htmlContent = rawNotes;
@@ -413,11 +405,43 @@
             } catch (err) { alert("載入測驗畫面時發生錯誤：" + err.message + "\n請重新整理網頁。"); document.getElementById('dashboardSection').classList.remove('hidden'); }
         }
 
+        // 🔥 啟動魔鬼特訓
+        window.startDevilTraining = () => {
+            if (loadedMistakesList.length === 0) return alert("沒有錯題可以特訓！");
+            
+            // 打亂錯題順序 (Fisher-Yates Shuffle)
+            let shuffled = [...loadedMistakesList];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            // 最多抽取 10 題來挑戰
+            const selectedMistakes = shuffled.slice(0, 10);
+            
+            // 組裝成假考卷資料
+            testData = { questions: selectedMistakes };
+            isDevilMode = true;
+            currentMistakes = [];
+            resolvedMistakesThisRound = [];
+            
+            // 強制設定時間：每題給 1 分鐘
+            document.getElementById('timeMinutes').value = selectedMistakes.length;
+            
+            document.getElementById('dashboardSection').classList.add('hidden');
+            window.startTest(); // 直接跳過準備區，進入測驗
+        };
+
         window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
         window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
 
         window.startTest = () => {
             document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.remove('hidden'); document.getElementById('scoreBoard').classList.add('hidden'); 
+            
+            // 魔鬼模式橫幅顯示
+            const devilBanner = document.getElementById('devilModeBanner');
+            if (isDevilMode) devilBanner.classList.remove('hidden'); else devilBanner.classList.add('hidden');
+            
             const qContainer = document.getElementById('questionsContainer'); qContainer.innerHTML = '';
             totalQuestions = testData.questions.length; answeredQuestions = 0; correctAnswers = 0;
 
@@ -444,26 +468,36 @@
 
         function updateTimerDisplay() { document.getElementById('timeDisplay').innerText = `${Math.floor(timeRemaining/60).toString().padStart(2,'0')}:${(timeRemaining%60).toString().padStart(2,'0')}`; }
 
+        // 🎯 答題邏輯分歧：魔鬼模式對了要刪除，錯了不理他(原本就在錯題本裡了)
         window.checkAnswer = (selectedEl, selectedIdx, correctIdx, cardEl) => {
             if (cardEl.dataset.answered === "true") return;
             cardEl.dataset.answered = "true";
             cardEl.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
             answeredQuestions++;
 
-            if (selectedIdx === correctIdx) { selectedEl.classList.add('correct'); correctAnswers++; } 
-            else { selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct'); currentMistakes.push(testData.questions[parseInt(cardEl.dataset.qIdx)]); }
+            const currentQ = testData.questions[parseInt(cardEl.dataset.qIdx)];
+
+            if (selectedIdx === correctIdx) { 
+                selectedEl.classList.add('correct'); correctAnswers++; 
+                if (isDevilMode) resolvedMistakesThisRound.push(currentQ.question); // 🔥 魔鬼模式：答對了！加入斬殺清單
+            } else { 
+                selectedEl.classList.add('wrong'); cardEl.querySelectorAll('.option')[correctIdx].classList.add('correct'); 
+                if (!isDevilMode) currentMistakes.push(currentQ); // 一般模式：答錯了！加入錯題本
+            }
             if (answeredQuestions === totalQuestions) { clearInterval(timerInterval); submitScoreAndShowResult(); }
         };
 
         function forceSubmit() {
-            alert("時間結束，系統已自動交卷。");
+            alert("時間結束，系統已自動交卷。未答完的題目視為錯誤。");
             document.querySelectorAll('.question-card').forEach(card => {
                 if (card.dataset.answered !== "true") {
                     card.dataset.answered = "true"; card.classList.add('disabled');
                     const correctIdx = parseInt(card.dataset.ans);
                     card.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
                     card.querySelectorAll('.option')[correctIdx].classList.add('correct');
-                    currentMistakes.push(testData.questions[parseInt(card.dataset.qIdx)]);
+                    
+                    const currentQ = testData.questions[parseInt(card.dataset.qIdx)];
+                    if (!isDevilMode) currentMistakes.push(currentQ); // 一般模式超時算錯
                 }
             });
             submitScoreAndShowResult();
@@ -472,16 +506,31 @@
         async function submitScoreAndShowResult() {
             document.getElementById('stickyTimer').style.display = 'none'; document.getElementById('scoreBoard').classList.remove('hidden');
             let percentage = (correctAnswers / totalQuestions) * 100;
-            document.getElementById('scoreTitle').innerText = percentage === 100 ? "完美掌握！" : percentage >= 80 ? "表現優異" : percentage >= 60 ? "測驗合格" : "需要加強";
-            document.getElementById('scoreText').innerText = `得分：${correctAnswers} / ${totalQuestions}`;
-            document.getElementById('savingText').innerText = "📡 正在將成績與錯題同步至雲端...";
+            
+            if (isDevilMode) {
+                document.getElementById('scoreTitle').innerText = `🔥 魔鬼特訓完成！`;
+                document.getElementById('scoreText').innerText = `成功消滅了 ${resolvedMistakesThisRound.length} 道錯題！`;
+            } else {
+                document.getElementById('scoreTitle').innerText = percentage === 100 ? "完美掌握！" : percentage >= 80 ? "表現優異" : percentage >= 60 ? "測驗合格" : "需要加強";
+                document.getElementById('scoreText').innerText = `得分：${correctAnswers} / ${totalQuestions}`;
+            }
+            
+            document.getElementById('savingText').innerText = "📡 正在同步資料庫...";
             
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', body: JSON.stringify({ action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, isPerfect: (percentage === 100) })
+                    method: 'POST', body: JSON.stringify({ 
+                        action: 'submitScore', 
+                        username: currentUserEmail, 
+                        mistakes: currentMistakes, 
+                        resolvedMistakes: resolvedMistakesThisRound, // 🔥 傳送斬殺清單給後端
+                        isPerfect: (percentage === 100),
+                        isDevilMode: isDevilMode
+                    })
                 });
                 const result = await response.json();
                 document.getElementById('savingText').innerText = "✅ 數據已安全同步至雲端";
+                
                 if (result.achievements && result.achievements.length > 0) {
                     result.achievements.forEach((ach, i) => { setTimeout(() => showAchievement(ach.icon, ach.title, ach.desc), i * 3500); });
                 }
