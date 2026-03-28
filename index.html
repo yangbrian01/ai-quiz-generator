@@ -324,6 +324,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+        // 🔥 你的專屬 Firebase 設定
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -338,6 +339,7 @@
         const provider = new GoogleAuthProvider();
         let currentUserEmail = ""; 
 
+        // 🌗 暗黑模式初始化
         const initTheme = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.body.setAttribute('data-theme', savedTheme);
@@ -353,6 +355,7 @@
             document.getElementById('themeToggleBtn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
         };
 
+        // 🔒 登入驗證
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserEmail = user.email;
@@ -372,11 +375,15 @@
         window.logout = () => signOut(auth).then(() => { location.reload(); });
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
 
+        // ==============================================================
+        // 🧠 GAS API 串接與測驗核心邏輯
+        // ==============================================================
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
         let testData = null; let totalQuestions = 0; let answeredQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; let currentMistakes = [];
 
+        // 📝 產生新內容
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
             if (!note.trim()) return alert('請先輸入內容');
@@ -392,6 +399,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
+        // 📂 讀取歷史
         window.fetchHistory = async () => {
             showLoading(); document.getElementById('dashboardTitle').innerText = "歷史檔案庫";
             try {
@@ -401,14 +409,14 @@
                 const listDiv = document.getElementById('dashboardList');
                 listDiv.innerHTML = result.history.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">尚無歷史紀錄</p>' : '';
                 
-                result.history.forEach((item) => {
+                result.history.forEach((item, i) => {
                     const d = new Date(item.timestamp);
                     const div = document.createElement('div'); div.className = 'list-item';
                     div.innerHTML = `<div><strong style="font-size:1.1rem;">${item.noteSnippet}</strong><div class="item-meta"><span>${d.getMonth()+1}/${d.getDate()}</span><span>${item.diff} • ${item.qCount}題</span></div></div>
                         <button class="btn btn-small btn-primary retest-btn" style="margin:0; box-shadow:none;">重新測驗</button>`;
                     listDiv.appendChild(div);
                     
-                    // 💡 修正點：改用 querySelector 綁定事件，避免 ID 衝突
+                    // 💡 修正點：使用 querySelector 綁定事件，避免 ID 污染，點擊後完美轉場
                     div.querySelector('.retest-btn').onclick = () => { 
                         document.getElementById('dashboardSection').classList.add('hidden'); 
                         loadPrepSection(item); 
@@ -419,6 +427,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         };
 
+        // ❌ 讀取錯題
         window.fetchMistakes = async () => {
             showLoading(); document.getElementById('dashboardTitle').innerText = "錯題分析";
             try {
@@ -440,32 +449,34 @@
 
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
-        // 💡 修正點：強制把 scoreBoard 也隱藏，確保狀態乾淨
+        // 💡 狀態全重置：確保所有看板都收起來，只秀出 loading
         function showLoading() {
             document.getElementById('inputSection').classList.add('hidden'); 
             document.getElementById('dashboardSection').classList.add('hidden'); 
             document.getElementById('prepSection').classList.add('hidden'); 
             document.getElementById('testSection').classList.add('hidden');
-            document.getElementById('scoreBoard').classList.add('hidden'); 
+            document.getElementById('scoreBoard').classList.add('hidden'); // 強制關閉結算面板
             document.getElementById('loading').style.display = 'block';
         }
 
+        // 📖 載入準備畫面
         function loadPrepSection(data) {
             testData = data; currentMistakes = []; 
             document.getElementById('organizedContent').innerHTML = marked.parse(data.organized_notes || '無筆記資料');
             document.getElementById('rawMarkdown').value = data.organized_notes || '';
             document.getElementById('timeMinutes').value = data.suggested_time || 5;
             document.getElementById('prepSection').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // 回到頂部方便閱讀
         }
 
         window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
         window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
 
+        // 🚀 啟動測驗
         window.startTest = () => {
             document.getElementById('prepSection').classList.add('hidden'); 
             document.getElementById('testSection').classList.remove('hidden');
-            document.getElementById('scoreBoard').classList.add('hidden'); // 💡 修正點：確保開始測驗時，看板一定是收起來的
+            document.getElementById('scoreBoard').classList.add('hidden'); // 確保開始時結算面板是收起來的
             
             const qContainer = document.getElementById('questionsContainer'); qContainer.innerHTML = '';
             totalQuestions = testData.questions.length; answeredQuestions = 0; correctAnswers = 0;
