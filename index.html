@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知識整理與出題器 (聯網強化版)</title>
+    <title>AI 知識整理與出題器 (功能完全版)</title>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; background-color: #f4f4f9; color: #333; }
         h1 { text-align: center; color: #4a90e2; }
         .input-group, .output-group { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        /* 新增：控制面板的基礎排版 */
+        .controls { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .controls select { padding: 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 15px; outline: none; }
+        
         textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-bottom: 10px; font-size: 15px; }
         button { background-color: #4a90e2; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
         button:hover { background-color: #357abd; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
-        #loading { text-align: center; color: #888; display: none; margin: 20px 0; }
+        #loading { text-align: center; color: #888; display: none; margin: 20px 0; font-weight: bold; }
         .organized-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0; }
         .organized-section h2 { color: #2c3e50; }
         .organized-content { background-color: #f9f9f9; padding: 15px; border-radius: 4px; border-left: 4px solid #4a90e2; white-space: pre-wrap; line-height: 1.6; }
@@ -32,33 +37,53 @@
     <h1>AI 知識整理與出題器</h1>
 
     <div class="input-group">
-        <h3>1. 貼上你的破碎筆記</h3>
-        <p style="color: #666; font-size: 0.9em;">(支援最新資訊查核！你可以試著輸入最近很紅的電影、新聞或人物)</p>
-        <textarea id="noteInput" placeholder="在此處貼上文字...例如：\n陽光女子合唱團\n2025電影\n主題曲：幸福在歌唱\n陳意涵、翁倩玉"></textarea>
-        <button id="generateBtn" onclick="generateContent()">生成整理與題目</button>
+        <h3>1. 選擇出題設定</h3>
+        <div class="controls">
+            <select id="qType">
+                <option value="單選題">單選題</option>
+                <option value="是非題">是非題</option>
+            </select>
+            <select id="qCount">
+                <option value="3">出 3 題</option>
+                <option value="5" selected>出 5 題</option>
+                <option value="10">出 10 題</option>
+            </select>
+            <select id="diff">
+                <option value="簡單">難度：簡單</option>
+                <option value="適中" selected>難度：適中</option>
+                <option value="困難">難度：困難</option>
+            </select>
+        </div>
+
+        <h3>2. 貼上你的破碎筆記</h3>
+        <textarea id="noteInput" placeholder="在此處貼上文字..."></textarea>
+        <button id="generateBtn" onclick="generateContent()">開始生成</button>
     </div>
 
     <div id="loading">✨ AI 正在努力聯網搜尋、閱讀並編寫題目中...請稍候...</div>
 
     <div class="output-group" id="outputGroup" style="display: none;">
-        
         <div class="organized-section">
             <h2>✨ AI 幫你整理的完整知識點 (附來源)</h2>
             <div id="organizedContent" class="organized-content"></div>
         </div>
 
         <div class="organized-section">
-            <h2>📝 測驗題目 (共 5 題)</h2>
+            <h2>📝 測驗題目</h2>
             <div id="questionsContainer"></div>
         </div>
     </div>
 
     <script>
-        // 這裡已經換成你提供的 GAS 網址了！
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
 
         async function generateContent() {
             const note = document.getElementById('noteInput').value;
+            // 抓取新的控制變數
+            const qType = document.getElementById('qType').value;
+            const qCount = document.getElementById('qCount').value;
+            const diff = document.getElementById('diff').value;
+
             const generateBtn = document.getElementById('generateBtn');
             const loading = document.getElementById('loading');
             const outputGroup = document.getElementById('outputGroup');
@@ -74,9 +99,15 @@
             outputGroup.style.display = 'none';
 
             try {
+                // 將設定一起打包成 JSON 傳給 GAS
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ note: note }),
+                    body: JSON.stringify({ 
+                        note: note,
+                        qType: qType,
+                        qCount: qCount,
+                        diff: diff
+                    }),
                 });
 
                 if (!response.ok) throw new Error('網路連線似乎有點問題...');
@@ -93,7 +124,7 @@
                 alert('發生錯誤了：' + error.message);
             } finally {
                 generateBtn.disabled = false;
-                generateBtn.innerText = '生成整理與題目';
+                generateBtn.innerText = '開始生成';
                 loading.style.display = 'none';
             }
         }
@@ -103,10 +134,8 @@
             const organizedContent = document.getElementById('organizedContent');
             const questionsContainer = document.getElementById('questionsContainer');
 
-            // 渲染整理後的 Markdown
             organizedContent.innerHTML = marked.parse(data.organized_notes);
 
-            // 渲染題目
             questionsContainer.innerHTML = '';
             data.questions.forEach((q, index) => {
                 const card = document.createElement('div');
