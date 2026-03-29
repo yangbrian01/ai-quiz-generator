@@ -12,74 +12,49 @@
             --primary-hover: hsl(var(--hue), 85%, 45%);
             --primary-ring: hsla(var(--hue), 85%, 55%, 0.3);
             
-            --bg: #f8fafc; 
-            --card-bg: #ffffff; 
-            --text-main: #0f172a; 
-            --text-muted: #64748b;
-            --border: #e2e8f0; 
-            --input-bg: #f1f5f9; 
-            
-            --option-bg: #ffffff;
-            --option-hover: #f8fafc;
-            --timer-bg: #fffbeb; 
-            --timer-border: #fef3c7;
-            --timer-text: #b45309;
-            
+            --bg: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b;
+            --border: #e2e8f0; --input-bg: #f1f5f9; 
+            --option-bg: #ffffff; --option-hover: #f8fafc;
+            --timer-bg: #fffbeb; --timer-border: #fef3c7; --timer-text: #b45309;
             --success-bg: #f0fdf4; --success-border: #bbf7d0; --success-text: #15803d;
             --danger-bg: #fef2f2; --danger-border: #fecaca; --danger-text: #b91c1c;
-            
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
         [data-theme="dark"] {
-            --bg: #0f172a; 
-            --card-bg: #1e293b; 
-            --text-main: #f8fafc; 
-            --text-muted: #94a3b8;
-            --border: #334155; 
-            --input-bg: #0f172a; 
-            
-            --option-bg: #1e293b;
-            --option-hover: #334155;
-            --timer-bg: #422006; 
-            --timer-border: #713f12;
-            --timer-text: #fde68a;
-            
+            --bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --border: #334155; --input-bg: #0f172a; 
+            --option-bg: #1e293b; --option-hover: #334155;
+            --timer-bg: #422006; --timer-border: #713f12; --timer-text: #fde68a;
             --success-bg: #14532d; --success-border: #166534; --success-text: #86efac;
             --danger-bg: #7f1d1d; --danger-border: #991b1b; --danger-text: #fca5a5;
-            
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-            --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
         }
 
         * { box-sizing: border-box; }
-        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px 20px 80px 20px; background-color: var(--bg); color: var(--text-main); line-height: 1.7; transition: background-color 0.4s ease, color 0.4s ease; }
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px 20px 80px 20px; background-color: var(--bg); color: var(--text-main); line-height: 1.7; transition: 0.4s; }
         h1 { text-align: center; color: var(--text-main); font-size: 2.5rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
-        .subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; font-weight: 400; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 16px 0; color: var(--text-main); letter-spacing: -0.01em; }
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; }
+        h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 16px 0; color: var(--text-main); }
         h3 { font-size: 1.2rem; font-weight: 600; margin: 0 0 12px 0; color: var(--text-main); }
         
-        .card-panel { background: var(--card-bg); padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border-color 0.4s ease; }
+        .card-panel { background: var(--card-bg); padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px; transition: 0.3s; }
         
         button { font-family: inherit; }
-        .btn { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; padding: 14px 24px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: none; outline: none; }
+        .btn { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; padding: 14px 24px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; outline: none; }
         .btn-primary { background-color: var(--primary); color: white; box-shadow: 0 4px 14px 0 var(--primary-ring); }
-        .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 20px 0 var(--primary-ring); }
-        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-outline { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { background-color: var(--input-bg); }
         .btn-danger { background-color: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
-        .btn-danger:hover { background-color: #fecaca; }
         .btn-small { width: auto; padding: 8px 16px; font-size: 0.9rem; border-radius: 8px; }
         .btn-devil { background-color: #ef4444; color: white; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.3); }
-        .btn-devil:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.4); }
 
-        input, select, textarea { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; background-color: var(--input-bg); color: var(--text-main); transition: all 0.2s ease; outline: none; }
+        input, select, textarea { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; background-color: var(--input-bg); color: var(--text-main); transition: 0.2s; outline: none; }
         textarea { height: 160px; resize: vertical; line-height: 1.6; }
         input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); background-color: var(--card-bg); }
-        input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.7; }
         
         .hidden { display: none !important; }
 
@@ -89,7 +64,6 @@
         .account-bar .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .controls-grid select { margin-bottom: 0; cursor: pointer; }
 
         #loading { text-align: center; padding: 40px 0; display: none; }
         .loader { border: 3px solid var(--border); border-top: 3px solid var(--primary); border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; margin: 0 auto 16px auto; }
@@ -97,57 +71,30 @@
         .loading-text { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
         .organized-content { background-color: var(--input-bg); padding: 32px; border-radius: 12px; font-size: 1.05rem; color: var(--text-main); border: 1px solid var(--border); margin-top: 16px; transition: 0.3s; }
-        .organized-content h1, .organized-content h2, .organized-content h3 { color: var(--text-main); margin-top: 1.5em; text-align: left; }
-        .organized-content p { margin-bottom: 1.2em; }
-        .organized-content a { color: var(--primary); text-decoration: none; font-weight: 500; }
-        .organized-content img { max-width: 100%; border-radius: 8px; }
         
-        .timer-setup { background: var(--timer-bg); border-color: var(--timer-border); text-align: center; }
-        .timer-setup input[type="number"] { width: 80px; display: inline-block; margin: 0 8px; text-align: center; background: var(--card-bg); }
-        
-        #stickyTimer { position: sticky; top: 80px; z-index: 40; background: var(--timer-bg); color: var(--timer-text); padding: 12px 24px; text-align: center; font-weight: 700; font-size: 1.2rem; font-variant-numeric: tabular-nums; border-radius: 100px; border: 1px solid var(--timer-border); box-shadow: var(--shadow-md); margin-bottom: 24px; display: none; transition: all 0.3s ease; }
+        #stickyTimer { position: sticky; top: 80px; z-index: 40; background: var(--timer-bg); color: var(--timer-text); padding: 12px 24px; text-align: center; font-weight: 700; font-size: 1.2rem; font-variant-numeric: tabular-nums; border-radius: 100px; border: 1px solid var(--timer-border); box-shadow: var(--shadow-md); margin-bottom: 24px; display: none; transition: 0.3s; }
         #stickyTimer.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); animation: pulse-danger 1s infinite; }
         @keyframes pulse-danger { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
         .question-card { border: 1px solid var(--border); padding: 32px; margin-bottom: 20px; border-radius: 16px;}
         .question-text { font-weight: 600; font-size: 1.2rem; margin-bottom: 24px; line-height: 1.5; color: var(--text-main); }
-        
-        .option { display: flex; align-items: center; padding: 16px 20px; margin-bottom: 12px; background-color: var(--option-bg); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 1.05rem; transition: all 0.2s ease; }
+        .option { display: flex; align-items: center; padding: 16px 20px; margin-bottom: 12px; background-color: var(--option-bg); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-size: 1.05rem; transition: 0.2s; }
         .option:hover { background-color: var(--option-hover); border-color: var(--primary); }
-        
         .option.selected { border-color: var(--primary); background-color: var(--primary-ring); font-weight: 600; }
         .option.correct { background-color: var(--success-bg); border-color: var(--success-border); color: var(--success-text); font-weight: 600; }
         .option.wrong { background-color: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
-        .question-card.disabled .option { pointer-events: none; opacity: 0.8; }
-
         .explanation-box { background: var(--input-bg); border-left: 4px solid var(--primary); padding: 16px; margin-top: 16px; border-radius: 8px; font-size: 0.95rem; color: var(--text-main); line-height: 1.6; }
-        .explanation-box.correct-exp { border-left-color: var(--success-text); background: var(--success-bg); }
-        .explanation-box.wrong-exp { border-left-color: var(--danger-text); background: var(--danger-bg); }
         
-        .list-item { padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; }
-        .list-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--primary); }
-        .item-meta { color: var(--text-muted); font-size: 0.85rem; margin-top: 6px; display: flex; gap: 12px; }
-        
+        .list-item { padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .mistake-card .correct-ans { background: var(--success-bg); color: var(--success-text); padding: 12px 16px; border-radius: 8px; margin-top: 16px; font-weight: 500; font-size: 0.95rem; border: 1px solid var(--success-border); }
 
-        .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
-        .theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--shadow-hover); border-color: var(--primary); }
-
-        .image-upload-zone { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .image-preview-card { position: relative; display: inline-block; border-radius: 12px; border: 2px dashed var(--border); padding: 8px; background: var(--input-bg); }
+        .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; display: flex; align-items: center; justify-content: center; }
         .image-preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
-        .image-preview-card .remove-btn { position: absolute; top: -10px; right: -10px; background: var(--danger-text); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .image-preview-card .remove-btn:hover { transform: scale(1.1); }
-
-        .info-box { background: var(--input-bg); border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
-        .info-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
-        .info-box a:hover { text-decoration: underline; }
 
         @media (max-width: 600px) {
             body { padding: 10px 10px 80px 10px; }
             h1 { font-size: 2rem; }
             .card-panel { padding: 20px; border-radius: 12px; }
-            .organized-content, .question-card { padding: 20px; }
             .account-bar { flex-direction: column; gap: 12px; border-radius: 16px; padding: 16px; align-items: flex-start; }
             .account-bar .actions { width: 100%; justify-content: flex-start; gap: 8px; }
             .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
@@ -158,48 +105,44 @@
 <body>
 
     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="window.toggleTheme()">☀️</button>
-
     <h1>AI Pro Quiz</h1>
-    <div class="subtitle">支援 SRS 間隔記憶與社群分享</div>
-
-    <div id="guestSection" class="card-panel hidden" style="text-align: center; border: 2px solid var(--primary);">
-        <h2 style="font-size: 2rem; margin-bottom: 8px;">🔥 挑戰書已送達！</h2>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">你的同學向你發起了測驗挑戰！請輸入你的名字來應戰：</p>
-        <input type="text" id="guestNameInput" placeholder="輸入你的大名..." style="max-width: 300px; text-align: center; font-size: 1.2rem; margin: 0 auto 16px auto; display: block;">
-        <button class="btn btn-primary" style="max-width: 300px;" onclick="window.startGuestChallenge()">接受挑戰</button>
-        <p id="guestErrorMsg" style="color: var(--danger-text); margin-top: 16px; font-weight: 500;"></p>
-    </div>
+    <div class="subtitle">支援跨裝置同步與自訂帳號的智能題庫</div>
 
     <div id="authSection" class="card-panel">
         <h2 id="authTitle" style="text-align: center; margin-bottom: 32px;">系統登入</h2>
-        <button class="btn btn-outline" onclick="window.loginWithGoogle()" style="margin-bottom: 24px;">使用 Google 繼續</button>
         
-        <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或使用帳號密碼</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
+        <button class="btn btn-outline" onclick="window.loginWithGoogle()" style="margin-bottom: 24px;">
+            <img src="https://developers.google.com/identity/images/g-logo.png" style="width:18px; margin-right:8px;"> 使用 Google 登入
+        </button>
         
-        <input type="email" id="emailInput" placeholder="帳號 (Email)">
-        <input type="text" id="registerNameInput" placeholder="使用者名稱 (如 IG 的 ID)" class="hidden">
-        <input type="password" id="passwordInput" placeholder="密碼 (至少 6 碼)">
+        <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或使用自訂帳號登入</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
+        
+        <input type="text" id="idInput" placeholder="帳號 ID (例: tingli.brian)">
+        <input type="text" id="registerNameInput" placeholder="顯示名稱 (給別人看的名字)" class="hidden">
+        <input type="password" id="passwordInput" placeholder="密碼">
 
-        <button id="loginBtn" class="btn btn-primary" onclick="window.loginWithEmail()">登入</button>
+        <button id="loginBtn" class="btn btn-primary" onclick="window.loginCustom()">登入</button>
         <button id="switchRegisterBtn" class="btn btn-outline" onclick="window.toggleAuthMode('register')" style="margin-top: 8px;">沒有帳號？點此註冊</button>
         
-        <button id="registerBtn" class="btn btn-primary hidden" onclick="window.registerWithEmail()">註冊並登入</button>
+        <button id="registerBtn" class="btn btn-primary hidden" onclick="window.registerCustom()">註冊並登入</button>
         <button id="switchLoginBtn" class="btn btn-outline hidden" onclick="window.toggleAuthMode('login')" style="margin-top: 8px;">已有帳號？返回登入</button>
 
         <p id="authErrorMsg" style="color: var(--danger-text); text-align: center; margin-top: 16px; font-weight: 500;"></p>
     </div>
 
     <div id="appSection" class="hidden">
-        
         <div class="account-bar">
             <div class="user-profile">
                 <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
-                <span id="userNameDisplay">使用者</span>
+                <div style="display: flex; flex-direction: column;">
+                    <span id="userNameDisplay" style="line-height: 1.2;">使用者</span>
+                    <span id="userIdDisplay" style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;"></span>
+                </div>
             </div>
             <div class="actions">
                 <button class="btn btn-small btn-outline" onclick="window.fetchHistory()">歷史庫</button>
                 <button class="btn btn-small btn-danger" onclick="window.fetchMistakes()" style="color: white; background-color: #ef4444; border:none;">錯題本</button>
-                <button class="btn btn-small btn-outline" onclick="window.openProfile()">⚙️ 個人設定</button>
+                <button class="btn btn-small btn-outline" onclick="window.openProfile()">⚙️ 設定</button>
                 <button class="btn btn-small btn-outline" onclick="window.logout()" style="border: none;">登出</button>
             </div>
         </div>
@@ -211,48 +154,32 @@
             </div>
             
             <h3>基本資料</h3>
-            
             <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">大頭貼照</label>
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
                 <img id="profilePicPreview" src="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background-color: var(--input-bg);">
                 <div>
                     <input type="file" id="profilePicUpload" accept="image/*" class="hidden" onchange="window.previewAvatar(event)">
                     <button class="btn btn-small btn-outline" onclick="document.getElementById('profilePicUpload').click()">選擇新頭貼</button>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">支援 JPG, PNG</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">照片將上傳至系統資料庫</p>
                 </div>
             </div>
 
             <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">顯示名稱</label>
             <input type="text" id="profileName" placeholder="你的名字">
             
-            <button class="btn btn-outline" onclick="window.updateUserProfile()">💾 儲存基本資料</button>
-            
             <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
             
             <h3>🔑 專屬額度綁定 (BYOK)</h3>
-            <div class="info-box">
-                <strong style="color: var(--text-main);">什麼是 API Key？</strong>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 4px 0 12px 0; line-height: 1.5;">
-                    API Key 就像是一把專屬鑰匙。使用系統預設的鑰匙每天只能生成 2 次，但如果你綁定自己的鑰匙，就能解鎖<strong>無限次數</strong>產題！申請是完全免費的。
-                </p>
-                <strong style="color: var(--text-main);">取得步驟：</strong>
-                <ol style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 4px; line-height: 1.6;">
-                    <li>點擊前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入。</li>
-                    <li>點擊畫面上的「Create API key」。</li>
-                    <li>複製英數密碼，貼到下方欄位並點擊綁定。</li>
-                </ol>
-            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">系統免費額度每日 2 次。綁定自己的 API Key 即可解鎖無限產題！此 Key 會自動同步於你的帳號中。</p>
             <input type="text" id="profileApiKey" placeholder="AIzaSy... (貼上你的 API Key)" style="font-family: monospace;">
-            <button class="btn btn-primary" onclick="window.saveCustomKeyToLocal()" style="background-color: #10b981; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);">⚡ 綁定專屬鑰匙</button>
-            <p id="profileQuotaHint" style="font-size: 0.9rem; margin-top: 12px; font-weight: bold;"></p>
+            
+            <div id="securitySection">
+                <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
+                <h3>🔒 安全性</h3>
+                <input type="password" id="newPasswordInput" placeholder="輸入新密碼 (不改請留空)">
+            </div>
 
-            <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
-
-            <h3>🔒 安全性</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">*僅限使用 Email 註冊的使用者修改密碼</p>
-            <input type="password" id="newPasswordInput" placeholder="輸入新密碼 (至少 6 碼)">
-            <button class="btn btn-danger" onclick="window.updateUserPassword()">修改密碼</button>
-            <p id="passwordUpdateMsg" style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;"></p>
+            <button class="btn btn-primary" onclick="window.updateUserProfile()" style="margin-top: 16px;">💾 儲存所有設定</button>
         </div>
 
         <div id="dashboardSection" class="card-panel hidden">
@@ -262,32 +189,25 @@
             </div>
             <div id="devilModeBtnContainer" class="hidden" style="margin-bottom: 24px;">
                 <button class="btn btn-devil" onclick="window.startDevilTraining()">🔥 啟動魔鬼特訓 (SM-2 記憶法)</button>
-                <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">系統將根據艾賓浩斯遺忘曲線，精準推播你今天該複習的錯題！</p>
             </div>
             <div id="dashboardList"></div>
         </div>
 
         <div class="card-panel" id="inputSection">
             <h2>建立新測驗</h2>
-            
             <div class="controls-grid">
                 <select id="qType"><option value="單選題">單選題</option><option value="是非題">是非題</option></select>
                 <select id="qCount"><option value="3">3 題</option><option value="5" selected>5 題</option><option value="10">10 題</option></select>
                 <select id="diff"><option value="簡單">簡單</option><option value="適中" selected>適中</option><option value="困難">困難</option></select>
             </div>
-            
             <div class="image-upload-zone">
                 <input type="file" id="imageInput" accept="image/*" class="hidden">
-                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()" style="border-style: dashed; border-width: 2px;">
-                    📷 拍攝課本 / 上傳筆記截圖
-                </button>
+                <button class="btn btn-outline" onclick="document.getElementById('imageInput').click()" style="border-style: dashed; border-width: 2px;">📷 拍攝課本 / 上傳筆記截圖</button>
                 <div id="imagePreviewContainer" class="image-preview-card hidden">
-                    <img id="previewImg" src="">
-                    <button class="remove-btn" onclick="window.removeImage()">✕</button>
+                    <img id="previewImg" src=""><button class="remove-btn" onclick="window.removeImage()">✕</button>
                 </div>
             </div>
-
-            <textarea id="noteInput" placeholder="也可以在這裡補充文字說明（非必填）..."></textarea>
+            <textarea id="noteInput" placeholder="在這裡補充文字說明（非必填）..."></textarea>
             <button class="btn btn-primary" onclick="window.generateContent()" id="generateBtn">生成專業教材</button>
         </div>
 
@@ -300,46 +220,34 @@
                     <div style="display: flex; gap: 8px;">
                         <button id="toggleNoteBtn" class="btn btn-small btn-outline" onclick="window.toggleNote()">👁️ 展開</button>
                         <button class="btn btn-small btn-outline" onclick="window.copyNote()">📋 複製</button>
-                        <button id="shareQuizBtn" class="btn btn-small btn-primary hidden" onclick="window.shareQuiz()">🔗 分享測驗</button>
                     </div>
                 </div>
-                
-                <div id="organizedContentWrapper" class="hidden">
-                    <div id="organizedContent" class="organized-content"></div>
-                </div>
+                <div id="organizedContentWrapper" class="hidden"><div id="organizedContent" class="organized-content"></div></div>
                 <textarea id="rawMarkdown" style="display:none;"></textarea>
             </div>
-
             <div class="card-panel timer-setup">
                 <h2>測驗設定</h2>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; margin-top: 16px;">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500;">
                         <input type="checkbox" id="enableTimer" checked onchange="window.toggleTimerInput()" style="width:18px; height:18px; margin:0;"> 啟用計時
                     </label>
-                    <div id="timeInputDiv" style="display: flex; align-items: center; font-weight: 500;">
-                        時長 <input type="number" id="timeMinutes" min="1"> 分鐘
-                    </div>
+                    <div id="timeInputDiv" style="display: flex; align-items: center; font-weight: 500;">時長 <input type="number" id="timeMinutes" min="1"> 分鐘</div>
                 </div>
-                <button class="btn btn-primary" style="background-color: #10b981; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);" onclick="window.startTest()">啟動測驗</button>
+                <button class="btn btn-primary" style="background-color: #10b981;" onclick="window.startTest()">啟動測驗</button>
             </div>
         </div>
 
         <div id="testSection" class="hidden">
-            <div id="devilModeBanner" class="hidden" style="background: #ef4444; color: white; padding: 12px; text-align: center; font-weight: bold; border-radius: 8px; margin-bottom: 20px;">
-                🔥 魔鬼特訓 (自動 SM-2)：系統將依照你的作答正確率自動調整記憶曲線！
-            </div>
-            
+            <div id="devilModeBanner" class="hidden" style="background: #ef4444; color: white; padding: 12px; text-align: center; font-weight: bold; border-radius: 8px; margin-bottom: 20px;">🔥 魔鬼特訓 (自動 SM-2)</div>
             <div id="stickyTimer">剩餘時間 <span id="timeDisplay" style="margin-left: 8px;">00:00</span></div>
             <div id="questionsContainer"></div>
-            
             <div id="scoreBoard" class="hidden card-panel" style="text-align: center; border: 2px solid var(--primary); background: var(--input-bg);">
                 <h2 id="scoreTitle" style="font-size: 2rem; margin-bottom: 8px;"></h2>
                 <p id="scoreText" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;"></p>
                 <p id="savingText" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px;">數據同步中...</p>
-                
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次 (原題目)</button>
-                    <button class="btn btn-primary" style="max-width: 200px; background-color: #8b5cf6;" onclick="window.generateMoreQuestions()">➕ 寫更多題 (新題目)</button>
+                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次</button>
+                    <button class="btn btn-primary" style="max-width: 200px; background-color: #8b5cf6;" onclick="window.generateMoreQuestions()">➕ 寫更多題</button>
                     <button class="btn btn-primary" style="max-width: 200px;" onclick="location.reload()">🏠 返回首頁</button>
                 </div>
             </div>
@@ -348,10 +256,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // Firebase 金鑰
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -362,56 +268,51 @@
         };
         const app = initializeApp(firebaseConfig); 
         const auth = getAuth(app); 
-        const storage = getStorage(app); 
         const provider = new GoogleAuthProvider();
         
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
-        const DEFAULT_AVATAR = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+        // 統一管理當前使用者狀態 (包含 Google 與 Custom)
+        let sessionUser = { type: 'none', id: '', displayName: '', photoUrl: '', apiKey: '' };
         
-        let currentUserEmail = ""; let currentGuestName = "";
         let testData = null; let totalQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
-        
-        let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
+        let isDevilMode = false; let currentQuizId = null;
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
-        let currentImageBase64 = null;
-        let tempAvatarBase64 = null; 
+        let currentImageBase64 = null; let tempAvatarBase64 = null; 
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const sharedQuizId = urlParams.get('quiz');
+        // 🚀 初始化：檢查是否有自訂帳號登入的 LocalStorage
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedCustomUser = localStorage.getItem('customUser');
+            if (savedCustomUser) {
+                sessionUser = JSON.parse(savedCustomUser);
+                refreshProfileUI();
+            } else {
+                // 如果沒有自訂登入，才檢查 Firebase Google 登入
+                onAuthStateChanged(auth, (user) => {
+                    if (user) { 
+                        sessionUser = { type: 'google', id: user.email, displayName: user.displayName || user.email.split('@')[0], photoUrl: user.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", apiKey: localStorage.getItem('myGeminiKey') || '' };
+                        refreshProfileUI();
+                    } else { 
+                        document.getElementById('authSection').classList.remove('hidden'); document.getElementById('appSection').classList.add('hidden'); 
+                    }
+                });
+            }
+        });
 
-        if (sharedQuizId) {
-            isGuestMode = true; currentQuizId = sharedQuizId;
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('appSection').classList.add('hidden');
-            document.getElementById('guestSection').classList.remove('hidden');
-        } else {
-            onAuthStateChanged(auth, (user) => {
-                if (user) { 
-                    currentUserEmail = user.email;
-                    refreshProfileUI(user);
-                    document.getElementById('authSection').classList.add('hidden'); 
-                    document.getElementById('appSection').classList.remove('hidden'); 
-                } else { 
-                    document.getElementById('authSection').classList.remove('hidden'); 
-                    document.getElementById('appSection').classList.add('hidden'); 
-                }
-            });
-        }
-
-        function refreshProfileUI(user) {
-            if(!user) return;
-            const dName = user.displayName || user.email.split('@')[0];
-            document.getElementById('userNameDisplay').innerText = `👋 ${dName}`;
-            document.getElementById('userAvatar').src = user.photoURL || DEFAULT_AVATAR;
+        function refreshProfileUI() {
+            document.getElementById('userNameDisplay').innerText = sessionUser.displayName;
+            document.getElementById('userIdDisplay').innerText = sessionUser.type === 'custom' ? `@${sessionUser.id}` : sessionUser.id;
+            document.getElementById('userAvatar').src = sessionUser.photoUrl;
             document.getElementById('userAvatar').style.display = 'block';
+            document.getElementById('authSection').classList.add('hidden'); 
+            document.getElementById('appSection').classList.remove('hidden'); 
         }
 
         window.toggleAuthMode = (mode) => {
             document.getElementById('authErrorMsg').innerText = "";
             if (mode === 'register') {
-                document.getElementById('authTitle').innerText = "建立新帳號";
+                document.getElementById('authTitle').innerText = "建立自訂帳號";
                 document.getElementById('registerNameInput').classList.remove('hidden');
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('switchRegisterBtn').classList.add('hidden');
@@ -427,189 +328,132 @@
             }
         };
 
-        window.startGuestChallenge = async () => {
-            const name = document.getElementById('guestNameInput').value.trim();
-            if (!name) return document.getElementById('guestErrorMsg').innerText = "請先輸入名字！";
-            currentGuestName = name;
-            
-            document.getElementById('guestSection').classList.add('hidden');
-            showLoading("正在下載挑戰考卷...");
-            
-            try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getQuiz', quizId: currentQuizId }) });
-                const result = await response.json();
-                if (result.status === 'error') throw new Error(result.message);
-                
-                document.getElementById('appSection').classList.remove('hidden');
-                document.getElementById('inputSection').classList.add('hidden'); 
-                document.querySelector('.account-bar').classList.add('hidden'); 
-                
-                const creatorName = result.creatorName || '神秘人';
-                alert(`這份考卷由 ${creatorName} 建立！準備好就開始吧！`);
-                loadPrepSection(result);
-            } catch (error) { 
-                alert('載入失敗：' + error.message); 
-                window.location.href = window.location.pathname; 
-            } finally { document.getElementById('loading').style.display = 'none'; }
-        };
-
         const initTheme = () => { const s = localStorage.getItem('theme') || 'light'; document.body.setAttribute('data-theme', s); document.getElementById('themeToggleBtn').innerText = s === 'dark' ? '☀️' : '🌙'; };
-        initTheme(); 
-        window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
+        initTheme(); window.toggleTheme = () => { const n = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.body.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
         
+        function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
+        
+        // 🚀 Google 登入 (維持原樣)
         window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => showError(e.message)); };
         
-        window.registerWithEmail = () => {
-            const name = document.getElementById('registerNameInput').value.trim();
-            if(!name) return showError("請輸入你想顯示的使用者名稱！");
+        // 🚀 呼叫後端 API
+        async function fetchGAS(payload) {
+            const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await response.json();
+            if (result.status === 'error') throw new Error(result.message);
+            return result;
+        }
+
+        // 🚀 自訂帳號註冊 (存入試算表)
+        window.registerCustom = async () => {
+            const accountId = document.getElementById('idInput').value.trim();
+            const displayName = document.getElementById('registerNameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            if(!accountId || !password) return showError("帳號 ID 與密碼為必填！");
             
-            createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
-            .then((userCredential) => {
-                updateProfile(userCredential.user, {
-                    displayName: name,
-                    photoURL: DEFAULT_AVATAR
-                }).then(() => {
-                    alert("註冊成功，歡迎加入！");
-                    location.reload(); 
-                });
-            })
-            .catch(e => showError(e.message));
+            document.getElementById('registerBtn').innerText = "註冊中...";
+            try {
+                const res = await fetchGAS({ action: 'registerCustom', accountId, displayName, password });
+                sessionUser = { type: 'custom', id: res.user.id, displayName: res.user.displayName, photoUrl: res.user.photoUrl, apiKey: res.user.apiKey };
+                localStorage.setItem('customUser', JSON.stringify(sessionUser));
+                refreshProfileUI();
+            } catch (e) { showError(e.message); }
+            finally { document.getElementById('registerBtn').innerText = "註冊並登入"; }
         };
 
-        window.loginWithEmail = () => {
-            signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
-            .catch(e => showError("登入失敗，請檢查帳號密碼。"));
+        // 🚀 自訂帳號登入
+        window.loginCustom = async () => {
+            const accountId = document.getElementById('idInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            if(!accountId || !password) return showError("請輸入帳號與密碼");
+            
+            document.getElementById('loginBtn').innerText = "登入中...";
+            try {
+                const res = await fetchGAS({ action: 'loginCustom', accountId, password });
+                sessionUser = { type: 'custom', id: res.user.id, displayName: res.user.displayName, photoUrl: res.user.photoUrl, apiKey: res.user.apiKey };
+                localStorage.setItem('customUser', JSON.stringify(sessionUser));
+                refreshProfileUI();
+            } catch (e) { showError(e.message); }
+            finally { document.getElementById('loginBtn').innerText = "登入"; }
         };
         
-        window.logout = () => signOut(auth).then(() => { location.reload(); });
-        function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
+        window.logout = () => { 
+            localStorage.removeItem('customUser');
+            signOut(auth).then(() => { location.reload(); }); 
+        };
         
         window.openProfile = () => {
             document.getElementById('inputSection').classList.add('hidden');
             document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('profileSection').classList.remove('hidden');
             
-            const user = auth.currentUser;
-            if(user) {
-                document.getElementById('profileName').value = user.displayName || user.email.split('@')[0];
-                document.getElementById('profilePicPreview').src = user.photoURL || DEFAULT_AVATAR;
-            }
+            document.getElementById('profileName').value = sessionUser.displayName;
+            document.getElementById('profilePicPreview').src = sessionUser.photoUrl;
+            document.getElementById('profileApiKey').value = sessionUser.apiKey;
             
-            const savedKey = localStorage.getItem('myGeminiKey');
-            if(savedKey) {
-                document.getElementById('profileApiKey').value = savedKey;
-                document.getElementById('profileQuotaHint').innerText = "✅ 系統偵測到已綁定專屬 API Key！";
-                document.getElementById('profileQuotaHint').style.color = "var(--success-text)";
-            } else {
-                document.getElementById('profileApiKey').value = "";
-                document.getElementById('profileQuotaHint').innerText = "💡 目前使用系統每日免費額度 (2次/天)。";
-                document.getElementById('profileQuotaHint').style.color = "var(--text-muted)";
-            }
-            
+            // 安全性區域只開放給自訂帳號修改密碼
+            document.getElementById('securitySection').style.display = sessionUser.type === 'custom' ? 'block' : 'none';
             document.getElementById('newPasswordInput').value = "";
             tempAvatarBase64 = null; 
         };
 
-        window.closeProfile = () => {
-            document.getElementById('profileSection').classList.add('hidden');
-            document.getElementById('inputSection').classList.remove('hidden');
-        };
+        window.closeProfile = () => { document.getElementById('profileSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
         window.previewAvatar = (e) => {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image(); img.onload = function() {
-                    const canvas = document.createElement('canvas'); 
-                    const size = Math.min(img.width, img.height); 
-                    canvas.width = 200; canvas.height = 200;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, (img.width - size)/2, (img.height - size)/2, size, size, 0, 0, 200, 200);
+                    const canvas = document.createElement('canvas'); const size = Math.min(img.width, img.height); canvas.width = 200; canvas.height = 200;
+                    canvas.getContext('2d').drawImage(img, (img.width - size)/2, (img.height - size)/2, size, size, 0, 0, 200, 200);
                     tempAvatarBase64 = canvas.toDataURL('image/jpeg', 0.6);
                     document.getElementById('profilePicPreview').src = tempAvatarBase64;
-                }; 
-                img.src = event.target.result;
-            }; 
-            reader.readAsDataURL(file);
+                }; img.src = event.target.result;
+            }; reader.readAsDataURL(file);
         };
 
-        // 🚀 修改：樂觀 UI 與非同步背景上傳，實現 0 秒等待！
+        // 🚀 完美更新設定 (樂觀 UI + 背景非同步上傳，支援自訂/Google帳號切換)
         window.updateUserProfile = async () => {
-            const user = auth.currentUser;
-            if(!user) return;
             const newName = document.getElementById('profileName').value.trim();
+            const newKey = document.getElementById('profileApiKey').value.trim();
+            const newPw = document.getElementById('newPasswordInput').value;
             
-            // 1. 樂觀 UI (Optimistic UI)：直接替換畫面的資料
-            const finalName = newName || user.email.split('@')[0];
-            document.getElementById('userNameDisplay').innerText = `👋 ${finalName}`;
-            if (tempAvatarBase64) {
-                document.getElementById('userAvatar').src = tempAvatarBase64;
-            }
-
-            // 2. 秒退設定畫面，讓使用者覺得瞬間完成
-            window.closeProfile();
-
-            // 3. 在背景默默上傳資料，不阻擋使用者的任何操作
-            (async () => {
-                try {
-                    let finalPhotoUrl = user.photoURL;
-                    if (tempAvatarBase64) {
-                        const sRef = storageRef(storage, `avatars/${user.uid}.jpg`);
-                        await uploadString(sRef, tempAvatarBase64, 'data_url');
-                        finalPhotoUrl = await getDownloadURL(sRef);
-                    }
-
-                    await updateProfile(user, {
-                        displayName: finalName,
-                        photoURL: finalPhotoUrl || DEFAULT_AVATAR
-                    });
-                    tempAvatarBase64 = null; 
-                    console.log("背景上傳完成！");
-                } catch (error) {
-                    console.error("背景上傳失敗:", error);
-                }
-            })();
-        };
-
-        window.updateUserPassword = () => {
-            const user = auth.currentUser;
-            const newPassword = document.getElementById('newPasswordInput').value;
-            if(newPassword.length < 6) {
-                document.getElementById('passwordUpdateMsg').innerText = "⚠️ 密碼長度必須大於 6 個字元";
-                document.getElementById('passwordUpdateMsg').style.color = "var(--danger-text)";
+            // 1. 樂觀 UI 直接替換
+            sessionUser.displayName = newName || sessionUser.displayName;
+            sessionUser.apiKey = newKey;
+            if (tempAvatarBase64) sessionUser.photoUrl = tempAvatarBase64;
+            refreshProfileUI();
+            
+            // 如果是 Google 帳號，API Key 存本地就好
+            if (sessionUser.type === 'google') {
+                localStorage.setItem('myGeminiKey', newKey);
+                alert("Google 帳號的 API Key 已存入本機設定。");
+                window.closeProfile();
                 return;
             }
             
-            updatePassword(user, newPassword).then(() => {
-                document.getElementById('passwordUpdateMsg').innerText = "✅ 密碼修改成功！";
-                document.getElementById('passwordUpdateMsg').style.color = "var(--success-text)";
-                document.getElementById('newPasswordInput').value = "";
-            }).catch((error) => {
-                if(error.code === 'auth/requires-recent-login') {
-                    document.getElementById('passwordUpdateMsg').innerText = "❌ 基於安全考量，請登出後重新登入再修改密碼。";
-                } else {
-                    document.getElementById('passwordUpdateMsg').innerText = "❌ 修改失敗: " + error.message;
-                }
-                document.getElementById('passwordUpdateMsg').style.color = "var(--danger-text)";
-            });
+            // 2. 自訂帳號：秒退畫面，背景呼叫 Apps Script 寫入資料庫
+            window.closeProfile();
+            localStorage.setItem('customUser', JSON.stringify(sessionUser)); // 先更新本地
+
+            try {
+                const res = await fetchGAS({ 
+                    action: 'updateProfileCustom', 
+                    accountId: sessionUser.id, 
+                    displayName: newName, 
+                    avatarBase64: tempAvatarBase64, 
+                    apiKey: newKey, 
+                    newPassword: newPw 
+                });
+                // 更新回傳的真實 Drive URL
+                sessionUser.photoUrl = res.user.photoUrl;
+                localStorage.setItem('customUser', JSON.stringify(sessionUser));
+                refreshProfileUI();
+                tempAvatarBase64 = null;
+            } catch (error) { console.error("背景更新失敗:", error); }
         };
 
-        window.saveCustomKeyToLocal = () => {
-            const customKey = document.getElementById('profileApiKey').value.trim();
-            if(customKey && customKey.length > 20) {
-                localStorage.setItem('myGeminiKey', customKey);
-                document.getElementById('profileQuotaHint').innerText = "✅ 綁定成功！已為你解鎖無限火力模式。";
-                document.getElementById('profileQuotaHint').style.color = "var(--success-text)";
-            } else if (customKey === "") {
-                localStorage.removeItem('myGeminiKey');
-                document.getElementById('profileQuotaHint').innerText = "🔄 已解除綁定，切換回系統免費額度。";
-                document.getElementById('profileQuotaHint').style.color = "var(--text-muted)";
-            } else {
-                document.getElementById('profileQuotaHint').innerText = "⚠️ 鑰匙格式似乎有誤，請再檢查一次！";
-                document.getElementById('profileQuotaHint').style.color = "var(--danger-text)";
-            }
-        };
-
+        // 以下保留原本的題庫生成與測驗邏輯
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
@@ -617,8 +461,8 @@
                 const img = new Image(); img.onload = function() {
                     const canvas = document.createElement('canvas'); const scaleSize = 1024 / img.width; canvas.width = 1024; canvas.height = img.height * scaleSize;
                     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8); currentImageBase64 = dataUrl.split(',')[1]; 
-                    document.getElementById('previewImg').src = dataUrl; document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1]; 
+                    document.getElementById('previewImg').src = "data:image/jpeg;base64," + currentImageBase64; document.getElementById('imagePreviewContainer').classList.remove('hidden');
                 }; img.src = event.target.result;
             }; reader.readAsDataURL(file);
         });
@@ -629,67 +473,31 @@
             if (!note.trim() && !currentImageBase64) return alert('請輸入文字或圖片！');
             
             const genBtn = document.getElementById('generateBtn');
-            genBtn.disabled = true;
-            genBtn.innerText = "⏳ 魔法詠唱中...";
+            genBtn.disabled = true; genBtn.innerText = "⏳ 魔法詠唱中..."; showLoading("AI 正在為你客製化題目...");
             
-            showLoading("AI 正在為你客製化題目...");
-            
-            const user = auth.currentUser;
-            const dName = user ? (user.displayName || user.email.split('@')[0]) : '匿名';
-            const customKey = localStorage.getItem('myGeminiKey') || "";
-
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'generate', 
-                        username: currentUserEmail,
-                        displayName: dName,
-                        customApiKey: customKey, 
-                        note: note, 
-                        imageBase64: currentImageBase64, 
-                        qType: document.getElementById('qType').value, 
-                        qCount: document.getElementById('qCount').value, 
-                        diff: document.getElementById('diff').value 
-                    }) 
+                const res = await fetchGAS({ 
+                    action: 'generate', username: sessionUser.id, displayName: sessionUser.displayName, customApiKey: sessionUser.apiKey, 
+                    note: note, imageBase64: currentImageBase64, qType: document.getElementById('qType').value, qCount: document.getElementById('qCount').value, diff: document.getElementById('diff').value 
                 });
-                const result = await response.json(); 
-                if (result.status === 'error') throw new Error(result.message);
-                
-                isDevilMode = false; currentQuizId = result.quizId; 
-                loadPrepSection(result);
-            } catch (error) { 
-                alert('錯誤：' + error.message); 
-                document.getElementById('inputSection').classList.remove('hidden'); 
-            } finally { 
-                document.getElementById('loading').style.display = 'none'; 
-                genBtn.disabled = false;
-                genBtn.innerText = "生成專業教材";
-            }
+                isDevilMode = false; currentQuizId = res.quizId; loadPrepSection(res);
+            } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); } 
+            finally { document.getElementById('loading').style.display = 'none'; genBtn.disabled = false; genBtn.innerText = "生成專業教材"; }
         };
 
-        window.generateMoreQuestions = () => {
-            document.getElementById('scoreBoard').classList.add('hidden');
-            document.getElementById('testSection').classList.add('hidden');
-            window.generateContent();
-        };
+        window.generateMoreQuestions = () => { document.getElementById('scoreBoard').classList.add('hidden'); document.getElementById('testSection').classList.add('hidden'); window.generateContent(); };
 
         window.fetchHistory = async () => { 
             showLoading("下載歷史紀錄..."); document.getElementById('dashboardTitle').innerText = "歷史檔案庫"; document.getElementById('devilModeBtnContainer').classList.add('hidden'); 
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getHistory', username: currentUserEmail }) });
-                const result = await response.json(); if (result.status === 'error') throw new Error(result.message);
-                const listDiv = document.getElementById('dashboardList'); listDiv.innerHTML = result.history.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">尚無紀錄</p>' : '';
-                result.history.forEach((item) => {
+                const res = await fetchGAS({ action: 'getHistory', username: sessionUser.id });
+                const listDiv = document.getElementById('dashboardList'); listDiv.innerHTML = res.history.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">尚無紀錄</p>' : '';
+                res.history.forEach((item) => {
                     const d = new Date(item.timestamp); const div = document.createElement('div'); div.className = 'list-item';
                     div.innerHTML = `<div><strong style="font-size:1.1rem; color:var(--text-main);">${item.noteSnippet}</strong><div class="item-meta"><span>${d.getMonth()+1}/${d.getDate()}</span><span>${item.diff} • ${item.qCount}題</span></div></div>
-                        <div style="display:flex; gap:8px;"><button class="btn btn-small btn-outline share-btn" data-id="${item.quizId}">🔗 分享</button><button class="btn btn-small btn-primary retest-btn">重測</button></div>`;
+                        <div style="display:flex; gap:8px;"><button class="btn btn-small btn-primary retest-btn">重測</button></div>`;
                     listDiv.appendChild(div);
                     div.querySelector('.retest-btn').onclick = () => { document.getElementById('dashboardSection').classList.add('hidden'); currentQuizId = item.quizId; isDevilMode = false; loadPrepSection(item); };
-                    div.querySelector('.share-btn').onclick = (e) => { 
-                        const link = `${window.location.origin}${window.location.pathname}?quiz=${e.target.dataset.id}`;
-                        navigator.clipboard.writeText(link).then(() => alert("✅ 連結已複製！貼給同學挑戰吧！"));
-                    };
                 });
                 document.getElementById('dashboardSection').classList.remove('hidden');
             } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); }
@@ -699,17 +507,15 @@
         window.fetchMistakes = async () => { 
             showLoading("整理錯題本中..."); document.getElementById('dashboardTitle').innerText = "錯題分析";
             try {
-                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getMistakes', username: currentUserEmail }) });
-                const result = await response.json(); if (result.status === 'error') throw new Error(result.message);
-                loadedMistakesList = result.mistakes; 
+                const res = await fetchGAS({ action: 'getMistakes', username: sessionUser.id });
+                loadedMistakesList = res.mistakes; 
                 const listDiv = document.getElementById('dashboardList');
-                if (result.mistakes.length === 0) { listDiv.innerHTML = '<p style="text-align:center; color:var(--text-muted);">太神啦！目前沒有需要複習的錯題！</p>'; document.getElementById('devilModeBtnContainer').classList.add('hidden'); } 
+                if (res.mistakes.length === 0) { listDiv.innerHTML = '<p style="text-align:center; color:var(--text-muted);">太神啦！目前沒有需要複習的錯題！</p>'; document.getElementById('devilModeBtnContainer').classList.add('hidden'); } 
                 else {
                     listDiv.innerHTML = ''; document.getElementById('devilModeBtnContainer').classList.remove('hidden'); 
-                    result.mistakes.forEach(item => {
-                        const div = document.createElement('div'); div.className = 'mistake-card';
-                        div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:8px; color:var(--text-main);">Q. ${item.question}</div><div class="correct-ans">正確答案：${item.options[item.answer_index]}</div>
-                                         <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">熟悉度: ${item.easeFactor} | 間隔: ${item.interval}天</div>`;
+                    res.mistakes.forEach(item => {
+                        const div = document.createElement('div'); div.className = 'mistake-card card-panel';
+                        div.innerHTML = `<div style="font-weight:600; font-size:1.1rem; margin-bottom:8px; color:var(--text-main);">Q. ${item.question}</div><div class="correct-ans">正確答案：${item.options[item.answer_index]}</div>`;
                         listDiv.appendChild(div);
                     });
                 }
@@ -719,83 +525,30 @@
         };
 
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
-
-        function showLoading(text="處理中") {
-            ['inputSection','dashboardSection','prepSection','testSection','scoreBoard', 'profileSection'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('loadingText').innerText = text; document.getElementById('loading').style.display = 'block';
-        }
-
-        window.toggleNote = () => {
-            const wrapper = document.getElementById('organizedContentWrapper');
-            const btn = document.getElementById('toggleNoteBtn');
-            if (wrapper.classList.contains('hidden')) {
-                wrapper.classList.remove('hidden');
-                btn.innerText = '🙈 收起';
-            } else {
-                wrapper.classList.add('hidden');
-                btn.innerText = '👁️ 展開';
-            }
-        };
+        function showLoading(text="處理中") { ['inputSection','dashboardSection','prepSection','testSection','scoreBoard', 'profileSection'].forEach(id => document.getElementById(id).classList.add('hidden')); document.getElementById('loadingText').innerText = text; document.getElementById('loading').style.display = 'block'; }
+        window.toggleNote = () => { const wrapper = document.getElementById('organizedContentWrapper'); const btn = document.getElementById('toggleNoteBtn'); if (wrapper.classList.contains('hidden')) { wrapper.classList.remove('hidden'); btn.innerText = '🙈 收起'; } else { wrapper.classList.add('hidden'); btn.innerText = '👁️ 展開'; } };
 
         function loadPrepSection(data) {
-            try {
-                testData = data; currentMistakes = []; srsUpdatesThisRound = []; 
-                document.getElementById('rawMarkdown').value = data.organized_notes || '';
-                
-                try { document.getElementById('organizedContent').innerHTML = (typeof window.marked !== 'undefined') ? window.marked.parse(data.organized_notes||'') : (data.organized_notes||'').replace(/\n/g, '<br>'); } catch(e) {}
-                
-                document.getElementById('organizedContentWrapper').classList.add('hidden');
-                document.getElementById('toggleNoteBtn').innerText = '👁️ 展開';
-                document.getElementById('timeMinutes').value = data.suggested_time || 5;
-                
-                if (currentQuizId && !isGuestMode && !isDevilMode) {
-                    document.getElementById('shareQuizBtn').classList.remove('hidden');
-                } else {
-                    document.getElementById('shareQuizBtn').classList.add('hidden');
-                }
-                
-                document.getElementById('prepSection').classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (err) { alert("發生錯誤：" + err.message); location.reload(); }
+            testData = data; currentMistakes = []; srsUpdatesThisRound = []; 
+            document.getElementById('rawMarkdown').value = data.organized_notes || '';
+            try { document.getElementById('organizedContent').innerHTML = marked.parse(data.organized_notes||''); } catch(e) {}
+            document.getElementById('organizedContentWrapper').classList.add('hidden'); document.getElementById('toggleNoteBtn').innerText = '👁️ 展開';
+            document.getElementById('timeMinutes').value = data.suggested_time || 5;
+            document.getElementById('prepSection').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        window.shareQuiz = () => {
-            const link = `${window.location.origin}${window.location.pathname}?quiz=${currentQuizId}`;
-            navigator.clipboard.writeText(link).then(() => alert("✅ 連結已複製！貼到班群給同學挑戰吧！"));
-        }
-
-        function calcSM2(quality, interval, reps, ease) {
-            if (quality < 3) { reps = 0; interval = 1; } 
-            else {
-                if (reps === 0) interval = 1;
-                else if (reps === 1) interval = 6;
-                else interval = Math.round(interval * ease);
-                reps++;
-            }
-            ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-            if (ease < 1.3) ease = 1.3;
-            const nextReviewTime = new Date().getTime() + interval * 24 * 60 * 60 * 1000;
-            return { newInterval: interval, newReps: reps, newEase: ease, nextReviewTime };
-        }
+        window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
+        window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
 
         window.startDevilTraining = () => {
-            if (loadedMistakesList.length === 0) return alert("沒有錯題可以特訓！");
-            let shuffled = [...loadedMistakesList];
-            for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
-            testData = { questions: shuffled.slice(0, 10) }; 
-            isDevilMode = true; currentMistakes = []; srsUpdatesThisRound = [];
-            document.getElementById('timeMinutes').value = testData.questions.length;
-            document.getElementById('dashboardSection').classList.add('hidden'); window.startTest(); 
+            let shuffled = [...loadedMistakesList]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+            testData = { questions: shuffled.slice(0, 10) }; isDevilMode = true; currentMistakes = []; srsUpdatesThisRound = [];
+            document.getElementById('timeMinutes').value = testData.questions.length; document.getElementById('dashboardSection').classList.add('hidden'); window.startTest(); 
         };
-
-        window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
-        window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
 
         window.startTest = () => {
             document.getElementById('prepSection').classList.add('hidden'); document.getElementById('testSection').classList.remove('hidden'); 
-            const devilBanner = document.getElementById('devilModeBanner');
-            if (isDevilMode) devilBanner.classList.remove('hidden'); else devilBanner.classList.add('hidden');
-            
+            document.getElementById('devilModeBanner').classList[isDevilMode ? 'remove' : 'add']('hidden');
             const qContainer = document.getElementById('questionsContainer'); qContainer.innerHTML = '';
             totalQuestions = testData.questions.length; correctAnswers = 0;
 
@@ -803,121 +556,54 @@
                 const card = document.createElement('div'); card.className = 'question-card card-panel'; card.dataset.ans = q.answer_index; card.dataset.qIdx = index;
                 let html = `<div class="question-text">${index + 1}. ${q.question}</div><div class="options-wrapper">`;
                 q.options.forEach((opt, optIndex) => { html += `<div class="option" data-opt="${optIndex}">${opt}</div>`; });
-                html += `</div>`;
-                
-                html += `<div class="explanation-box hidden"><strong>💡 解析：</strong><br>${q.explanation ? q.explanation.replace(/\n/g, '<br>') : '此題無詳細解析。'}</div>`;
-                
+                html += `</div><div class="explanation-box hidden"><strong>💡 解析：</strong><br>${q.explanation ? q.explanation.replace(/\n/g, '<br>') : '此題無詳細解析。'}</div>`;
                 card.innerHTML = html; qContainer.appendChild(card);
-                card.querySelectorAll('.option').forEach(optEl => { 
-                    optEl.onclick = () => window.checkAnswer(optEl, parseInt(optEl.dataset.opt), card); 
-                });
+                card.querySelectorAll('.option').forEach(optEl => { optEl.onclick = () => { if(card.dataset.locked !== "true") { card.querySelectorAll('.option').forEach(o => o.classList.remove('selected')); optEl.classList.add('selected'); card.dataset.userAns = optEl.dataset.opt; } }; });
             });
-
-            const submitBtn = document.createElement('button');
-            submitBtn.className = 'btn btn-primary';
-            submitBtn.style.marginTop = '24px';
-            submitBtn.innerText = '📝 寫完交卷';
-            submitBtn.onclick = () => window.forceSubmit();
-            qContainer.appendChild(submitBtn);
+            const submitBtn = document.createElement('button'); submitBtn.className = 'btn btn-primary'; submitBtn.style.marginTop = '24px'; submitBtn.innerText = '📝 寫完交卷'; submitBtn.onclick = () => window.forceSubmit(); qContainer.appendChild(submitBtn);
 
             const stickyTimer = document.getElementById('stickyTimer');
             if (document.getElementById('enableTimer').checked) {
-                timeRemaining = parseInt(document.getElementById('timeMinutes').value) * 60;
-                stickyTimer.style.display = 'block'; stickyTimer.classList.remove('danger'); updateTimerDisplay();
-                timerInterval = setInterval(() => {
-                    timeRemaining--; updateTimerDisplay();
-                    if (timeRemaining <= 10) stickyTimer.classList.add('danger');
-                    if (timeRemaining <= 0) { clearInterval(timerInterval); window.forceSubmit(); }
-                }, 1000);
+                timeRemaining = parseInt(document.getElementById('timeMinutes').value) * 60; stickyTimer.style.display = 'block'; stickyTimer.classList.remove('danger'); updateTimerDisplay();
+                timerInterval = setInterval(() => { timeRemaining--; updateTimerDisplay(); if (timeRemaining <= 10) stickyTimer.classList.add('danger'); if (timeRemaining <= 0) { clearInterval(timerInterval); window.forceSubmit(); } }, 1000);
             } else stickyTimer.style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         function updateTimerDisplay() { document.getElementById('timeDisplay').innerText = `${Math.floor(timeRemaining/60).toString().padStart(2,'0')}:${(timeRemaining%60).toString().padStart(2,'0')}`; }
 
-        window.checkAnswer = (selectedEl, selectedIdx, cardEl) => {
-            if (cardEl.dataset.locked === "true") return; 
-            cardEl.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-            selectedEl.classList.add('selected');
-            cardEl.dataset.userAns = selectedIdx; 
-        };
-
         window.forceSubmit = () => {
-            clearInterval(timerInterval);
-            let correctCount = 0;
-            currentMistakes = [];
-            srsUpdatesThisRound = [];
-
-            const submitBtn = document.querySelector('#questionsContainer .btn-primary');
-            if(submitBtn) submitBtn.style.display = 'none';
+            clearInterval(timerInterval); let correctCount = 0; currentMistakes = []; srsUpdatesThisRound = [];
+            const submitBtn = document.querySelector('#questionsContainer .btn-primary'); if(submitBtn) submitBtn.style.display = 'none';
 
             document.querySelectorAll('.question-card').forEach(card => {
-                card.dataset.locked = "true"; 
-                card.style.pointerEvents = "none"; 
-
-                const correctIdx = parseInt(card.dataset.ans);
-                const userAns = card.dataset.userAns !== undefined ? parseInt(card.dataset.userAns) : -1;
-                const options = card.querySelectorAll('.option');
-                const q = testData.questions[parseInt(card.dataset.qIdx)];
-
+                card.dataset.locked = "true"; card.style.pointerEvents = "none"; 
+                const correctIdx = parseInt(card.dataset.ans), userAns = card.dataset.userAns !== undefined ? parseInt(card.dataset.userAns) : -1;
+                const options = card.querySelectorAll('.option'), q = testData.questions[parseInt(card.dataset.qIdx)];
                 options[correctIdx].classList.add('correct'); 
 
-                if (userAns === correctIdx) {
-                    correctCount++;
-                    if (isDevilMode) {
-                        const res = calcSM2(4, q.interval, q.repetitions, q.easeFactor);
-                        srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
-                    }
-                } else {
-                    if (userAns !== -1) options[userAns].classList.add('wrong'); 
-                    
-                    if (isDevilMode) {
-                        const res = calcSM2(1, q.interval, q.repetitions, q.easeFactor);
-                        srsUpdatesThisRound.push({ rowIndex: q.rowIndex, newInterval: res.newInterval, newReps: res.newReps, newEase: res.newEase, nextReviewTime: res.nextReviewTime });
-                    } else if (!isGuestMode) {
-                        currentMistakes.push(q); 
-                    }
-                }
+                if (userAns === correctIdx) { correctCount++; } 
+                else { if (userAns !== -1) options[userAns].classList.add('wrong'); currentMistakes.push(q); }
 
                 const expBox = card.querySelector('.explanation-box');
-                if (expBox) {
-                    expBox.classList.remove('hidden');
-                    if (userAns === correctIdx) expBox.classList.add('correct-exp');
-                    else expBox.classList.add('wrong-exp');
-                }
+                if (expBox) { expBox.classList.remove('hidden'); expBox.classList.add(userAns === correctIdx ? 'correct-exp' : 'wrong-exp'); }
             });
-
-            correctAnswers = correctCount;
-            submitScoreAndShowResult();
+            correctAnswers = correctCount; submitScoreAndShowResult();
         };
 
         async function submitScoreAndShowResult() {
             document.getElementById('stickyTimer').style.display = 'none'; document.getElementById('scoreBoard').classList.remove('hidden');
             let percentage = (correctAnswers / totalQuestions) * 100;
-            
             document.getElementById('scoreTitle').innerText = percentage === 100 ? "太棒了！" : "測驗結束";
             document.getElementById('scoreText').innerText = `得分：${correctAnswers} / ${totalQuestions}`;
-            document.getElementById('savingText').innerText = "📡 同步資料庫中...";
             
             try {
-                let payload = {};
-                if (isGuestMode) {
-                    payload = { action: 'submitPublicScore', quizId: currentQuizId, guestName: currentGuestName, score: correctAnswers, total: totalQuestions };
-                } else {
-                    payload = { action: 'submitScore', username: currentUserEmail, mistakes: currentMistakes, srsUpdates: srsUpdatesThisRound, isPerfect: (percentage===100), isDevilMode: isDevilMode };
-                }
-                
-                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const result = await response.json();
-                document.getElementById('savingText').innerText = "✅ 數據已同步";
+                await fetchGAS({ action: 'submitScore', username: sessionUser.id, mistakes: currentMistakes, srsUpdates: srsUpdatesThisRound, isPerfect: (percentage===100), isDevilMode: isDevilMode });
+                document.getElementById('savingText').innerText = "✅ 數據已同步至資料庫";
             } catch (error) { document.getElementById('savingText').innerText = "⚠️ 數據同步異常"; }
             setTimeout(() => document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }), 300);
         }
-
-        window.retrySameQuiz = () => {
-            document.getElementById('scoreBoard').classList.add('hidden');
-            window.startTest();
-        };
+        window.retrySameQuiz = () => { document.getElementById('scoreBoard').classList.add('hidden'); window.startTest(); };
     </script>
 </body>
 </html>
