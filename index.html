@@ -59,6 +59,7 @@
         h1 { text-align: center; color: var(--text-main); font-size: 2.5rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; font-weight: 400; }
         h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 16px 0; color: var(--text-main); letter-spacing: -0.01em; }
+        h3 { font-size: 1.2rem; font-weight: 600; margin: 0 0 12px 0; color: var(--text-main); }
         
         .card-panel { background: var(--card-bg); padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border-color 0.4s ease; }
         
@@ -69,8 +70,8 @@
         .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
         .btn-outline { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { background-color: var(--input-bg); }
-        .btn-danger { background-color: transparent; color: var(--danger-text); border: 1px solid var(--danger-border); }
-        .btn-danger:hover { background-color: var(--danger-bg); }
+        .btn-danger { background-color: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
+        .btn-danger:hover { background-color: #fecaca; }
         .btn-small { width: auto; padding: 8px 16px; font-size: 0.9rem; border-radius: 8px; }
         .btn-devil { background-color: #ef4444; color: white; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.3); }
         .btn-devil:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.4); }
@@ -85,7 +86,7 @@
         .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); transition: 0.3s; }
         .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-main); }
         .user-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: none; }
-        .account-bar .actions { display: flex; gap: 8px; }
+        .account-bar .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
         .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .controls-grid select { margin-bottom: 0; cursor: pointer; }
@@ -129,12 +130,6 @@
         
         .mistake-card .correct-ans { background: var(--success-bg); color: var(--success-text); padding: 12px 16px; border-radius: 8px; margin-top: 16px; font-weight: 500; font-size: 0.95rem; border: 1px solid var(--success-border); }
 
-        .achievement-modal { position: fixed; bottom: 32px; right: -400px; background: var(--card-bg); border: 1px solid var(--border); padding: 20px 24px; border-radius: 16px; box-shadow: var(--shadow-hover); z-index: 1000; transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 16px; width: 340px; }
-        .achievement-modal.show { right: 32px; }
-        .achievement-icon { font-size: 2.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-        .achievement-text h4 { margin: 0 0 4px 0; color: var(--text-main); font-size: 1.1rem; font-weight: 700; }
-        .achievement-text p { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
-
         .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
         .theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--shadow-hover); border-color: var(--primary); }
 
@@ -144,6 +139,11 @@
         .image-preview-card .remove-btn { position: absolute; top: -10px; right: -10px; background: var(--danger-text); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .image-preview-card .remove-btn:hover { transform: scale(1.1); }
 
+        /* API 教學資訊框 */
+        .info-box { background: var(--input-bg); border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+        .info-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
+        .info-box a:hover { text-decoration: underline; }
+
         @media (max-width: 600px) {
             body { padding: 10px 10px 80px 10px; }
             h1 { font-size: 2rem; }
@@ -151,14 +151,7 @@
             .organized-content, .question-card { padding: 20px; }
             
             .account-bar { flex-direction: column; gap: 12px; border-radius: 16px; padding: 16px; align-items: flex-start; }
-            .account-bar .actions { width: 100%; justify-content: space-between; }
-            .account-bar .actions button { flex: 1; padding: 10px 8px; font-size: 0.85rem; }
-            
-            .controls-grid { grid-template-columns: 1fr; }
-            .timer-setup > div { flex-direction: column; gap: 12px; }
-            
-            .achievement-modal { width: calc(100vw - 40px); left: 20px; right: auto; bottom: -150px; transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-            .achievement-modal.show { bottom: 20px; left: 20px; right: auto; }
+            .account-bar .actions { width: 100%; justify-content: flex-start; gap: 8px; }
             .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
         }
     </style>
@@ -167,14 +160,6 @@
 <body>
 
     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="window.toggleTheme()">☀️</button>
-
-    <div id="achievementPopup" class="achievement-modal">
-        <div class="achievement-icon" id="achIcon">🏆</div>
-        <div class="achievement-text">
-            <h4 id="achTitle">成就解鎖</h4>
-            <p id="achDesc">說明文字</p>
-        </div>
-    </div>
 
     <h1>AI Pro Quiz</h1>
     <div class="subtitle">支援 SRS 間隔記憶與社群分享</div>
@@ -210,9 +195,52 @@
             </div>
             <div class="actions">
                 <button class="btn btn-small btn-outline" onclick="window.fetchHistory()">歷史庫</button>
-                <button class="btn btn-small btn-danger" onclick="window.fetchMistakes()">錯題本</button>
+                <button class="btn btn-small btn-danger" onclick="window.fetchMistakes()" style="color: white; background-color: #ef4444; border:none;">錯題本</button>
+                <button class="btn btn-small btn-outline" onclick="window.openProfile()">⚙️ 個人設定</button>
                 <button class="btn btn-small btn-outline" onclick="window.logout()" style="border: none;">登出</button>
             </div>
+        </div>
+
+        <div id="profileSection" class="card-panel hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="margin: 0;">👤 個人檔案與設定</h2>
+                <button class="btn btn-small btn-outline" onclick="window.closeProfile()">返回</button>
+            </div>
+            
+            <h3>基本資料</h3>
+            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">顯示名稱</label>
+            <input type="text" id="profileName" placeholder="你的名字">
+            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">頭貼網址 (URL)</label>
+            <input type="text" id="profilePicUrl" placeholder="https://...">
+            <button class="btn btn-outline" onclick="window.updateUserProfile()">💾 儲存基本資料</button>
+            <p id="profileUpdateMsg" style="font-size: 0.85rem; color: var(--success-text); margin-top: 8px; font-weight: bold;"></p>
+            
+            <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
+            
+            <h3>🔑 專屬額度綁定 (BYOK)</h3>
+            <div class="info-box">
+                <strong style="color: var(--text-main);">什麼是 API Key？</strong>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 4px 0 12px 0; line-height: 1.5;">
+                    API Key 就像是一把專屬鑰匙，讓你可以直接連接到 Google 的 AI 大腦。使用系統預設的鑰匙每天只能生成 2 次，但如果你綁定自己的鑰匙，就能解鎖<strong>無限次數</strong>產題！而且申請是完全免費的。
+                </p>
+                <strong style="color: var(--text-main);">取得步驟：</strong>
+                <ol style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 4px; line-height: 1.6;">
+                    <li>點擊前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入 Google 帳號。</li>
+                    <li>點擊畫面上的「Create API key」按鈕。</li>
+                    <li>複製那一長串英數密碼，貼到下方欄位並點擊綁定。</li>
+                </ol>
+            </div>
+            <input type="text" id="profileApiKey" placeholder="AIzaSy... (貼上你的 API Key)" style="font-family: monospace;">
+            <button class="btn btn-primary" onclick="window.saveCustomKeyToLocal()" style="background-color: #10b981; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);">⚡ 綁定專屬鑰匙</button>
+            <p id="profileQuotaHint" style="font-size: 0.9rem; margin-top: 12px; font-weight: bold;"></p>
+
+            <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
+
+            <h3>🔒 安全性</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">*僅限使用 Email 註冊的使用者修改密碼</p>
+            <input type="password" id="newPasswordInput" placeholder="輸入新密碼 (至少 6 碼)">
+            <button class="btn btn-danger" onclick="window.updateUserPassword()">修改密碼</button>
+            <p id="passwordUpdateMsg" style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;"></p>
         </div>
 
         <div id="dashboardSection" class="card-panel hidden">
@@ -230,14 +258,6 @@
         <div class="card-panel" id="inputSection">
             <h2>建立新測驗</h2>
             
-            <div style="background: var(--timer-bg); border: 1px solid var(--timer-border); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
-                <label style="font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; display: block; color: var(--timer-text);">🔑 專屬額度綁定 (BYOK)</label>
-                <input type="text" id="customApiKeyInput" placeholder="輸入你的 Gemini API Key (選填)" style="margin-bottom: 8px; font-family: monospace; background: var(--card-bg);" oninput="window.saveCustomKeyToLocal()">
-                <p id="quotaHint" style="font-size: 0.85rem; color: var(--timer-text); margin: 0; line-height: 1.4;">
-                    💡 系統免費額度每日 2 次，綁定專屬 API Key 即可解鎖無限生成！
-                </p>
-            </div>
-
             <div class="controls-grid">
                 <select id="qType"><option value="單選題">單選題</option><option value="是非題">是非題</option></select>
                 <select id="qCount"><option value="3">3 題</option><option value="5" selected>5 題</option><option value="10">10 題</option></select>
@@ -316,9 +336,10 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        // 🚀 新增引入 updateProfile 和 updatePassword
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // 🚀 Firebase 金鑰放回來了
+        // Firebase 金鑰
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -341,15 +362,6 @@
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null;
 
-        // 🚀 頁面載入時檢查並帶入已存儲的 API Key
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedKey = localStorage.getItem('myGeminiKey');
-            if(savedKey) {
-                document.getElementById('customApiKeyInput').value = savedKey;
-                window.saveCustomKeyToLocal();
-            }
-        });
-
         const urlParams = new URLSearchParams(window.location.search);
         const sharedQuizId = urlParams.get('quiz');
 
@@ -362,15 +374,23 @@
             onAuthStateChanged(auth, (user) => {
                 if (user) { 
                     currentUserEmail = user.email;
-                    const dName = user.displayName || user.email.split('@')[0];
-                    document.getElementById('userNameDisplay').innerText = `👋 ${dName}`;
-                    document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dName)}&background=random&color=fff`;
-                    document.getElementById('userAvatar').style.display = 'block';
-                    document.getElementById('authSection').classList.add('hidden'); document.getElementById('appSection').classList.remove('hidden'); 
+                    refreshProfileUI(user);
+                    document.getElementById('authSection').classList.add('hidden'); 
+                    document.getElementById('appSection').classList.remove('hidden'); 
                 } else { 
-                    document.getElementById('authSection').classList.remove('hidden'); document.getElementById('appSection').classList.add('hidden'); 
+                    document.getElementById('authSection').classList.remove('hidden'); 
+                    document.getElementById('appSection').classList.add('hidden'); 
                 }
             });
+        }
+
+        // 刷新頂部導覽列頭像與名稱
+        function refreshProfileUI(user) {
+            if(!user) return;
+            const dName = user.displayName || user.email.split('@')[0];
+            document.getElementById('userNameDisplay').innerText = `👋 ${dName}`;
+            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dName)}&background=random&color=fff`;
+            document.getElementById('userAvatar').style.display = 'block';
         }
 
         window.startGuestChallenge = async () => {
@@ -399,38 +419,11 @@
             } finally { document.getElementById('loading').style.display = 'none'; }
         };
 
-        function calcSM2(quality, interval, reps, ease) {
-            if (quality < 3) { reps = 0; interval = 1; } 
-            else {
-                if (reps === 0) interval = 1;
-                else if (reps === 1) interval = 6;
-                else interval = Math.round(interval * ease);
-                reps++;
-            }
-            ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-            if (ease < 1.3) ease = 1.3;
-            const nextReviewTime = new Date().getTime() + interval * 24 * 60 * 60 * 1000;
-            return { newInterval: interval, newReps: reps, newEase: ease, nextReviewTime };
-        }
-
         const initTheme = () => { const s = localStorage.getItem('theme') || 'light'; document.body.setAttribute('data-theme', s); document.getElementById('themeToggleBtn').innerText = s === 'dark' ? '☀️' : '🌙'; };
         initTheme(); 
         window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
         
-        // 🚀 即時儲存金鑰並給予回饋
-        window.saveCustomKeyToLocal = () => {
-            const customKey = document.getElementById('customApiKeyInput').value.trim();
-            if(customKey && customKey.length > 20) {
-                localStorage.setItem('myGeminiKey', customKey);
-                document.getElementById('quotaHint').innerText = "⚡ 已啟用無限火力模式 (使用專屬 API Key)";
-                document.getElementById('quotaHint').style.color = "var(--success-text)";
-            } else if (customKey === "") {
-                localStorage.removeItem('myGeminiKey');
-                document.getElementById('quotaHint').innerText = "💡 系統免費額度每日 2 次，綁定專屬 API Key 即可解鎖無限生成！";
-                document.getElementById('quotaHint').style.color = "var(--timer-text)";
-            }
-        };
-
+        // 登入註冊
         window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => showError(e.message)); };
         window.registerWithEmail = () => {
             createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
@@ -444,6 +437,98 @@
         window.logout = () => signOut(auth).then(() => { location.reload(); });
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
         
+        // 🚀 個人檔案管理區塊功能 
+        window.openProfile = () => {
+            document.getElementById('inputSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('profileSection').classList.remove('hidden');
+            
+            const user = auth.currentUser;
+            if(user) {
+                document.getElementById('profileName').value = user.displayName || user.email.split('@')[0];
+                document.getElementById('profilePicUrl').value = user.photoURL || '';
+            }
+            
+            const savedKey = localStorage.getItem('myGeminiKey');
+            if(savedKey) {
+                document.getElementById('profileApiKey').value = savedKey;
+                document.getElementById('profileQuotaHint').innerText = "✅ 系統偵測到已綁定專屬 API Key！";
+                document.getElementById('profileQuotaHint').style.color = "var(--success-text)";
+            } else {
+                document.getElementById('profileApiKey').value = "";
+                document.getElementById('profileQuotaHint').innerText = "💡 目前使用系統每日免費額度 (2次/天)。";
+                document.getElementById('profileQuotaHint').style.color = "var(--text-muted)";
+            }
+            
+            document.getElementById('profileUpdateMsg').innerText = "";
+            document.getElementById('passwordUpdateMsg').innerText = "";
+            document.getElementById('newPasswordInput').value = "";
+        };
+
+        window.closeProfile = () => {
+            document.getElementById('profileSection').classList.add('hidden');
+            document.getElementById('inputSection').classList.remove('hidden');
+        };
+
+        window.updateUserProfile = () => {
+            const user = auth.currentUser;
+            if(!user) return;
+            const newName = document.getElementById('profileName').value.trim();
+            const newPhotoUrl = document.getElementById('profilePicUrl').value.trim();
+            
+            updateProfile(user, {
+                displayName: newName || user.email.split('@')[0],
+                photoURL: newPhotoUrl || ""
+            }).then(() => {
+                document.getElementById('profileUpdateMsg').innerText = "✅ 基本資料已更新！";
+                document.getElementById('profileUpdateMsg').style.color = "var(--success-text)";
+                refreshProfileUI(user);
+            }).catch((error) => {
+                document.getElementById('profileUpdateMsg').innerText = "❌ 更新失敗: " + error.message;
+                document.getElementById('profileUpdateMsg').style.color = "var(--danger-text)";
+            });
+        };
+
+        window.updateUserPassword = () => {
+            const user = auth.currentUser;
+            const newPassword = document.getElementById('newPasswordInput').value;
+            if(newPassword.length < 6) {
+                document.getElementById('passwordUpdateMsg').innerText = "⚠️ 密碼長度必須大於 6 個字元";
+                document.getElementById('passwordUpdateMsg').style.color = "var(--danger-text)";
+                return;
+            }
+            
+            updatePassword(user, newPassword).then(() => {
+                document.getElementById('passwordUpdateMsg').innerText = "✅ 密碼修改成功！";
+                document.getElementById('passwordUpdateMsg').style.color = "var(--success-text)";
+                document.getElementById('newPasswordInput').value = "";
+            }).catch((error) => {
+                if(error.code === 'auth/requires-recent-login') {
+                    document.getElementById('passwordUpdateMsg').innerText = "❌ 基於安全考量，請登出後重新登入再修改密碼。";
+                } else {
+                    document.getElementById('passwordUpdateMsg').innerText = "❌ 修改失敗: " + error.message;
+                }
+                document.getElementById('passwordUpdateMsg').style.color = "var(--danger-text)";
+            });
+        };
+
+        window.saveCustomKeyToLocal = () => {
+            const customKey = document.getElementById('profileApiKey').value.trim();
+            if(customKey && customKey.length > 20) {
+                localStorage.setItem('myGeminiKey', customKey);
+                document.getElementById('profileQuotaHint').innerText = "✅ 綁定成功！已為你解鎖無限火力模式。";
+                document.getElementById('profileQuotaHint').style.color = "var(--success-text)";
+            } else if (customKey === "") {
+                localStorage.removeItem('myGeminiKey');
+                document.getElementById('profileQuotaHint').innerText = "🔄 已解除綁定，切換回系統免費額度。";
+                document.getElementById('profileQuotaHint').style.color = "var(--text-muted)";
+            } else {
+                document.getElementById('profileQuotaHint').innerText = "⚠️ 鑰匙格式似乎有誤，請再檢查一次！";
+                document.getElementById('profileQuotaHint').style.color = "var(--danger-text)";
+            }
+        };
+
+        // 處理上傳圖片
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
@@ -502,11 +587,9 @@
             }
         };
 
-        // 🚀 新增功能：直接利用原本的筆記與圖片，再呼叫一次 AI 產新題目
         window.generateMoreQuestions = () => {
             document.getElementById('scoreBoard').classList.add('hidden');
             document.getElementById('testSection').classList.add('hidden');
-            // 直接呼叫生成函數，因為原本在畫面上的參數都還保留著
             window.generateContent();
         };
 
@@ -557,7 +640,7 @@
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
 
         function showLoading(text="處理中") {
-            ['inputSection','dashboardSection','prepSection','testSection','scoreBoard'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['inputSection','dashboardSection','prepSection','testSection','scoreBoard', 'profileSection'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('loadingText').innerText = text; document.getElementById('loading').style.display = 'block';
         }
 
@@ -598,6 +681,20 @@
         window.shareQuiz = () => {
             const link = `${window.location.origin}${window.location.pathname}?quiz=${currentQuizId}`;
             navigator.clipboard.writeText(link).then(() => alert("✅ 連結已複製！貼到班群給同學挑戰吧！"));
+        }
+
+        function calcSM2(quality, interval, reps, ease) {
+            if (quality < 3) { reps = 0; interval = 1; } 
+            else {
+                if (reps === 0) interval = 1;
+                else if (reps === 1) interval = 6;
+                else interval = Math.round(interval * ease);
+                reps++;
+            }
+            ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+            if (ease < 1.3) ease = 1.3;
+            const nextReviewTime = new Date().getTime() + interval * 24 * 60 * 60 * 1000;
+            return { newInterval: interval, newReps: reps, newEase: ease, nextReviewTime };
         }
 
         window.startDevilTraining = () => {
