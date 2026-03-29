@@ -116,7 +116,7 @@
         <p style="color: var(--text-muted); margin-bottom: 24px;">你的同學向你發起了測驗挑戰！請輸入你的名字來應戰：</p>
         <input type="text" id="guestNameInput" placeholder="輸入你的大名..." style="max-width: 300px; text-align: center; font-size: 1.2rem; margin: 0 auto 16px auto; display: block;">
         <button class="btn btn-primary" style="max-width: 300px;" onclick="window.startGuestChallenge()">接受挑戰</button>
-        <p id="guestErrorMsg" style="color: var(--danger-text); margin-top: 16px; font-weight: 500;"></p>
+        <p id="guestErrorMsg" style="color: var(--danger-text); margin-top: 16px; font-weight: bold;"></p>
     </div>
 
     <div id="authSection" class="card-panel">
@@ -296,25 +296,29 @@
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null; let tempAvatarBase64 = null; 
 
-        // 🚀 路由衝突完美修復：最優先攔截分享連結
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const sharedQuizId = urlParams.get('quiz');
 
             if (sharedQuizId) {
-                // 如果有分享參數，直接鎖死在訪客模式，不讓後面的 auth 檢查蓋過去
                 isGuestMode = true; 
                 currentQuizId = sharedQuizId;
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('appSection').classList.add('hidden');
                 document.getElementById('guestSection').classList.remove('hidden');
             } else {
-                // 只有不是點分享連結進來的人，才檢查有沒有登入
-                const savedCustomUser = localStorage.getItem('customUser');
+                let savedCustomUser = localStorage.getItem('customUser');
+                // 🛡️ 防呆機制：如果本地資料格式錯誤，清空它防止系統崩潰
                 if (savedCustomUser) {
-                    sessionUser = JSON.parse(savedCustomUser);
-                    refreshProfileUI();
-                } else {
+                    try {
+                        sessionUser = JSON.parse(savedCustomUser);
+                        refreshProfileUI();
+                    } catch (e) {
+                        localStorage.removeItem('customUser');
+                    }
+                } 
+                
+                if(!savedCustomUser || !sessionUser.id) {
                     onAuthStateChanged(auth, (user) => {
                         if (user) { 
                             sessionUser = { type: 'google', id: user.email, displayName: user.displayName || user.email.split('@')[0], photoUrl: user.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", apiKey: localStorage.getItem('myGeminiKey') || '' };
@@ -329,9 +333,7 @@
         });
 
         function refreshProfileUI() {
-            // 🛡️ 雙重防呆：確保 Firebase Auth 不要雞婆蓋掉訪客挑戰畫面
             if (isGuestMode) return; 
-            
             document.getElementById('userNameDisplay').innerText = sessionUser.displayName;
             document.getElementById('userIdDisplay').innerText = sessionUser.type === 'custom' ? `@${sessionUser.id}` : sessionUser.id;
             document.getElementById('userAvatar').src = sessionUser.photoUrl;
@@ -481,17 +483,35 @@
         });
         window.removeImage = () => { currentImageBase64 = null; document.getElementById('imageInput').value = ''; document.getElementById('imagePreviewContainer').classList.add('hidden'); };
 
+        // 🚀 修改：更友善且不會強制跳轉的錯誤回饋
         window.startGuestChallenge = async () => {
             const name = document.getElementById('guestNameInput').value.trim();
-            if (!name) return document.getElementById('guestErrorMsg').innerText = "請先輸入名字！";
+            const errMsg = document.getElementById('guestErrorMsg');
+            errMsg.innerText = ""; 
+
+            if (!name) {
+                errMsg.innerText = "⚠️ 請先輸入你的大名喔！";
+                return;
+            }
+
             currentGuestName = name;
-            document.getElementById('guestSection').classList.add('hidden'); showLoading("正在下載挑戰考卷...");
+            document.getElementById('guestSection').classList.add('hidden'); 
+            showLoading("正在為你下載考卷...");
+            
             try {
                 const res = await fetchGAS({ action: 'getQuiz', quizId: currentQuizId });
-                document.getElementById('appSection').classList.remove('hidden'); document.getElementById('inputSection').classList.add('hidden'); document.querySelector('.account-bar').classList.add('hidden'); 
-                alert(`這份考卷由 ${res.creatorName || '神秘人'} 建立！準備好就開始吧！`); loadPrepSection(res);
-            } catch (error) { alert('載入失敗：' + error.message); window.location.href = window.location.pathname; } 
-            finally { document.getElementById('loading').style.display = 'none'; }
+                document.getElementById('appSection').classList.remove('hidden'); 
+                document.getElementById('inputSection').classList.add('hidden'); 
+                document.querySelector('.account-bar').classList.add('hidden'); 
+                
+                alert(`這份考卷由 ${res.creatorName || '神秘人'} 建立！準備好就開始吧！`); 
+                loadPrepSection(res);
+            } catch (error) { 
+                errMsg.innerText = '❌ 考卷下載失敗：' + error.message; 
+                document.getElementById('guestSection').classList.remove('hidden');
+            } finally { 
+                document.getElementById('loading').style.display = 'none'; 
+            }
         };
 
         window.generateContent = async () => {
