@@ -91,6 +91,11 @@
         .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; display: flex; align-items: center; justify-content: center; }
         .image-preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
 
+        /* 🚀 補回 API 教學的專屬樣式 */
+        .info-box { background: var(--input-bg); border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+        .info-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
+        .info-box a:hover { text-decoration: underline; }
+
         @media (max-width: 600px) {
             body { padding: 10px 10px 80px 10px; }
             h1 { font-size: 2rem; }
@@ -107,6 +112,14 @@
     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="window.toggleTheme()">☀️</button>
     <h1>AI Pro Quiz</h1>
     <div class="subtitle">支援跨裝置同步與自訂帳號的智能題庫</div>
+
+    <div id="guestSection" class="card-panel hidden" style="text-align: center; border: 2px solid var(--primary);">
+        <h2 style="font-size: 2rem; margin-bottom: 8px;">🔥 挑戰書已送達！</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">你的同學向你發起了測驗挑戰！請輸入你的名字來應戰：</p>
+        <input type="text" id="guestNameInput" placeholder="輸入你的大名..." style="max-width: 300px; text-align: center; font-size: 1.2rem; margin: 0 auto 16px auto; display: block;">
+        <button class="btn btn-primary" style="max-width: 300px;" onclick="window.startGuestChallenge()">接受挑戰</button>
+        <p id="guestErrorMsg" style="color: var(--danger-text); margin-top: 16px; font-weight: 500;"></p>
+    </div>
 
     <div id="authSection" class="card-panel">
         <h2 id="authTitle" style="text-align: center; margin-bottom: 32px;">系統登入</h2>
@@ -170,7 +183,19 @@
             <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
             
             <h3>🔑 專屬額度綁定 (BYOK)</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">系統免費額度每日 2 次。綁定自己的 API Key 即可解鎖無限產題！此 Key 會自動同步於你的帳號中。</p>
+            <div class="info-box">
+                <strong style="color: var(--text-main);">什麼是 API Key？</strong>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 4px 0 12px 0; line-height: 1.5;">
+                    API Key 就像是一把專屬鑰匙。使用系統預設的鑰匙每天只能生成 2 次，但如果你綁定自己的鑰匙，就能解鎖<strong>無限次數</strong>產題！申請是完全免費的，且此設定會自動綁定在你的帳號中。
+                </p>
+                <strong style="color: var(--text-main);">取得步驟：</strong>
+                <ol style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 4px; line-height: 1.6;">
+                    <li>點擊前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入。</li>
+                    <li>點擊畫面上的「Create API key」按鈕。</li>
+                    <li>複製那一長串英數密碼，貼到下方欄位，最後記得滑到最下面點擊「儲存所有設定」。</li>
+                </ol>
+            </div>
+            
             <input type="text" id="profileApiKey" placeholder="AIzaSy... (貼上你的 API Key)" style="font-family: monospace;">
             
             <div id="securitySection">
@@ -272,7 +297,6 @@
         
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
-        // 統一管理當前使用者狀態 (包含 Google 與 Custom)
         let sessionUser = { type: 'none', id: '', displayName: '', photoUrl: '', apiKey: '' };
         
         let testData = null; let totalQuestions = 0; let correctAnswers = 0;
@@ -281,14 +305,12 @@
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null; let tempAvatarBase64 = null; 
 
-        // 🚀 初始化：檢查是否有自訂帳號登入的 LocalStorage
         document.addEventListener("DOMContentLoaded", () => {
             const savedCustomUser = localStorage.getItem('customUser');
             if (savedCustomUser) {
                 sessionUser = JSON.parse(savedCustomUser);
                 refreshProfileUI();
             } else {
-                // 如果沒有自訂登入，才檢查 Firebase Google 登入
                 onAuthStateChanged(auth, (user) => {
                     if (user) { 
                         sessionUser = { type: 'google', id: user.email, displayName: user.displayName || user.email.split('@')[0], photoUrl: user.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", apiKey: localStorage.getItem('myGeminiKey') || '' };
@@ -333,10 +355,8 @@
         
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
         
-        // 🚀 Google 登入 (維持原樣)
         window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => showError(e.message)); };
         
-        // 🚀 呼叫後端 API
         async function fetchGAS(payload) {
             const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
             const result = await response.json();
@@ -344,7 +364,6 @@
             return result;
         }
 
-        // 🚀 自訂帳號註冊 (存入試算表)
         window.registerCustom = async () => {
             const accountId = document.getElementById('idInput').value.trim();
             const displayName = document.getElementById('registerNameInput').value.trim();
@@ -361,7 +380,6 @@
             finally { document.getElementById('registerBtn').innerText = "註冊並登入"; }
         };
 
-        // 🚀 自訂帳號登入
         window.loginCustom = async () => {
             const accountId = document.getElementById('idInput').value.trim();
             const password = document.getElementById('passwordInput').value;
@@ -391,7 +409,6 @@
             document.getElementById('profilePicPreview').src = sessionUser.photoUrl;
             document.getElementById('profileApiKey').value = sessionUser.apiKey;
             
-            // 安全性區域只開放給自訂帳號修改密碼
             document.getElementById('securitySection').style.display = sessionUser.type === 'custom' ? 'block' : 'none';
             document.getElementById('newPasswordInput').value = "";
             tempAvatarBase64 = null; 
@@ -412,29 +429,25 @@
             }; reader.readAsDataURL(file);
         };
 
-        // 🚀 完美更新設定 (樂觀 UI + 背景非同步上傳，支援自訂/Google帳號切換)
         window.updateUserProfile = async () => {
             const newName = document.getElementById('profileName').value.trim();
             const newKey = document.getElementById('profileApiKey').value.trim();
             const newPw = document.getElementById('newPasswordInput').value;
             
-            // 1. 樂觀 UI 直接替換
             sessionUser.displayName = newName || sessionUser.displayName;
             sessionUser.apiKey = newKey;
             if (tempAvatarBase64) sessionUser.photoUrl = tempAvatarBase64;
             refreshProfileUI();
             
-            // 如果是 Google 帳號，API Key 存本地就好
             if (sessionUser.type === 'google') {
                 localStorage.setItem('myGeminiKey', newKey);
-                alert("Google 帳號的 API Key 已存入本機設定。");
+                alert("已為你的 Google 帳號存入 API Key 設定。");
                 window.closeProfile();
                 return;
             }
             
-            // 2. 自訂帳號：秒退畫面，背景呼叫 Apps Script 寫入資料庫
             window.closeProfile();
-            localStorage.setItem('customUser', JSON.stringify(sessionUser)); // 先更新本地
+            localStorage.setItem('customUser', JSON.stringify(sessionUser)); 
 
             try {
                 const res = await fetchGAS({ 
@@ -445,7 +458,6 @@
                     apiKey: newKey, 
                     newPassword: newPw 
                 });
-                // 更新回傳的真實 Drive URL
                 sessionUser.photoUrl = res.user.photoUrl;
                 localStorage.setItem('customUser', JSON.stringify(sessionUser));
                 refreshProfileUI();
@@ -453,7 +465,6 @@
             } catch (error) { console.error("背景更新失敗:", error); }
         };
 
-        // 以下保留原本的題庫生成與測驗邏輯
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
