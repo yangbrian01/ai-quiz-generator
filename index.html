@@ -70,8 +70,6 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-text { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
-        .organized-content { background-color: var(--input-bg); padding: 32px; border-radius: 12px; font-size: 1.05rem; color: var(--text-main); border: 1px solid var(--border); margin-top: 16px; transition: 0.3s; }
-        
         #stickyTimer { position: sticky; top: 80px; z-index: 40; background: var(--timer-bg); color: var(--timer-text); padding: 12px 24px; text-align: center; font-weight: 700; font-size: 1.2rem; font-variant-numeric: tabular-nums; border-radius: 100px; border: 1px solid var(--timer-border); box-shadow: var(--shadow-md); margin-bottom: 24px; display: none; transition: 0.3s; }
         #stickyTimer.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); animation: pulse-danger 1s infinite; }
         @keyframes pulse-danger { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
@@ -91,7 +89,6 @@
         .theme-toggle-btn { position: fixed; bottom: 32px; right: 32px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer; box-shadow: var(--shadow-md); z-index: 999; display: flex; align-items: center; justify-content: center; }
         .image-preview-card img { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; }
 
-        /* 🚀 補回 API 教學的專屬樣式 */
         .info-box { background: var(--input-bg); border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
         .info-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
         .info-box a:hover { text-decoration: underline; }
@@ -105,13 +102,12 @@
             .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="window.toggleTheme()">☀️</button>
     <h1>AI Pro Quiz</h1>
-    <div class="subtitle">支援跨裝置同步與自訂帳號的智能題庫</div>
+    <div class="subtitle">極速出題版 ⚡ 支援跨裝置同步與自訂帳號</div>
 
     <div id="guestSection" class="card-panel hidden" style="text-align: center; border: 2px solid var(--primary);">
         <h2 style="font-size: 2rem; margin-bottom: 8px;">🔥 挑戰書已送達！</h2>
@@ -123,11 +119,9 @@
 
     <div id="authSection" class="card-panel">
         <h2 id="authTitle" style="text-align: center; margin-bottom: 32px;">系統登入</h2>
-        
         <button class="btn btn-outline" onclick="window.loginWithGoogle()" style="margin-bottom: 24px;">
             <img src="https://developers.google.com/identity/images/g-logo.png" style="width:18px; margin-right:8px;"> 使用 Google 登入
         </button>
-        
         <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或使用自訂帳號登入</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
         
         <input type="text" id="idInput" placeholder="帳號 ID (例: tingli.brian)">
@@ -139,7 +133,6 @@
         
         <button id="registerBtn" class="btn btn-primary hidden" onclick="window.registerCustom()">註冊並登入</button>
         <button id="switchLoginBtn" class="btn btn-outline hidden" onclick="window.toggleAuthMode('login')" style="margin-top: 8px;">已有帳號？返回登入</button>
-
         <p id="authErrorMsg" style="color: var(--danger-text); text-align: center; margin-top: 16px; font-weight: 500;"></p>
     </div>
 
@@ -186,13 +179,13 @@
             <div class="info-box">
                 <strong style="color: var(--text-main);">什麼是 API Key？</strong>
                 <p style="font-size: 0.9rem; color: var(--text-muted); margin: 4px 0 12px 0; line-height: 1.5;">
-                    API Key 就像是一把專屬鑰匙。使用系統預設的鑰匙每天只能生成 2 次，但如果你綁定自己的鑰匙，就能解鎖<strong>無限次數</strong>產題！申請是完全免費的，且此設定會自動綁定在你的帳號中。
+                    使用系統預設的鑰匙每天只能生成 2 次，綁定你自己的專屬鑰匙，就能解鎖<strong>無限次數</strong>產題！申請免費且會自動綁定於帳號中。
                 </p>
                 <strong style="color: var(--text-main);">取得步驟：</strong>
                 <ol style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 4px; line-height: 1.6;">
-                    <li>點擊前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入。</li>
+                    <li>前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入。</li>
                     <li>點擊畫面上的「Create API key」按鈕。</li>
-                    <li>複製那一長串英數密碼，貼到下方欄位，最後記得滑到最下面點擊「儲存所有設定」。</li>
+                    <li>複製那串密碼，貼到下方欄位。</li>
                 </ol>
             </div>
             
@@ -233,23 +226,18 @@
                 </div>
             </div>
             <textarea id="noteInput" placeholder="在這裡補充文字說明（非必填）..."></textarea>
-            <button class="btn btn-primary" onclick="window.generateContent()" id="generateBtn">生成專業教材</button>
+            <button class="btn btn-primary" onclick="window.generateContent()" id="generateBtn">⚡ 極速生成題目</button>
         </div>
 
         <div id="loading"><div class="loader"></div><div id="loadingText" class="loading-text">連線中，請稍候...</div></div>
 
         <div id="prepSection" class="hidden">
-            <div class="card-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px;">
-                    <h2 style="margin: 0;">知識點整理</h2>
-                    <div style="display: flex; gap: 8px;">
-                        <button id="toggleNoteBtn" class="btn btn-small btn-outline" onclick="window.toggleNote()">👁️ 展開</button>
-                        <button class="btn btn-small btn-outline" onclick="window.copyNote()">📋 複製</button>
-                    </div>
-                </div>
-                <div id="organizedContentWrapper" class="hidden"><div id="organizedContent" class="organized-content"></div></div>
-                <textarea id="rawMarkdown" style="display:none;"></textarea>
+            <div class="card-panel" style="text-align: center; border: 2px solid var(--primary);">
+                <h2 style="font-size: 2rem; margin-bottom: 8px;">✅ 題目生成完畢！</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">隨時可以開始挑戰。你想把考卷分享給朋友嗎？</p>
+                <button id="shareQuizBtn" class="btn btn-outline" style="max-width: 250px; margin: 0 auto;" onclick="window.shareQuiz()">🔗 分享測驗連結</button>
             </div>
+
             <div class="card-panel timer-setup">
                 <h2>測驗設定</h2>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; margin-top: 16px;">
@@ -258,7 +246,7 @@
                     </label>
                     <div id="timeInputDiv" style="display: flex; align-items: center; font-weight: 500;">時長 <input type="number" id="timeMinutes" min="1"> 分鐘</div>
                 </div>
-                <button class="btn btn-primary" style="background-color: #10b981;" onclick="window.startTest()">啟動測驗</button>
+                <button class="btn btn-primary" style="background-color: #10b981;" onclick="window.startTest()">🚀 啟動測驗</button>
             </div>
         </div>
 
@@ -450,14 +438,7 @@
             localStorage.setItem('customUser', JSON.stringify(sessionUser)); 
 
             try {
-                const res = await fetchGAS({ 
-                    action: 'updateProfileCustom', 
-                    accountId: sessionUser.id, 
-                    displayName: newName, 
-                    avatarBase64: tempAvatarBase64, 
-                    apiKey: newKey, 
-                    newPassword: newPw 
-                });
+                const res = await fetchGAS({ action: 'updateProfileCustom', accountId: sessionUser.id, displayName: newName, avatarBase64: tempAvatarBase64, apiKey: newKey, newPassword: newPw });
                 sessionUser.photoUrl = res.user.photoUrl;
                 localStorage.setItem('customUser', JSON.stringify(sessionUser));
                 refreshProfileUI();
@@ -479,12 +460,25 @@
         });
         window.removeImage = () => { currentImageBase64 = null; document.getElementById('imageInput').value = ''; document.getElementById('imagePreviewContainer').classList.add('hidden'); };
 
+        window.startGuestChallenge = async () => {
+            const name = document.getElementById('guestNameInput').value.trim();
+            if (!name) return document.getElementById('guestErrorMsg').innerText = "請先輸入名字！";
+            currentGuestName = name;
+            document.getElementById('guestSection').classList.add('hidden'); showLoading("正在下載挑戰考卷...");
+            try {
+                const res = await fetchGAS({ action: 'getQuiz', quizId: currentQuizId });
+                document.getElementById('appSection').classList.remove('hidden'); document.getElementById('inputSection').classList.add('hidden'); document.querySelector('.account-bar').classList.add('hidden'); 
+                alert(`這份考卷由 ${res.creatorName || '神秘人'} 建立！準備好就開始吧！`); loadPrepSection(res);
+            } catch (error) { alert('載入失敗：' + error.message); window.location.href = window.location.pathname; } 
+            finally { document.getElementById('loading').style.display = 'none'; }
+        };
+
         window.generateContent = async () => {
             const note = document.getElementById('noteInput').value;
             if (!note.trim() && !currentImageBase64) return alert('請輸入文字或圖片！');
             
             const genBtn = document.getElementById('generateBtn');
-            genBtn.disabled = true; genBtn.innerText = "⏳ 魔法詠唱中..."; showLoading("AI 正在為你客製化題目...");
+            genBtn.disabled = true; genBtn.innerText = "⏳ 魔法詠唱中..."; showLoading("AI 正在為你客製化極速出題...");
             
             try {
                 const res = await fetchGAS({ 
@@ -493,7 +487,7 @@
                 });
                 isDevilMode = false; currentQuizId = res.quizId; loadPrepSection(res);
             } catch (error) { alert('錯誤：' + error.message); document.getElementById('inputSection').classList.remove('hidden'); } 
-            finally { document.getElementById('loading').style.display = 'none'; genBtn.disabled = false; genBtn.innerText = "生成專業教材"; }
+            finally { document.getElementById('loading').style.display = 'none'; genBtn.disabled = false; genBtn.innerText = "⚡ 極速生成題目"; }
         };
 
         window.generateMoreQuestions = () => { document.getElementById('scoreBoard').classList.add('hidden'); document.getElementById('testSection').classList.add('hidden'); window.generateContent(); };
@@ -537,18 +531,15 @@
 
         window.closeDashboard = () => { document.getElementById('dashboardSection').classList.add('hidden'); document.getElementById('inputSection').classList.remove('hidden'); };
         function showLoading(text="處理中") { ['inputSection','dashboardSection','prepSection','testSection','scoreBoard', 'profileSection'].forEach(id => document.getElementById(id).classList.add('hidden')); document.getElementById('loadingText').innerText = text; document.getElementById('loading').style.display = 'block'; }
-        window.toggleNote = () => { const wrapper = document.getElementById('organizedContentWrapper'); const btn = document.getElementById('toggleNoteBtn'); if (wrapper.classList.contains('hidden')) { wrapper.classList.remove('hidden'); btn.innerText = '🙈 收起'; } else { wrapper.classList.add('hidden'); btn.innerText = '👁️ 展開'; } };
-
+        
         function loadPrepSection(data) {
             testData = data; currentMistakes = []; srsUpdatesThisRound = []; 
-            document.getElementById('rawMarkdown').value = data.organized_notes || '';
-            try { document.getElementById('organizedContent').innerHTML = marked.parse(data.organized_notes||''); } catch(e) {}
-            document.getElementById('organizedContentWrapper').classList.add('hidden'); document.getElementById('toggleNoteBtn').innerText = '👁️ 展開';
             document.getElementById('timeMinutes').value = data.suggested_time || 5;
+            document.getElementById('shareQuizBtn').classList[currentQuizId && !isGuestMode && !isDevilMode ? 'remove' : 'add']('hidden');
             document.getElementById('prepSection').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        window.copyNote = () => { const r = document.getElementById('rawMarkdown'); r.style.display='block'; r.select(); document.execCommand('copy'); r.style.display='none'; alert('✅ 內容已複製'); };
+        window.shareQuiz = () => { navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?quiz=${currentQuizId}`).then(() => alert("✅ 連結已複製！貼到班群給同學挑戰吧！")); }
         window.toggleTimerInput = () => document.getElementById('timeInputDiv').style.display = document.getElementById('enableTimer').checked ? 'flex' : 'none';
 
         window.startDevilTraining = () => {
