@@ -49,6 +49,9 @@
             
             --success-bg: #14532d; --success-border: #166534; --success-text: #86efac;
             --danger-bg: #7f1d1d; --danger-border: #991b1b; --danger-text: #fca5a5;
+            
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+            --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
         }
 
         * { box-sizing: border-box; }
@@ -223,7 +226,6 @@
             <input type="text" id="profileName" placeholder="你的名字">
             
             <button class="btn btn-outline" onclick="window.updateUserProfile()">💾 儲存基本資料</button>
-            <p id="profileUpdateMsg" style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;"></p>
             
             <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
             
@@ -347,7 +349,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        // 🚀 引入 Firebase Storage 模組
         import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
         // Firebase 金鑰
@@ -361,12 +362,11 @@
         };
         const app = initializeApp(firebaseConfig); 
         const auth = getAuth(app); 
-        const storage = getStorage(app); // 初始化 Storage
+        const storage = getStorage(app); 
         const provider = new GoogleAuthProvider();
         
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
         
-        // 🚀 預設的灰色無臉大頭貼 (類似 IG)
         const DEFAULT_AVATAR = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
         
         let currentUserEmail = ""; let currentGuestName = "";
@@ -376,7 +376,7 @@
         let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null;
-        let tempAvatarBase64 = null; // 暫存使用者想更換的頭貼
+        let tempAvatarBase64 = null; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const sharedQuizId = urlParams.get('quiz');
@@ -400,7 +400,6 @@
             });
         }
 
-        // 刷新頂部導覽列頭像與名稱
         function refreshProfileUI(user) {
             if(!user) return;
             const dName = user.displayName || user.email.split('@')[0];
@@ -409,7 +408,6 @@
             document.getElementById('userAvatar').style.display = 'block';
         }
 
-        // 🚀 IG 風格登入註冊畫面切換
         window.toggleAuthMode = (mode) => {
             document.getElementById('authErrorMsg').innerText = "";
             if (mode === 'register') {
@@ -461,7 +459,6 @@
         
         window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => showError(e.message)); };
         
-        // 🚀 修改：註冊成功後套用名字與預設頭像
         window.registerWithEmail = () => {
             const name = document.getElementById('registerNameInput').value.trim();
             if(!name) return showError("請輸入你想顯示的使用者名稱！");
@@ -487,7 +484,6 @@
         window.logout = () => signOut(auth).then(() => { location.reload(); });
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
         
-        // 🚀 個人檔案管理區塊功能 
         window.openProfile = () => {
             document.getElementById('inputSection').classList.add('hidden');
             document.getElementById('dashboardSection').classList.add('hidden');
@@ -510,10 +506,8 @@
                 document.getElementById('profileQuotaHint').style.color = "var(--text-muted)";
             }
             
-            document.getElementById('profileUpdateMsg').innerText = "";
-            document.getElementById('passwordUpdateMsg').innerText = "";
             document.getElementById('newPasswordInput').value = "";
-            tempAvatarBase64 = null; // 清空暫存圖
+            tempAvatarBase64 = null; 
         };
 
         window.closeProfile = () => {
@@ -521,18 +515,17 @@
             document.getElementById('inputSection').classList.remove('hidden');
         };
 
-        // 🚀 處理大頭貼檔案選擇並縮圖
         window.previewAvatar = (e) => {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image(); img.onload = function() {
                     const canvas = document.createElement('canvas'); 
-                    const size = Math.min(img.width, img.height); // 取短邊裁成正方形
+                    const size = Math.min(img.width, img.height); 
                     canvas.width = 200; canvas.height = 200;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, (img.width - size)/2, (img.height - size)/2, size, size, 0, 0, 200, 200);
-                    tempAvatarBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    tempAvatarBase64 = canvas.toDataURL('image/jpeg', 0.6);
                     document.getElementById('profilePicPreview').src = tempAvatarBase64;
                 }; 
                 img.src = event.target.result;
@@ -540,39 +533,42 @@
             reader.readAsDataURL(file);
         };
 
-        // 🚀 上傳圖片並更新基本資料
+        // 🚀 修改：樂觀 UI 與非同步背景上傳，實現 0 秒等待！
         window.updateUserProfile = async () => {
             const user = auth.currentUser;
             if(!user) return;
             const newName = document.getElementById('profileName').value.trim();
-            const msgEl = document.getElementById('profileUpdateMsg');
             
-            msgEl.innerText = "⏳ 儲存中..."; 
-            msgEl.style.color = "var(--text-main)";
-            
-            let finalPhotoUrl = user.photoURL;
-
-            try {
-                // 如果有選新照片，上傳至 Firebase Storage
-                if (tempAvatarBase64) {
-                    const sRef = storageRef(storage, `avatars/${user.uid}.jpg`);
-                    await uploadString(sRef, tempAvatarBase64, 'data_url');
-                    finalPhotoUrl = await getDownloadURL(sRef);
-                }
-
-                await updateProfile(user, {
-                    displayName: newName || user.email.split('@')[0],
-                    photoURL: finalPhotoUrl || DEFAULT_AVATAR
-                });
-                
-                msgEl.innerText = "✅ 基本資料已更新！";
-                msgEl.style.color = "var(--success-text)";
-                refreshProfileUI(auth.currentUser);
-                tempAvatarBase64 = null; 
-            } catch (error) {
-                msgEl.innerText = "❌ 更新失敗: " + error.message;
-                msgEl.style.color = "var(--danger-text)";
+            // 1. 樂觀 UI (Optimistic UI)：直接替換畫面的資料
+            const finalName = newName || user.email.split('@')[0];
+            document.getElementById('userNameDisplay').innerText = `👋 ${finalName}`;
+            if (tempAvatarBase64) {
+                document.getElementById('userAvatar').src = tempAvatarBase64;
             }
+
+            // 2. 秒退設定畫面，讓使用者覺得瞬間完成
+            window.closeProfile();
+
+            // 3. 在背景默默上傳資料，不阻擋使用者的任何操作
+            (async () => {
+                try {
+                    let finalPhotoUrl = user.photoURL;
+                    if (tempAvatarBase64) {
+                        const sRef = storageRef(storage, `avatars/${user.uid}.jpg`);
+                        await uploadString(sRef, tempAvatarBase64, 'data_url');
+                        finalPhotoUrl = await getDownloadURL(sRef);
+                    }
+
+                    await updateProfile(user, {
+                        displayName: finalName,
+                        photoURL: finalPhotoUrl || DEFAULT_AVATAR
+                    });
+                    tempAvatarBase64 = null; 
+                    console.log("背景上傳完成！");
+                } catch (error) {
+                    console.error("背景上傳失敗:", error);
+                }
+            })();
         };
 
         window.updateUserPassword = () => {
@@ -614,7 +610,6 @@
             }
         };
 
-        // 處理建立測驗的講義上傳圖片
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
