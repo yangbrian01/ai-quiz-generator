@@ -49,9 +49,6 @@
             
             --success-bg: #14532d; --success-border: #166534; --success-text: #86efac;
             --danger-bg: #7f1d1d; --danger-border: #991b1b; --danger-text: #fca5a5;
-            
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-            --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
         }
 
         * { box-sizing: border-box; }
@@ -139,7 +136,6 @@
         .image-preview-card .remove-btn { position: absolute; top: -10px; right: -10px; background: var(--danger-text); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .image-preview-card .remove-btn:hover { transform: scale(1.1); }
 
-        /* API 教學資訊框 */
         .info-box { background: var(--input-bg); border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
         .info-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
         .info-box a:hover { text-decoration: underline; }
@@ -149,7 +145,6 @@
             h1 { font-size: 2rem; }
             .card-panel { padding: 20px; border-radius: 12px; }
             .organized-content, .question-card { padding: 20px; }
-            
             .account-bar { flex-direction: column; gap: 12px; border-radius: 16px; padding: 16px; align-items: flex-start; }
             .account-bar .actions { width: 100%; justify-content: flex-start; gap: 8px; }
             .theme-toggle-btn { right: 20px; bottom: 20px; width: 44px; height: 44px; font-size: 18px; }
@@ -173,16 +168,21 @@
     </div>
 
     <div id="authSection" class="card-panel">
-        <h2 style="text-align: center; margin-bottom: 32px;">系統登入與註冊</h2>
+        <h2 id="authTitle" style="text-align: center; margin-bottom: 32px;">系統登入</h2>
         <button class="btn btn-outline" onclick="window.loginWithGoogle()" style="margin-bottom: 24px;">使用 Google 繼續</button>
         
-        <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或使用 Email</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
+        <div style="display: flex; align-items: center; margin: 24px 0;"><div style="flex-grow: 1; height: 1px; background: var(--border);"></div><span style="padding: 0 16px; color: var(--text-muted); font-size: 0.9rem;">或使用帳號密碼</span><div style="flex-grow: 1; height: 1px; background: var(--border);"></div></div>
         
-        <input type="email" id="emailInput" placeholder="name@example.com">
-        <input type="password" id="passwordInput" placeholder="密碼">
+        <input type="email" id="emailInput" placeholder="帳號 (Email)">
+        <input type="text" id="registerNameInput" placeholder="使用者名稱 (如 IG 的 ID)" class="hidden">
+        <input type="password" id="passwordInput" placeholder="密碼 (至少 6 碼)">
 
-        <button class="btn btn-primary" onclick="window.loginWithEmail()">登入帳號</button>
-        <button class="btn btn-outline" onclick="window.registerWithEmail()" style="margin-top: 8px;">建立新帳號</button>
+        <button id="loginBtn" class="btn btn-primary" onclick="window.loginWithEmail()">登入</button>
+        <button id="switchRegisterBtn" class="btn btn-outline" onclick="window.toggleAuthMode('register')" style="margin-top: 8px;">沒有帳號？點此註冊</button>
+        
+        <button id="registerBtn" class="btn btn-primary hidden" onclick="window.registerWithEmail()">註冊並登入</button>
+        <button id="switchLoginBtn" class="btn btn-outline hidden" onclick="window.toggleAuthMode('login')" style="margin-top: 8px;">已有帳號？返回登入</button>
+
         <p id="authErrorMsg" style="color: var(--danger-text); text-align: center; margin-top: 16px; font-weight: 500;"></p>
     </div>
 
@@ -208,12 +208,22 @@
             </div>
             
             <h3>基本資料</h3>
+            
+            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">大頭貼照</label>
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <img id="profilePicPreview" src="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background-color: var(--input-bg);">
+                <div>
+                    <input type="file" id="profilePicUpload" accept="image/*" class="hidden" onchange="window.previewAvatar(event)">
+                    <button class="btn btn-small btn-outline" onclick="document.getElementById('profilePicUpload').click()">選擇新頭貼</button>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">支援 JPG, PNG</p>
+                </div>
+            </div>
+
             <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">顯示名稱</label>
             <input type="text" id="profileName" placeholder="你的名字">
-            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">頭貼網址 (URL)</label>
-            <input type="text" id="profilePicUrl" placeholder="https://...">
+            
             <button class="btn btn-outline" onclick="window.updateUserProfile()">💾 儲存基本資料</button>
-            <p id="profileUpdateMsg" style="font-size: 0.85rem; color: var(--success-text); margin-top: 8px; font-weight: bold;"></p>
+            <p id="profileUpdateMsg" style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;"></p>
             
             <hr style="margin: 32px 0; border: 0; border-top: 1px solid var(--border);">
             
@@ -221,13 +231,13 @@
             <div class="info-box">
                 <strong style="color: var(--text-main);">什麼是 API Key？</strong>
                 <p style="font-size: 0.9rem; color: var(--text-muted); margin: 4px 0 12px 0; line-height: 1.5;">
-                    API Key 就像是一把專屬鑰匙，讓你可以直接連接到 Google 的 AI 大腦。使用系統預設的鑰匙每天只能生成 2 次，但如果你綁定自己的鑰匙，就能解鎖<strong>無限次數</strong>產題！而且申請是完全免費的。
+                    API Key 就像是一把專屬鑰匙。使用系統預設的鑰匙每天只能生成 2 次，但如果你綁定自己的鑰匙，就能解鎖<strong>無限次數</strong>產題！申請是完全免費的。
                 </p>
                 <strong style="color: var(--text-main);">取得步驟：</strong>
                 <ol style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 4px; line-height: 1.6;">
-                    <li>點擊前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入 Google 帳號。</li>
-                    <li>點擊畫面上的「Create API key」按鈕。</li>
-                    <li>複製那一長串英數密碼，貼到下方欄位並點擊綁定。</li>
+                    <li>點擊前往 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 並登入。</li>
+                    <li>點擊畫面上的「Create API key」。</li>
+                    <li>複製英數密碼，貼到下方欄位並點擊綁定。</li>
                 </ol>
             </div>
             <input type="text" id="profileApiKey" placeholder="AIzaSy... (貼上你的 API Key)" style="font-family: monospace;">
@@ -336,8 +346,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        // 🚀 新增引入 updateProfile 和 updatePassword
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        // 🚀 引入 Firebase Storage 模組
+        import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
         // Firebase 金鑰
         const firebaseConfig = {
@@ -350,9 +361,13 @@
         };
         const app = initializeApp(firebaseConfig); 
         const auth = getAuth(app); 
+        const storage = getStorage(app); // 初始化 Storage
         const provider = new GoogleAuthProvider();
         
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxokgVbuoTiV6kSmoFcPF2xebBi84D-ozEK88m2WagPHiZKT0wNT85p7UduDPu_cNHI/exec";
+        
+        // 🚀 預設的灰色無臉大頭貼 (類似 IG)
+        const DEFAULT_AVATAR = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
         
         let currentUserEmail = ""; let currentGuestName = "";
         let testData = null; let totalQuestions = 0; let correctAnswers = 0;
@@ -361,6 +376,7 @@
         let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null;
+        let tempAvatarBase64 = null; // 暫存使用者想更換的頭貼
 
         const urlParams = new URLSearchParams(window.location.search);
         const sharedQuizId = urlParams.get('quiz');
@@ -389,9 +405,29 @@
             if(!user) return;
             const dName = user.displayName || user.email.split('@')[0];
             document.getElementById('userNameDisplay').innerText = `👋 ${dName}`;
-            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dName)}&background=random&color=fff`;
+            document.getElementById('userAvatar').src = user.photoURL || DEFAULT_AVATAR;
             document.getElementById('userAvatar').style.display = 'block';
         }
+
+        // 🚀 IG 風格登入註冊畫面切換
+        window.toggleAuthMode = (mode) => {
+            document.getElementById('authErrorMsg').innerText = "";
+            if (mode === 'register') {
+                document.getElementById('authTitle').innerText = "建立新帳號";
+                document.getElementById('registerNameInput').classList.remove('hidden');
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('switchRegisterBtn').classList.add('hidden');
+                document.getElementById('registerBtn').classList.remove('hidden');
+                document.getElementById('switchLoginBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('authTitle').innerText = "系統登入";
+                document.getElementById('registerNameInput').classList.add('hidden');
+                document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('switchRegisterBtn').classList.remove('hidden');
+                document.getElementById('registerBtn').classList.add('hidden');
+                document.getElementById('switchLoginBtn').classList.add('hidden');
+            }
+        };
 
         window.startGuestChallenge = async () => {
             const name = document.getElementById('guestNameInput').value.trim();
@@ -423,17 +459,31 @@
         initTheme(); 
         window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
         
-        // 登入註冊
         window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => showError(e.message)); };
+        
+        // 🚀 修改：註冊成功後套用名字與預設頭像
         window.registerWithEmail = () => {
+            const name = document.getElementById('registerNameInput').value.trim();
+            if(!name) return showError("請輸入你想顯示的使用者名稱！");
+            
             createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
-            .then(() => alert("註冊成功！"))
+            .then((userCredential) => {
+                updateProfile(userCredential.user, {
+                    displayName: name,
+                    photoURL: DEFAULT_AVATAR
+                }).then(() => {
+                    alert("註冊成功，歡迎加入！");
+                    location.reload(); 
+                });
+            })
             .catch(e => showError(e.message));
         };
+
         window.loginWithEmail = () => {
             signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
-            .catch(e => showError("登入失敗"));
+            .catch(e => showError("登入失敗，請檢查帳號密碼。"));
         };
+        
         window.logout = () => signOut(auth).then(() => { location.reload(); });
         function showError(msg) { document.getElementById('authErrorMsg').innerText = msg; }
         
@@ -446,7 +496,7 @@
             const user = auth.currentUser;
             if(user) {
                 document.getElementById('profileName').value = user.displayName || user.email.split('@')[0];
-                document.getElementById('profilePicUrl').value = user.photoURL || '';
+                document.getElementById('profilePicPreview').src = user.photoURL || DEFAULT_AVATAR;
             }
             
             const savedKey = localStorage.getItem('myGeminiKey');
@@ -463,6 +513,7 @@
             document.getElementById('profileUpdateMsg').innerText = "";
             document.getElementById('passwordUpdateMsg').innerText = "";
             document.getElementById('newPasswordInput').value = "";
+            tempAvatarBase64 = null; // 清空暫存圖
         };
 
         window.closeProfile = () => {
@@ -470,23 +521,58 @@
             document.getElementById('inputSection').classList.remove('hidden');
         };
 
-        window.updateUserProfile = () => {
+        // 🚀 處理大頭貼檔案選擇並縮圖
+        window.previewAvatar = (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image(); img.onload = function() {
+                    const canvas = document.createElement('canvas'); 
+                    const size = Math.min(img.width, img.height); // 取短邊裁成正方形
+                    canvas.width = 200; canvas.height = 200;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, (img.width - size)/2, (img.height - size)/2, size, size, 0, 0, 200, 200);
+                    tempAvatarBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('profilePicPreview').src = tempAvatarBase64;
+                }; 
+                img.src = event.target.result;
+            }; 
+            reader.readAsDataURL(file);
+        };
+
+        // 🚀 上傳圖片並更新基本資料
+        window.updateUserProfile = async () => {
             const user = auth.currentUser;
             if(!user) return;
             const newName = document.getElementById('profileName').value.trim();
-            const newPhotoUrl = document.getElementById('profilePicUrl').value.trim();
+            const msgEl = document.getElementById('profileUpdateMsg');
             
-            updateProfile(user, {
-                displayName: newName || user.email.split('@')[0],
-                photoURL: newPhotoUrl || ""
-            }).then(() => {
-                document.getElementById('profileUpdateMsg').innerText = "✅ 基本資料已更新！";
-                document.getElementById('profileUpdateMsg').style.color = "var(--success-text)";
-                refreshProfileUI(user);
-            }).catch((error) => {
-                document.getElementById('profileUpdateMsg').innerText = "❌ 更新失敗: " + error.message;
-                document.getElementById('profileUpdateMsg').style.color = "var(--danger-text)";
-            });
+            msgEl.innerText = "⏳ 儲存中..."; 
+            msgEl.style.color = "var(--text-main)";
+            
+            let finalPhotoUrl = user.photoURL;
+
+            try {
+                // 如果有選新照片，上傳至 Firebase Storage
+                if (tempAvatarBase64) {
+                    const sRef = storageRef(storage, `avatars/${user.uid}.jpg`);
+                    await uploadString(sRef, tempAvatarBase64, 'data_url');
+                    finalPhotoUrl = await getDownloadURL(sRef);
+                }
+
+                await updateProfile(user, {
+                    displayName: newName || user.email.split('@')[0],
+                    photoURL: finalPhotoUrl || DEFAULT_AVATAR
+                });
+                
+                msgEl.innerText = "✅ 基本資料已更新！";
+                msgEl.style.color = "var(--success-text)";
+                refreshProfileUI(auth.currentUser);
+                tempAvatarBase64 = null; 
+            } catch (error) {
+                msgEl.innerText = "❌ 更新失敗: " + error.message;
+                msgEl.style.color = "var(--danger-text)";
+            }
         };
 
         window.updateUserPassword = () => {
@@ -528,7 +614,7 @@
             }
         };
 
-        // 處理上傳圖片
+        // 處理建立測驗的講義上傳圖片
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
