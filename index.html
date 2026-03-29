@@ -261,9 +261,9 @@
                 <p id="scoreText" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;"></p>
                 <p id="savingText" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px;">數據同步中...</p>
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次</button>
-                    <button class="btn btn-primary" style="max-width: 200px; background-color: #8b5cf6;" onclick="window.generateMoreQuestions()">➕ 寫更多題</button>
-                    <button class="btn btn-primary" style="max-width: 200px;" onclick="location.reload()">🏠 返回首頁</button>
+                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次 (原題目)</button>
+                    <button class="btn btn-primary" style="max-width: 200px; background-color: #8b5cf6;" onclick="window.generateMoreQuestions()">➕ 寫更多題 (新題目)</button>
+                    <button class="btn btn-primary" style="max-width: 200px;" onclick="window.location.href = window.location.pathname">🏠 返回首頁</button>
                 </div>
             </div>
         </div>
@@ -292,29 +292,46 @@
         let testData = null; let totalQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
         
-        // 🚀 將 isGuestMode 補回來了！
         let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null; let tempAvatarBase64 = null; 
 
+        // 🚀 路由衝突完美修復：最優先攔截分享連結
         document.addEventListener("DOMContentLoaded", () => {
-            const savedCustomUser = localStorage.getItem('customUser');
-            if (savedCustomUser) {
-                sessionUser = JSON.parse(savedCustomUser);
-                refreshProfileUI();
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedQuizId = urlParams.get('quiz');
+
+            if (sharedQuizId) {
+                // 如果有分享參數，直接鎖死在訪客模式，不讓後面的 auth 檢查蓋過去
+                isGuestMode = true; 
+                currentQuizId = sharedQuizId;
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('appSection').classList.add('hidden');
+                document.getElementById('guestSection').classList.remove('hidden');
             } else {
-                onAuthStateChanged(auth, (user) => {
-                    if (user) { 
-                        sessionUser = { type: 'google', id: user.email, displayName: user.displayName || user.email.split('@')[0], photoUrl: user.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", apiKey: localStorage.getItem('myGeminiKey') || '' };
-                        refreshProfileUI();
-                    } else { 
-                        document.getElementById('authSection').classList.remove('hidden'); document.getElementById('appSection').classList.add('hidden'); 
-                    }
-                });
+                // 只有不是點分享連結進來的人，才檢查有沒有登入
+                const savedCustomUser = localStorage.getItem('customUser');
+                if (savedCustomUser) {
+                    sessionUser = JSON.parse(savedCustomUser);
+                    refreshProfileUI();
+                } else {
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) { 
+                            sessionUser = { type: 'google', id: user.email, displayName: user.displayName || user.email.split('@')[0], photoUrl: user.photoURL || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", apiKey: localStorage.getItem('myGeminiKey') || '' };
+                            refreshProfileUI();
+                        } else { 
+                            document.getElementById('authSection').classList.remove('hidden'); 
+                            document.getElementById('appSection').classList.add('hidden'); 
+                        }
+                    });
+                }
             }
         });
 
         function refreshProfileUI() {
+            // 🛡️ 雙重防呆：確保 Firebase Auth 不要雞婆蓋掉訪客挑戰畫面
+            if (isGuestMode) return; 
+            
             document.getElementById('userNameDisplay').innerText = sessionUser.displayName;
             document.getElementById('userIdDisplay').innerText = sessionUser.type === 'custom' ? `@${sessionUser.id}` : sessionUser.id;
             document.getElementById('userAvatar').src = sessionUser.photoUrl;
@@ -577,6 +594,13 @@
         };
 
         function updateTimerDisplay() { document.getElementById('timeDisplay').innerText = `${Math.floor(timeRemaining/60).toString().padStart(2,'0')}:${(timeRemaining%60).toString().padStart(2,'0')}`; }
+
+        window.checkAnswer = (selectedEl, selectedIdx, cardEl) => {
+            if (cardEl.dataset.locked === "true") return; 
+            cardEl.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            selectedEl.classList.add('selected');
+            cardEl.dataset.userAns = selectedIdx; 
+        };
 
         window.forceSubmit = () => {
             clearInterval(timerInterval); let correctCount = 0; currentMistakes = []; srsUpdatesThisRound = [];
