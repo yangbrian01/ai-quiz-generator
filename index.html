@@ -70,6 +70,8 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-text { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
+        .organized-content { background-color: var(--input-bg); padding: 32px; border-radius: 12px; font-size: 1.05rem; color: var(--text-main); border: 1px solid var(--border); margin-top: 16px; transition: 0.3s; }
+        
         #stickyTimer { position: sticky; top: 80px; z-index: 40; background: var(--timer-bg); color: var(--timer-text); padding: 12px 24px; text-align: center; font-weight: 700; font-size: 1.2rem; font-variant-numeric: tabular-nums; border-radius: 100px; border: 1px solid var(--timer-border); box-shadow: var(--shadow-md); margin-bottom: 24px; display: none; transition: 0.3s; }
         #stickyTimer.danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); animation: pulse-danger 1s infinite; }
         @keyframes pulse-danger { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
@@ -289,7 +291,9 @@
         
         let testData = null; let totalQuestions = 0; let correctAnswers = 0;
         let timerInterval; let timeRemaining = 0; 
-        let isDevilMode = false; let currentQuizId = null;
+        
+        // 🚀 將 isGuestMode 補回來了！
+        let isDevilMode = false; let isGuestMode = false; let currentQuizId = null;
         let currentMistakes = []; let srsUpdatesThisRound = []; let loadedMistakesList = []; 
         let currentImageBase64 = null; let tempAvatarBase64 = null; 
 
@@ -600,7 +604,11 @@
             document.getElementById('scoreText').innerText = `得分：${correctAnswers} / ${totalQuestions}`;
             
             try {
-                await fetchGAS({ action: 'submitScore', username: sessionUser.id, mistakes: currentMistakes, srsUpdates: srsUpdatesThisRound, isPerfect: (percentage===100), isDevilMode: isDevilMode });
+                if (isGuestMode) {
+                    await fetchGAS({ action: 'submitPublicScore', quizId: currentQuizId, guestName: currentGuestName, score: correctAnswers, total: totalQuestions });
+                } else {
+                    await fetchGAS({ action: 'submitScore', username: sessionUser.id, mistakes: currentMistakes, srsUpdates: srsUpdatesThisRound, isPerfect: (percentage===100), isDevilMode: isDevilMode });
+                }
                 document.getElementById('savingText').innerText = "✅ 數據已同步至資料庫";
             } catch (error) { document.getElementById('savingText').innerText = "⚠️ 數據同步異常"; }
             setTimeout(() => document.getElementById('scoreBoard').scrollIntoView({ behavior: 'smooth', block: 'end' }), 300);
