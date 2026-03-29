@@ -6,9 +6,6 @@
     <title>AI 知識萃取與測驗系統 | Ultimate Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================
-           🎨 大師級調色盤 & 變數 (維持頂級質感)
-           ========================================== */
         :root { 
             --hue: 220;
             --primary: hsl(var(--hue), 85%, 55%);
@@ -36,7 +33,6 @@
             --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
-        /* 🌙 暗黑模式高階調色盤 */
         [data-theme="dark"] {
             --bg: #0f172a; 
             --card-bg: #1e293b; 
@@ -58,9 +54,6 @@
             --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
         }
 
-        /* ==========================================
-           ✨ 全局與排版設定
-           ========================================== */
         * { box-sizing: border-box; }
         body { font-family: 'Inter', 'Noto Sans TC', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px 20px 80px 20px; background-color: var(--bg); color: var(--text-main); line-height: 1.7; transition: background-color 0.4s ease, color 0.4s ease; }
         h1 { text-align: center; color: var(--text-main); font-size: 2.5rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
@@ -89,9 +82,6 @@
         
         .hidden { display: none !important; }
 
-        /* ==========================================
-           🧩 特定區塊樣式
-           ========================================== */
         .account-bar { position: sticky; top: 16px; z-index: 50; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 12px 24px; background: rgba(var(--card-bg), 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 100px; box-shadow: var(--shadow-md); transition: 0.3s; }
         .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-main); }
         .user-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: none; }
@@ -105,7 +95,6 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-text { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
-        /* 📝 筆記與 Markdown 顯示 */
         .organized-content { background-color: var(--input-bg); padding: 32px; border-radius: 12px; font-size: 1.05rem; color: var(--text-main); border: 1px solid var(--border); margin-top: 16px; transition: 0.3s; }
         .organized-content h1, .organized-content h2, .organized-content h3 { color: var(--text-main); margin-top: 1.5em; text-align: left; }
         .organized-content p { margin-bottom: 1.2em; }
@@ -206,14 +195,6 @@
         
         <input type="email" id="emailInput" placeholder="name@example.com">
         <input type="password" id="passwordInput" placeholder="密碼">
-        
-        <div style="margin-top: 24px; border-top: 1px dashed var(--border); padding-top: 24px;">
-            <label style="font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; display: block; color: var(--text-main);">🔑 專屬額度綁定 (BYOK)</label>
-            <input type="text" id="customApiKeyInput" placeholder="自備 Gemini API Key (選填，享無限次數)" style="margin-bottom: 8px; font-family: monospace;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; text-align: left; line-height: 1.4;">
-                * 註冊或登入時填寫即可綁定至此瀏覽器。若留空則使用系統預設免費額度 (每日 2 次限制)。
-            </p>
-        </div>
 
         <button class="btn btn-primary" onclick="window.loginWithEmail()">登入帳號</button>
         <button class="btn btn-outline" onclick="window.registerWithEmail()" style="margin-top: 8px;">建立新帳號</button>
@@ -248,8 +229,15 @@
 
         <div class="card-panel" id="inputSection">
             <h2>建立新測驗</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;" id="quotaHint">💡 系統免費額度每日 2 次，綁定專屬 API Key 即可無限生成！</p>
             
+            <div style="background: var(--timer-bg); border: 1px solid var(--timer-border); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+                <label style="font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; display: block; color: var(--timer-text);">🔑 專屬額度綁定 (BYOK)</label>
+                <input type="text" id="customApiKeyInput" placeholder="輸入你的 Gemini API Key (選填)" style="margin-bottom: 8px; font-family: monospace; background: var(--card-bg);" oninput="window.saveCustomKeyToLocal()">
+                <p id="quotaHint" style="font-size: 0.85rem; color: var(--timer-text); margin: 0; line-height: 1.4;">
+                    💡 系統免費額度每日 2 次，綁定專屬 API Key 即可解鎖無限生成！
+                </p>
+            </div>
+
             <div class="controls-grid">
                 <select id="qType"><option value="單選題">單選題</option><option value="是非題">是非題</option></select>
                 <select id="qCount"><option value="3">3 題</option><option value="5" selected>5 題</option><option value="10">10 題</option></select>
@@ -318,8 +306,9 @@
                 <p id="savingText" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 32px;">數據同步中...</p>
                 
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次</button>
-                    <button class="btn btn-primary" style="max-width: 200px;" onclick="location.reload()">🏠 返回首頁 / 新測驗</button>
+                    <button class="btn btn-outline" style="max-width: 200px;" onclick="window.retrySameQuiz()">🔄 再測一次 (原題目)</button>
+                    <button class="btn btn-primary" style="max-width: 200px; background-color: #8b5cf6;" onclick="window.generateMoreQuestions()">➕ 寫更多題 (新題目)</button>
+                    <button class="btn btn-primary" style="max-width: 200px;" onclick="location.reload()">🏠 返回首頁</button>
                 </div>
             </div>
         </div>
@@ -329,7 +318,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // ⚠️ 請填入你重新生成的 FIREBASE API KEY
+        // 🚀 Firebase 金鑰放回來了
         const firebaseConfig = {
             apiKey: "AIzaSyB5pz4KXXzuvE5E_m69iS_pdXZK7xpR0Y4",
             authDomain: "ai-quiz-app-f2a9e.firebaseapp.com",
@@ -357,7 +346,7 @@
             const savedKey = localStorage.getItem('myGeminiKey');
             if(savedKey) {
                 document.getElementById('customApiKeyInput').value = savedKey;
-                document.getElementById('quotaHint').innerText = "⚡ 目前模式：無限火力 (已綁定專屬 API Key)";
+                window.saveCustomKeyToLocal();
             }
         });
 
@@ -428,27 +417,27 @@
         initTheme(); 
         window.toggleTheme = () => { const b = document.body; const n = b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; b.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('themeToggleBtn').innerText = n === 'dark' ? '☀️' : '🌙'; };
         
-        // 🚀 登入註冊時，一併儲存自訂的 API Key
-        function saveCustomKeyToLocal() {
+        // 🚀 即時儲存金鑰並給予回饋
+        window.saveCustomKeyToLocal = () => {
             const customKey = document.getElementById('customApiKeyInput').value.trim();
             if(customKey && customKey.length > 20) {
                 localStorage.setItem('myGeminiKey', customKey);
-                document.getElementById('quotaHint').innerText = "⚡ 目前模式：無限火力 (已綁定專屬 API Key)";
+                document.getElementById('quotaHint').innerText = "⚡ 已啟用無限火力模式 (使用專屬 API Key)";
+                document.getElementById('quotaHint').style.color = "var(--success-text)";
             } else if (customKey === "") {
                 localStorage.removeItem('myGeminiKey');
-                document.getElementById('quotaHint').innerText = "💡 系統免費額度每日 2 次，綁定專屬 API Key 即可無限生成！";
+                document.getElementById('quotaHint').innerText = "💡 系統免費額度每日 2 次，綁定專屬 API Key 即可解鎖無限生成！";
+                document.getElementById('quotaHint').style.color = "var(--timer-text)";
             }
-        }
+        };
 
-        window.loginWithGoogle = () => { saveCustomKeyToLocal(); signInWithPopup(auth, provider).catch(e => showError(e.message)); };
+        window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => showError(e.message)); };
         window.registerWithEmail = () => {
-            saveCustomKeyToLocal();
             createUserWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
             .then(() => alert("註冊成功！"))
             .catch(e => showError(e.message));
         };
         window.loginWithEmail = () => {
-            saveCustomKeyToLocal();
             signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passwordInput').value)
             .catch(e => showError("登入失敗"));
         };
@@ -473,12 +462,11 @@
             const note = document.getElementById('noteInput').value;
             if (!note.trim() && !currentImageBase64) return alert('請輸入文字或圖片！');
             
-            // 🚀 防連點機制：禁用按鈕
             const genBtn = document.getElementById('generateBtn');
             genBtn.disabled = true;
             genBtn.innerText = "⏳ 魔法詠唱中...";
             
-            showLoading("AI 解析中...");
+            showLoading("AI 正在為你客製化題目...");
             
             const user = auth.currentUser;
             const dName = user ? (user.displayName || user.email.split('@')[0]) : '匿名';
@@ -491,7 +479,7 @@
                         action: 'generate', 
                         username: currentUserEmail,
                         displayName: dName,
-                        customApiKey: customKey, // 🚀 傳遞專屬金鑰給後端
+                        customApiKey: customKey, 
                         note: note, 
                         imageBase64: currentImageBase64, 
                         qType: document.getElementById('qType').value, 
@@ -509,10 +497,17 @@
                 document.getElementById('inputSection').classList.remove('hidden'); 
             } finally { 
                 document.getElementById('loading').style.display = 'none'; 
-                // 🚀 恢復按鈕狀態
                 genBtn.disabled = false;
                 genBtn.innerText = "生成專業教材";
             }
+        };
+
+        // 🚀 新增功能：直接利用原本的筆記與圖片，再呼叫一次 AI 產新題目
+        window.generateMoreQuestions = () => {
+            document.getElementById('scoreBoard').classList.add('hidden');
+            document.getElementById('testSection').classList.add('hidden');
+            // 直接呼叫生成函數，因為原本在畫面上的參數都還保留著
+            window.generateContent();
         };
 
         window.fetchHistory = async () => { 
